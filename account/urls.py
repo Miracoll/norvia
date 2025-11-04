@@ -1,0 +1,27 @@
+from django.urls import path
+
+from account import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('crypto-market/', views.crypto_market, name='crypto_market'),
+    path('stock-market/', views.stock_market, name='stock_market'),
+    path('copy-trader/', views.copy_trader, name='copy_trader'),
+    path('become-trader/', views.become_trader, name='become_trader'),
+    path('deposit/', views.deposit, name='deposit'),
+    path('deposit-details/<uuid:ref>/', views.deposit_details, name='deposit_details'),
+    path('deposit-history/', views.deposit_history, name='deposit_history'),
+    path('withdraw/', views.withdraw, name='withdraw'),
+    path('withdrawal-history/', views.withdrawal_history, name='withdrawal_history'),
+    path('planning/', views.planning, name='planning'),
+    path('referrals/', views.referrals, name='referrals'),
+    path('profile/', views.profile, name='profile'),
+    path('kyc-verification/', views.kyc_verification, name='kyc_verification'),
+    path('address-verification/', views.address_verification, name='address_verification'),
+    path('settings/', views.settings, name='settings'),
+    path('sign-in/', views.sign_in, name='sign_in'),
+    path('forget-password/', views.forget_password, name='forget_password'),
+    path('sign-up-step-1/', views.sign_up_step_1, name='sign_up_step_1'),
+    path('sign-up-step-2/<uuid:ref>/', views.sign_up_step_2, name='sign_up_step_2'),
+    path('sign-up-step-3/<uuid:ref>/', views.sign_up_step_3, name='sign_up_step_3'),
+]

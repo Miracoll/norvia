@@ -1,0 +1,198 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>Page Content Management</h2>
+            <p>Manage agreements, terms & conditions, and other legal documents</p>
+        </div>
+
+        <!-- Content Table -->
+        <div class="content-card">
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;"></th>
+                        <th>Page Title</th>
+                        <th style="width: 150px;">Status</th>
+                        <th style="width: 120px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">gavel</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Copy Trading Agreement</div>
+                            <div class="page-description">Terms and conditions for copy trading service</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-copy-trading-agreement.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">article</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Terms & Conditions</div>
+                            <div class="page-description">Platform terms and conditions</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-terms-conditions.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">privacy_tip</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Privacy Policy</div>
+                            <div class="page-description">Data privacy and protection policy</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-privacy-policy.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">warning</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Risk Disclosure</div>
+                            <div class="page-description">Trading risk warnings and disclosures</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-risk-disclosure.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">monetization_on</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Refund Policy</div>
+                            <div class="page-description">Refund terms and procedures</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-refund-policy.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">verified_user</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">KYC Policy</div>
+                            <div class="page-description">Know Your Customer verification requirements</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-kyc-policy.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">policy</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">AML Policy</div>
+                            <div class="page-description">Anti-money laundering compliance policy</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-aml-policy.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

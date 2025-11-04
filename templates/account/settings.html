@@ -1,0 +1,746 @@
+{% extends 'account/base.html' %}
+{% block content %}
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <!-- Page Title -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+                          <li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
+                          <li class="breadcrumb-item active" aria-current="page">Settings</li>
+                        </ol>
+                      </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-xl-8">
+                <!-- Account Information -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">
+                        <i class="material-icons">account_circle</i>
+                        Account Information
+                    </h4>
+                    <p class="settings-card-subtitle">Update your email and phone number (verification required)</p>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Email Address</span>
+                            <span class="settings-description">john.anderson@email.com</span>
+                        </div>
+                        <button class="btn-settings" onclick="openEmailModal()">
+                            <i class="material-icons">email</i>
+                            <span>Change Email</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Phone Number</span>
+                            <span class="settings-description">+1 (555) 123-4567</span>
+                        </div>
+                        <button class="btn-settings" onclick="openPhoneModal()">
+                            <i class="material-icons">phone</i>
+                            <span>Change Phone</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-card" style="background: #fef3c7; border-color: #fde68a;">
+                    <div style="display: flex; gap: 12px; align-items: flex-start;">
+                        <i class="material-icons" style="color: #d97706; font-size: 24px;">info</i>
+                        <div>
+                            <h5 style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 6px;">KYC-Verified Information</h5>
+                            <p style="font-size: 13px; color: #92400e; margin: 0; line-height: 1.6;">
+                                To update your name, date of birth, or address, please contact our support team or submit a new KYC verification request. This helps us maintain account security and regulatory compliance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">
+                        <i class="material-icons">security</i>
+                        Security Settings
+                    </h4>
+                    <p class="settings-card-subtitle">Manage your account security and authentication methods</p>
+
+                    <!-- 2FA Section - Change data-2fa-enabled to "false" to show Setup state -->
+                    <div class="settings-row" id="twoFASection" data-2fa-enabled="true">
+                        <!-- When 2FA is ENABLED -->
+                        <div class="settings-label-group" id="twoFAEnabled">
+                            <span class="settings-label">Two-Factor Authentication (2FA)</span>
+                            <span class="settings-description" style="display: flex; align-items: center; gap: 8px;">
+                                <span class="status-badge active" style="padding: 4px 10px;">
+                                    <i class="material-icons" style="font-size: 14px;">check_circle</i>
+                                    Enabled
+                                </span>
+                                <span style="color: #6b7280;">Google Authenticator with phone backup</span>
+                            </span>
+                        </div>
+                        <!-- When 2FA is DISABLED -->
+                        <div class="settings-label-group" id="twoFADisabled" style="display: none;">
+                            <span class="settings-label">Two-Factor Authentication (2FA)</span>
+                            <span class="settings-description">Add an extra layer of security with Google Authenticator</span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-settings" id="btn2FAManage" onclick="window.location.href='2fa-setup.html'">
+                                <i class="material-icons">settings</i>
+                                <span>Manage 2FA</span>
+                            </button>
+                            <button class="btn-settings btn-settings-danger" id="btn2FADisable" onclick="disable2FA()">
+                                <i class="material-icons">block</i>
+                                <span>Disable</span>
+                            </button>
+                            <button class="btn-settings" id="btn2FASetup" onclick="window.location.href='2fa-setup.html'" style="display: none;">
+                                <i class="material-icons">security</i>
+                                <span>Setup 2FA</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Login Notifications</span>
+                            <span class="settings-description">Get notified when someone logs into your account</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Withdrawal Whitelist</span>
+                            <span class="settings-description">Only allow withdrawals to whitelisted addresses</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Password</span>
+                            <span class="settings-description">Last changed 2 weeks ago</span>
+                        </div>
+                        <button class="btn-settings" onclick="window.location.href='change-password.html'">
+                            <i class="material-icons">vpn_key</i>
+                            <span>Change Password</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Active Sessions</span>
+                            <span class="settings-description">3 devices currently logged in</span>
+                        </div>
+                        <button class="btn-settings">
+                            <i class="material-icons">devices</i>
+                            <span>Manage Sessions</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Security Questions -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">
+                        <i class="material-icons">help_outline</i>
+                        Security Questions
+                    </h4>
+                    <p class="settings-card-subtitle">These questions help verify your identity for account recovery</p>
+
+                    <div class="security-question-item">
+                        <span class="security-question-label">Question 1</span>
+                        <span class="security-question-text">What was the name of your first pet?</span>
+                    </div>
+
+                    <div class="security-question-item">
+                        <span class="security-question-label">Question 2</span>
+                        <span class="security-question-text">What city were you born in?</span>
+                    </div>
+
+                    <div class="security-question-item">
+                        <span class="security-question-label">Question 3</span>
+                        <span class="security-question-text">What is your mother's maiden name?</span>
+                    </div>
+
+                    <div class="settings-row" style="padding-top: 20px; border-top: 2px solid #f3f4f6; margin-top: 16px;">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Update Security Questions</span>
+                            <span class="settings-description">Change your security questions and answers</span>
+                        </div>
+                        <button class="btn-settings" onclick="openSecurityQuestionsModal()">
+                            <i class="material-icons">edit</i>
+                            <span>Edit Questions</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trading Preferences -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">
+                        <i class="material-icons">tune</i>
+                        Trading Preferences
+                    </h4>
+                    <p class="settings-card-subtitle">Customize your trading experience and default settings</p>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Default Leverage</span>
+                            <span class="settings-description">Set your default leverage for copy trading</span>
+                        </div>
+                        <select class="settings-select">
+                            <option value="1">1x (No Leverage)</option>
+                            <option value="2">2x</option>
+                            <option value="5">5x</option>
+                            <option value="10" selected>10x</option>
+                            <option value="20">20x</option>
+                            <option value="50">50x</option>
+                            <option value="100">100x</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Risk Level</span>
+                            <span class="settings-description">Your preferred risk tolerance</span>
+                        </div>
+                        <select class="settings-select">
+                            <option value="low">Low Risk</option>
+                            <option value="moderate" selected>Moderate Risk</option>
+                            <option value="high">High Risk</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Auto-Copy New Traders</span>
+                            <span class="settings-description">Automatically copy trades from new traders you follow</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Stop Loss Protection</span>
+                            <span class="settings-description">Automatically set stop loss for all copy trades</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Notification Preferences -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">
+                        <i class="material-icons">notifications</i>
+                        Notification Preferences
+                    </h4>
+                    <p class="settings-card-subtitle">Choose what notifications you want to receive</p>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Email Notifications</span>
+                            <span class="settings-description">Receive updates via email</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Trade Notifications</span>
+                            <span class="settings-description">Get notified when traders you copy open/close positions</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Deposit & Withdrawal Alerts</span>
+                            <span class="settings-description">Notifications for all wallet transactions</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Weekly Performance Report</span>
+                            <span class="settings-description">Receive weekly summary of your trading performance</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Marketing Communications</span>
+                            <span class="settings-description">Receive updates about new features and promotions</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-xl-4">
+                <!-- Language & Region -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">
+                        <i class="material-icons">language</i>
+                        Language & Region
+                    </h4>
+                    <p class="settings-card-subtitle">Set your preferred language and timezone</p>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Language</span>
+                        </div>
+                    </div>
+                    <select class="settings-select w-100 mb-3">
+                        <option value="en" selected>English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                        <option value="ar">العربية</option>
+                    </select>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Timezone</span>
+                        </div>
+                    </div>
+                    <select class="settings-select w-100 mb-3">
+                        <option value="utc">UTC (GMT+0)</option>
+                        <option value="est" selected>EST (GMT-5)</option>
+                        <option value="pst">PST (GMT-8)</option>
+                        <option value="gmt">GMT (GMT+0)</option>
+                        <option value="cet">CET (GMT+1)</option>
+                        <option value="ist">IST (GMT+5:30)</option>
+                        <option value="jst">JST (GMT+9)</option>
+                    </select>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label">Currency Display</span>
+                        </div>
+                    </div>
+                    <select class="settings-select w-100">
+                        <option value="usd" selected>USD ($)</option>
+                        <option value="eur">EUR (€)</option>
+                        <option value="gbp">GBP (£)</option>
+                        <option value="jpy">JPY (¥)</option>
+                        <option value="btc">BTC (₿)</option>
+                    </select>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="settings-card" style="border-color: #fee2e2;">
+                    <h4 class="settings-card-title" style="color: #dc2626;">
+                        <i class="material-icons">warning</i>
+                        Danger Zone
+                    </h4>
+                    <p class="settings-card-subtitle">Irreversible actions that affect your account</p>
+
+                    <div class="settings-row">
+                        <div class="settings-label-group">
+                            <span class="settings-label" style="color: #dc2626;">Close Account</span>
+                            <span class="settings-description">Permanently delete your account and all data</span>
+                        </div>
+                    </div>
+                    <button class="btn-settings btn-settings-danger w-100 justify-content-center">
+                        <i class="material-icons">delete_forever</i>
+                        <span>Close Account</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-end mb-4">
+                    <button class="btn-save">
+                        <i class="material-icons">save</i>
+                        <span>Save All Changes</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Email Modal -->
+<div id="emailModal" class="modal-custom">
+    <div class="modal-content-custom">
+        <div class="modal-header-custom">
+            <h3><i class="material-icons">email</i> Change Email Address</h3>
+            <button class="modal-close" onclick="closeEmailModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <div class="info-box-modal">
+                <i class="material-icons">info</i>
+                <p>A verification code will be sent to both your current and new email addresses. You must verify both to complete the change.</p>
+            </div>
+
+            <form id="emailChangeForm">
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Current Email</label>
+                    <input type="email" class="form-input-modal" value="john.anderson@email.com" readonly>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">New Email Address *</label>
+                    <input type="email" class="form-input-modal" id="newEmail" placeholder="Enter your new email address" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Confirm New Email *</label>
+                    <input type="email" class="form-input-modal" id="confirmEmail" placeholder="Confirm your new email address" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Account Password *</label>
+                    <input type="password" class="form-input-modal" id="emailPassword" placeholder="Enter your password for verification" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer-custom">
+            <button class="btn-modal btn-modal-cancel" onclick="closeEmailModal()">Cancel</button>
+            <button class="btn-modal btn-modal-primary" onclick="submitEmailChange()">
+                <i class="material-icons">send</i>
+                Send Verification Code
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Change Phone Modal -->
+<div id="phoneModal" class="modal-custom">
+    <div class="modal-content-custom">
+        <div class="modal-header-custom">
+            <h3><i class="material-icons">phone</i> Change Phone Number</h3>
+            <button class="modal-close" onclick="closePhoneModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <div class="info-box-modal">
+                <i class="material-icons">info</i>
+                <p>A verification code will be sent via SMS to both your current and new phone numbers. You must verify both to complete the change.</p>
+            </div>
+
+            <form id="phoneChangeForm">
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Current Phone Number</label>
+                    <input type="tel" class="form-input-modal" value="+1 (555) 123-4567" readonly>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">New Phone Number *</label>
+                    <input type="tel" class="form-input-modal" id="newPhone" placeholder="+1 (555) 000-0000" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Confirm New Phone Number *</label>
+                    <input type="tel" class="form-input-modal" id="confirmPhone" placeholder="+1 (555) 000-0000" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Account Password *</label>
+                    <input type="password" class="form-input-modal" id="phonePassword" placeholder="Enter your password for verification" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer-custom">
+            <button class="btn-modal btn-modal-cancel" onclick="closePhoneModal()">Cancel</button>
+            <button class="btn-modal btn-modal-primary" onclick="submitPhoneChange()">
+                <i class="material-icons">send</i>
+                Send Verification Code
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Security Questions Modal -->
+<div id="securityQuestionsModal" class="modal-custom">
+    <div class="modal-content-custom">
+        <div class="modal-header-custom">
+            <h3><i class="material-icons">help_outline</i> Update Security Questions</h3>
+            <button class="modal-close" onclick="closeSecurityQuestionsModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <div class="info-box-modal">
+                <i class="material-icons">info</i>
+                <p>Choose 3 different security questions and provide answers that only you would know. These will be used for account recovery.</p>
+            </div>
+
+            <form id="securityQuestionsForm">
+                <!-- Question 1 -->
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Security Question 1 *</label>
+                    <select class="form-select-modal" id="question1" required>
+                        <option value="">Select a question</option>
+                        <option value="pet">What was the name of your first pet?</option>
+                        <option value="city">What city were you born in?</option>
+                        <option value="school">What was the name of your elementary school?</option>
+                        <option value="teacher">What was your favorite teacher's name?</option>
+                        <option value="friend">What is your childhood best friend's name?</option>
+                        <option value="street">What street did you grow up on?</option>
+                        <option value="car">What was the make of your first car?</option>
+                    </select>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Answer 1 *</label>
+                    <input type="text" class="form-input-modal" id="answer1" placeholder="Enter your answer" required>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Security Question 2 *</label>
+                    <select class="form-select-modal" id="question2" required>
+                        <option value="">Select a question</option>
+                        <option value="maiden">What is your mother's maiden name?</option>
+                        <option value="city">What city were you born in?</option>
+                        <option value="food">What is your favorite food?</option>
+                        <option value="book">What is your favorite book?</option>
+                        <option value="movie">What was your favorite childhood movie?</option>
+                        <option value="vacation">Where was your favorite vacation destination?</option>
+                        <option value="hobby">What was your childhood hobby?</option>
+                    </select>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Answer 2 *</label>
+                    <input type="text" class="form-input-modal" id="answer2" placeholder="Enter your answer" required>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Security Question 3 *</label>
+                    <select class="form-select-modal" id="question3" required>
+                        <option value="">Select a question</option>
+                        <option value="job">What was your first job?</option>
+                        <option value="sibling">What is your oldest sibling's middle name?</option>
+                        <option value="instrument">What musical instrument did you learn?</option>
+                        <option value="sport">What was your favorite sport in school?</option>
+                        <option value="nickname">What was your childhood nickname?</option>
+                        <option value="model">What is your dream car model?</option>
+                        <option value="country">What country would you most like to visit?</option>
+                    </select>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Answer 3 *</label>
+                    <input type="text" class="form-input-modal" id="answer3" placeholder="Enter your answer" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Account Password *</label>
+                    <input type="password" class="form-input-modal" id="securityPassword" placeholder="Enter your password for verification" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer-custom">
+            <button class="btn-modal btn-modal-cancel" onclick="closeSecurityQuestionsModal()">Cancel</button>
+            <button class="btn-modal btn-modal-primary" onclick="submitSecurityQuestions()">
+                <i class="material-icons">save</i>
+                Save Security Questions
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // 2FA State Management
+    function toggle2FAState() {
+        const section = document.getElementById('twoFASection');
+        const isEnabled = section.getAttribute('data-2fa-enabled') === 'true';
+
+        const enabledSection = document.getElementById('twoFAEnabled');
+        const disabledSection = document.getElementById('twoFADisabled');
+        const manageBtn = document.getElementById('btn2FAManage');
+        const disableBtn = document.getElementById('btn2FADisable');
+        const setupBtn = document.getElementById('btn2FASetup');
+
+        if (isEnabled) {
+            // Show enabled state
+            enabledSection.style.display = 'block';
+            disabledSection.style.display = 'none';
+            manageBtn.style.display = 'inline-flex';
+            disableBtn.style.display = 'inline-flex';
+            setupBtn.style.display = 'none';
+        } else {
+            // Show disabled state
+            enabledSection.style.display = 'none';
+            disabledSection.style.display = 'block';
+            manageBtn.style.display = 'none';
+            disableBtn.style.display = 'none';
+            setupBtn.style.display = 'inline-flex';
+        }
+    }
+
+    // Disable 2FA
+    function disable2FA() {
+        if (confirm('Are you sure you want to disable Two-Factor Authentication? This will make your account less secure.')) {
+            // TODO: Programmer will implement API call to disable 2FA
+            console.log('Disabling 2FA');
+
+            // Update UI state
+            document.getElementById('twoFASection').setAttribute('data-2fa-enabled', 'false');
+            toggle2FAState();
+
+            alert('Two-Factor Authentication has been disabled. You can enable it again at any time from this page.');
+        }
+    }
+
+    // Initialize 2FA state on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        toggle2FAState();
+    });
+
+    // Email Modal Functions
+    function openEmailModal() {
+        document.getElementById('emailModal').classList.add('show');
+    }
+
+    function closeEmailModal() {
+        document.getElementById('emailModal').classList.remove('show');
+    }
+
+    function submitEmailChange() {
+        const newEmail = document.getElementById('newEmail').value;
+        const confirmEmail = document.getElementById('confirmEmail').value;
+        const password = document.getElementById('emailPassword').value;
+
+        if (!newEmail || !confirmEmail || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        if (newEmail !== confirmEmail) {
+            alert('Email addresses do not match');
+            return;
+        }
+
+        // TODO: Programmer will implement API call to send verification codes
+        console.log('Email change request:', { newEmail, password });
+        alert('Verification codes have been sent to both email addresses. Please check your inbox.');
+        closeEmailModal();
+    }
+
+    // Phone Modal Functions
+    function openPhoneModal() {
+        document.getElementById('phoneModal').classList.add('show');
+    }
+
+    function closePhoneModal() {
+        document.getElementById('phoneModal').classList.remove('show');
+    }
+
+    function submitPhoneChange() {
+        const newPhone = document.getElementById('newPhone').value;
+        const confirmPhone = document.getElementById('confirmPhone').value;
+        const password = document.getElementById('phonePassword').value;
+
+        if (!newPhone || !confirmPhone || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        if (newPhone !== confirmPhone) {
+            alert('Phone numbers do not match');
+            return;
+        }
+
+        // TODO: Programmer will implement API call to send verification codes
+        console.log('Phone change request:', { newPhone, password });
+        alert('Verification codes have been sent to both phone numbers via SMS.');
+        closePhoneModal();
+    }
+
+    // Security Questions Modal Functions
+    function openSecurityQuestionsModal() {
+        document.getElementById('securityQuestionsModal').classList.add('show');
+    }
+
+    function closeSecurityQuestionsModal() {
+        document.getElementById('securityQuestionsModal').classList.remove('show');
+    }
+
+    function submitSecurityQuestions() {
+        const question1 = document.getElementById('question1').value;
+        const answer1 = document.getElementById('answer1').value;
+        const question2 = document.getElementById('question2').value;
+        const answer2 = document.getElementById('answer2').value;
+        const question3 = document.getElementById('question3').value;
+        const answer3 = document.getElementById('answer3').value;
+        const password = document.getElementById('securityPassword').value;
+
+        if (!question1 || !answer1 || !question2 || !answer2 || !question3 || !answer3 || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        // Check for duplicate questions
+        if (question1 === question2 || question1 === question3 || question2 === question3) {
+            alert('Please select three different security questions');
+            return;
+        }
+
+        // TODO: Programmer will implement API call to update security questions
+        console.log('Security questions update:', {
+            questions: [
+                { question: question1, answer: answer1 },
+                { question: question2, answer: answer2 },
+                { question: question3, answer: answer3 }
+            ],
+            password
+        });
+        alert('Security questions updated successfully!');
+        closeSecurityQuestionsModal();
+        // TODO: Update the displayed questions on the page
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal-custom')) {
+            event.target.classList.remove('show');
+        }
+    }
+</script>
+{% endblock extra_scripts %}

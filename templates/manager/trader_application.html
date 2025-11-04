@@ -1,0 +1,384 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Trader Applications</h1>
+            <button class="btn-action btn-view" onclick="window.location.href='platform-settings.html'">
+                <i class="material-icons" style="font-size: 18px;">settings</i>
+                Application Settings
+            </button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card pending">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card under-review">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Under Review</div>
+            </div>
+            <div class="stat-card approved">
+                <div class="stat-value">48</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="stat-card rejected">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter" onchange="filterApplications()">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="under-review">Under Review</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Experience Level</label>
+                    <select id="experienceFilter" onchange="filterApplications()">
+                        <option value="">All Levels</option>
+                        <option value="1">Less than 1 year</option>
+                        <option value="2">1-2 years</option>
+                        <option value="3">3-5 years</option>
+                        <option value="5">5-10 years</option>
+                        <option value="10">More than 10 years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date" id="dateFilter" onchange="filterApplications()">
+                </div>
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchFilter" placeholder="Search by name or email..." oninput="filterApplications()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="applications-table">
+            <div class="table-header">
+                <h3 style="margin: 0; font-size: 16px;">Trader Applications</h3>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Applicant</th>
+                            <th>Email</th>
+                            <th>Experience</th>
+                            <th>Trading Volume</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsTableBody">
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">John Anderson</div>
+                                <div style="font-size: 12px; color: #6b7280;">USR-45612</div>
+                            </td>
+                            <td>john.anderson@email.com</td>
+                            <td>5-10 years</td>
+                            <td>$100,000 - $500,000</td>
+                            <td>Jan 15, 2025</td>
+                            <td><span class="status-badge pending">Pending</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewApplication('1')">
+                                        <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                        View
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">Sarah Mitchell</div>
+                                <div style="font-size: 12px; color: #6b7280;">USR-78934</div>
+                            </td>
+                            <td>sarah.mitchell@email.com</td>
+                            <td>3-5 years</td>
+                            <td>$50,000 - $100,000</td>
+                            <td>Jan 14, 2025</td>
+                            <td><span class="status-badge under-review">Under Review</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewApplication('2')">
+                                        <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                        View
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">Michael Chen</div>
+                                <div style="font-size: 12px; color: #6b7280;">USR-23456</div>
+                            </td>
+                            <td>michael.chen@email.com</td>
+                            <td>More than 10 years</td>
+                            <td>More than $500,000</td>
+                            <td>Jan 13, 2025</td>
+                            <td><span class="status-badge approved">Approved</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewApplication('3')">
+                                        <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                        View
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">Emily Roberts</div>
+                                <div style="font-size: 12px; color: #6b7280;">USR-89012</div>
+                            </td>
+                            <td>emily.roberts@email.com</td>
+                            <td>1-2 years</td>
+                            <td>$10,000 - $50,000</td>
+                            <td>Jan 12, 2025</td>
+                            <td><span class="status-badge rejected">Rejected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewApplication('4')">
+                                        <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                        View
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Application Details Modal -->
+<div class="modal" id="applicationModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3>Trader Application Details</h3>
+            <button class="modal-close" onclick="closeModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- Personal Information -->
+            <div class="application-section">
+                <div class="section-title">
+                    <i class="material-icons" style="color: #3b82f6;">person</i>
+                    Personal Information
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value" id="modal-name">John Anderson</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value" id="modal-email">john.anderson@email.com</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value" id="modal-phone">+1 (555) 123-4567</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Country</div>
+                        <div class="info-value" id="modal-country">United States</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Experience -->
+            <div class="application-section">
+                <div class="section-title">
+                    <i class="material-icons" style="color: #10b981;">trending_up</i>
+                    Trading Experience
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Experience Level</div>
+                        <div class="info-value" id="modal-experience">5-10 years</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Trading Volume</div>
+                        <div class="info-value" id="modal-volume">$100,000 - $500,000</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Trading Style</div>
+                        <div class="info-value" id="modal-style">Swing Trading</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Risk Level</div>
+                        <div class="info-value" id="modal-risk">Moderate</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Win Rate</div>
+                        <div class="info-value" id="modal-winrate">68%</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Primary Markets</div>
+                        <div class="info-value" id="modal-markets">Crypto, Stocks</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Strategy -->
+            <div class="application-section">
+                <div class="section-title">
+                    <i class="material-icons" style="color: #f59e0b;">lightbulb</i>
+                    Trading Strategy
+                </div>
+                <div class="info-item" style="width: 100%;">
+                    <div class="info-label">Strategy Description</div>
+                    <div class="info-value" id="modal-strategy" style="white-space: pre-wrap;">
+I focus on swing trading with a combination of technical and fundamental analysis. My strategy involves identifying key support and resistance levels, using moving averages for trend confirmation, and analyzing volume patterns. I typically hold positions for 3-7 days and maintain strict risk management with a 2% maximum loss per trade.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Documents -->
+            <div class="application-section">
+                <div class="section-title">
+                    <i class="material-icons" style="color: #8b5cf6;">description</i>
+                    Verification Documents
+                </div>
+                <div class="document-preview">
+                    <i class="material-icons">picture_as_pdf</i>
+                    <div class="document-info">
+                        <div class="document-name">Trading_Statements_6months.pdf</div>
+                        <div class="document-size">2.4 MB</div>
+                    </div>
+                    <button class="btn-download">
+                        <i class="material-icons" style="font-size: 16px;">download</i>
+                    </button>
+                </div>
+                <div class="document-preview">
+                    <i class="material-icons">badge</i>
+                    <div class="document-info">
+                        <div class="document-name">Government_ID.pdf</div>
+                        <div class="document-size">1.2 MB</div>
+                    </div>
+                    <button class="btn-download">
+                        <i class="material-icons" style="font-size: 16px;">download</i>
+                    </button>
+                </div>
+                <div class="document-preview">
+                    <i class="material-icons">account_balance</i>
+                    <div class="document-info">
+                        <div class="document-name">Proof_of_Trading_Account.pdf</div>
+                        <div class="document-size">890 KB</div>
+                    </div>
+                    <button class="btn-download">
+                        <i class="material-icons" style="font-size: 16px;">download</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Application Status -->
+            <div class="application-section">
+                <div class="section-title">
+                    <i class="material-icons" style="color: #ef4444;">info</i>
+                    Application Status
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Current Status</div>
+                        <div class="info-value">
+                            <span class="status-badge pending" id="modal-status">Pending</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Applied Date</div>
+                        <div class="info-value" id="modal-date">Jan 15, 2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal btn-cancel" onclick="closeModal()">Close</button>
+            <button class="btn-modal btn-reject-modal" onclick="rejectApplication()">
+                <i class="material-icons" style="font-size: 18px;">close</i>
+                Reject
+            </button>
+            <button class="btn-modal btn-approve-modal" onclick="approveApplication()">
+                <i class="material-icons" style="font-size: 18px;">check</i>
+                Approve
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    function viewApplication(id) {
+        document.getElementById('applicationModal').classList.add('active');
+        // In production, fetch application data by ID
+        console.log('Viewing application:', id);
+    }
+
+    function closeModal() {
+        document.getElementById('applicationModal').classList.remove('active');
+    }
+
+    function approveApplication() {
+        if (confirm('Are you sure you want to approve this trader application?')) {
+            alert('Application approved successfully!');
+            closeModal();
+            // In production: fetch('/admin/api/approve-trader-application', {...});
+            location.reload();
+        }
+    }
+
+    function rejectApplication() {
+        const reason = prompt('Please provide a reason for rejection:');
+        if (reason) {
+            alert('Application rejected successfully!');
+            closeModal();
+            // In production: fetch('/admin/api/reject-trader-application', {...});
+            location.reload();
+        }
+    }
+
+    function filterApplications() {
+        const status = document.getElementById('statusFilter').value;
+        const experience = document.getElementById('experienceFilter').value;
+        const date = document.getElementById('dateFilter').value;
+        const search = document.getElementById('searchFilter').value.toLowerCase();
+
+        console.log('Filtering with:', { status, experience, date, search });
+        // In production: Apply filters to table data
+    }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Close modal on background click
+    document.getElementById('applicationModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+</script>
+{% endblock extra_scripts %}

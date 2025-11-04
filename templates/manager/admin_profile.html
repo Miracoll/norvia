@@ -1,0 +1,525 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
+            <div>
+                <h2 style="font-size: 28px; font-weight: 700; color: #1a1a1a; margin: 0 0 8px 0;">Admin Profile</h2>
+                <p style="font-size: 14px; color: #64748b; margin: 0;">Manage your profile information and security settings</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Profile Information Card -->
+            <div class="col-xl-8 col-lg-7">
+                <div class="card" style="background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div class="card-header" style="padding: 24px 30px; border-bottom: 2px solid #f1f5f9;">
+                        <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <i class="material-icons" style="color: #ef4444; font-size: 24px;">person</i>
+                            Profile Information
+                        </h4>
+                    </div>
+                    <div class="card-body" style="padding: 30px;">
+                        <form id="profileForm">
+                            <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: 2px solid #f1f5f9;">
+                                <div style="position: relative; cursor: pointer;" onclick="document.getElementById('profilePhotoInput').click()">
+                                    <img src="https://ui-avatars.com/api/?name=Admin+User&size=120&background=ef4444&color=fff&bold=true" alt="Profile Photo" id="profilePhotoPreview" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid #e2e8f0; object-fit: cover;">
+                                    <div class="photo-upload-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(239, 68, 68, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.3s ease;">
+                                        <i class="material-icons" style="color: white; font-size: 32px;">camera_alt</i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin: 0 0 4px 0;">Profile Photo</h5>
+                                    <p style="font-size: 13px; color: #64748b; margin: 0 0 12px 0;">Click to upload new photo</p>
+                                    <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
+                                    <button type="button" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" onclick="document.getElementById('profilePhotoInput').click()">
+                                        <i class="material-icons" style="font-size: 16px;">upload</i>
+                                        Upload Photo
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group" style="margin-bottom: 20px;">
+                                        <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">First Name</label>
+                                        <input type="text" class="form-control" id="firstName" value="John" placeholder="Enter first name" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group" style="margin-bottom: 20px;">
+                                        <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Last Name</label>
+                                        <input type="text" class="form-control" id="lastName" value="Doe" placeholder="Enter last name" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Email Address</label>
+                                <input type="email" class="form-control" id="email" value="admin@norvia.io" placeholder="Enter email address" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" value="+1 (555) 123-4567" placeholder="Enter phone number" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Role</label>
+                                <input type="text" class="form-control" value="Super Admin" disabled style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: #f8fafc; color: #94a3b8; cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Two-Factor Authentication</label>
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <i class="material-icons status-icon enabled" style="font-size: 32px; color: #10b981;">verified_user</i>
+                                        <div>
+                                            <p class="status-label" style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 2px 0;">Enabled</p>
+                                            <p class="status-description" style="font-size: 12px; color: #64748b; margin: 0;">Your account is protected with 2FA</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-tfa-toggle" style="background: white; border: 2px solid #e2e8f0; padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer;" onclick="toggle2FA()">
+                                        Disable
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 2px solid #f1f5f9;">
+                                <button type="button" style="background: white; border: 2px solid #e2e8f0; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer;" onclick="resetProfileForm()">Cancel</button>
+                                <button type="submit" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                                    <i class="material-icons" style="font-size: 18px;">save</i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Summary Card -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card" style="background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div class="card-body" style="padding: 30px; text-align: center;">
+                        <div style="margin-bottom: 16px;">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&size=100&background=ef4444&color=fff&bold=true" alt="Admin" style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid #e2e8f0;">
+                        </div>
+                        <h4 style="font-size: 20px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">John Doe</h4>
+                        <p style="font-size: 14px; color: #ef4444; font-weight: 600; margin: 0 0 24px 0;">Super Admin</p>
+
+                        <div style="border-top: 2px solid #f1f5f9; padding-top: 20px;">
+                            <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; text-align: left;">
+                                <i class="material-icons" style="color: #ef4444; font-size: 24px; margin-top: 2px;">login</i>
+                                <div>
+                                    <p style="font-size: 12px; color: #64748b; margin: 0 0 2px 0;">Last Login</p>
+                                    <p style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0;">Jan 15, 2025 10:30 AM</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; text-align: left;">
+                                <i class="material-icons" style="color: #ef4444; font-size: 24px; margin-top: 2px;">security</i>
+                                <div>
+                                    <p style="font-size: 12px; color: #64748b; margin: 0 0 2px 0;">Account Status</p>
+                                    <p style="font-size: 14px; font-weight: 600; color: #10b981; margin: 0;">Active</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; text-align: left;">
+                                <i class="material-icons" style="color: #ef4444; font-size: 24px; margin-top: 2px;">event</i>
+                                <div>
+                                    <p style="font-size: 12px; color: #64748b; margin: 0 0 2px 0;">Member Since</p>
+                                    <p style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0;">Jan 1, 2024</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #f1f5f9; text-align: left;">
+                            <h5 style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 12px 0;">Permissions</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                <span style="display: inline-block; padding: 6px 12px; background: #fee2e2; color: #991b1b; border-radius: 6px; font-size: 11px; font-weight: 600;">Full Access</span>
+                                <span style="display: inline-block; padding: 6px 12px; background: #fee2e2; color: #991b1b; border-radius: 6px; font-size: 11px; font-weight: 600;">User Management</span>
+                                <span style="display: inline-block; padding: 6px 12px; background: #fee2e2; color: #991b1b; border-radius: 6px; font-size: 11px; font-weight: 600;">Financial Operations</span>
+                                <span style="display: inline-block; padding: 6px 12px; background: #fee2e2; color: #991b1b; border-radius: 6px; font-size: 11px; font-weight: 600;">System Settings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Card -->
+        <div class="row">
+            <div class="col-xl-8 col-lg-7">
+                <div class="card" style="background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div class="card-header" style="padding: 24px 30px; border-bottom: 2px solid #f1f5f9;">
+                        <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <i class="material-icons" style="color: #ef4444; font-size: 24px;">lock</i>
+                            Change Password
+                        </h4>
+                    </div>
+                    <div class="card-body" style="padding: 30px;">
+                        <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <h5 style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 12px 0;">Password Requirements:</h5>
+                            <ul id="password-requirements" style="list-style: none; padding: 0; margin: 0;">
+                                <li id="req-length" style="font-size: 13px; color: #64748b; padding: 6px 0; padding-left: 28px; position: relative;">At least 8 characters</li>
+                                <li id="req-uppercase" style="font-size: 13px; color: #64748b; padding: 6px 0; padding-left: 28px; position: relative;">One uppercase letter</li>
+                                <li id="req-lowercase" style="font-size: 13px; color: #64748b; padding: 6px 0; padding-left: 28px; position: relative;">One lowercase letter</li>
+                                <li id="req-number" style="font-size: 13px; color: #64748b; padding: 6px 0; padding-left: 28px; position: relative;">One number</li>
+                                <li id="req-special" style="font-size: 13px; color: #64748b; padding: 6px 0; padding-left: 28px; position: relative;">One special character (!@#$%^&*)</li>
+                            </ul>
+                        </div>
+
+                        <form id="passwordForm">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Current Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    <button type="button" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; padding: 4px; color: #94a3b8;" onclick="togglePasswordVisibility('currentPassword')">
+                                        <i class="material-icons" style="font-size: 20px;">visibility</i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">New Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" class="form-control" id="newPassword" placeholder="Enter new password" oninput="validatePassword()" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    <button type="button" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; padding: 4px; color: #94a3b8;" onclick="togglePasswordVisibility('newPassword')">
+                                        <i class="material-icons" style="font-size: 20px;">visibility</i>
+                                    </button>
+                                </div>
+                                <div style="margin-top: 8px;">
+                                    <div style="width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; margin-bottom: 6px;">
+                                        <div id="strengthFill" style="height: 100%; width: 0%; transition: all 0.3s ease; border-radius: 3px;"></div>
+                                    </div>
+                                    <p id="strengthText" style="font-size: 12px; color: #64748b; margin: 0;">Password strength</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Confirm New Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password" oninput="validatePasswordMatch()" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    <button type="button" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; padding: 4px; color: #94a3b8;" onclick="togglePasswordVisibility('confirmPassword')">
+                                        <i class="material-icons" style="font-size: 20px;">visibility</i>
+                                    </button>
+                                </div>
+                                <p id="matchMessage" style="font-size: 12px; margin-top: 6px;"></p>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 2px solid #f1f5f9;">
+                                <button type="button" style="background: white; border: 2px solid #e2e8f0; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer;" onclick="resetPasswordForm()">Cancel</button>
+                                <button type="submit" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                                    <i class="material-icons" style="font-size: 18px;">lock_reset</i>
+                                    Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tips Card -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card" style="background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div class="card-header" style="padding: 24px 30px; border-bottom: 2px solid #f1f5f9;">
+                        <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <i class="material-icons" style="color: #ef4444; font-size: 24px;">security</i>
+                            Security Tips
+                        </h4>
+                    </div>
+                    <div class="card-body" style="padding: 24px 30px;">
+                        <div style="display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f1f5f9;">
+                            <div style="width: 48px; height: 48px; background: #fee2e2; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="material-icons" style="color: #ef4444; font-size: 24px;">shield</i>
+                            </div>
+                            <div>
+                                <h5 style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 4px 0;">Use a strong password</h5>
+                                <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Combine letters, numbers, and special characters</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f1f5f9;">
+                            <div style="width: 48px; height: 48px; background: #fee2e2; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="material-icons" style="color: #ef4444; font-size: 24px;">update</i>
+                            </div>
+                            <div>
+                                <h5 style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 4px 0;">Change regularly</h5>
+                                <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Update your password every 3-6 months</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f1f5f9;">
+                            <div style="width: 48px; height: 48px; background: #fee2e2; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="material-icons" style="color: #ef4444; font-size: 24px;">phonelink_lock</i>
+                            </div>
+                            <div>
+                                <h5 style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 4px 0;">Enable 2FA</h5>
+                                <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Add an extra layer of security to your account</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 16px; padding: 16px 0 0 0;">
+                            <div style="width: 48px; height: 48px; background: #fee2e2; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="material-icons" style="color: #ef4444; font-size: 24px;">no_encryption</i>
+                            </div>
+                            <div>
+                                <h5 style="font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 4px 0;">Don't share credentials</h5>
+                                <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Never share your password with anyone</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<style>
+    /* Hover effect for photo upload */
+    .card-body > div:hover .photo-upload-overlay {
+        opacity: 1 !important;
+    }
+
+    /* Password requirements met styling */
+    #password-requirements li::before {
+        content: '✗';
+        position: absolute;
+        left: 8px;
+        color: #cbd5e1;
+        font-size: 16px;
+    }
+
+    #password-requirements li.met {
+        color: #10b981;
+    }
+
+    #password-requirements li.met::before {
+        content: '✓';
+        color: #10b981;
+        font-weight: bold;
+    }
+
+    /* Password match styling */
+    #matchMessage.match {
+        color: #10b981;
+    }
+
+    #matchMessage.no-match {
+        color: #ef4444;
+    }
+
+    /* Strength bar colors */
+    #strengthFill.weak {
+        background: #ef4444;
+        width: 25%;
+    }
+
+    #strengthFill.fair {
+        background: #f59e0b;
+        width: 50%;
+    }
+
+    #strengthFill.good {
+        background: #3b82f6;
+        width: 75%;
+    }
+
+    #strengthFill.strong {
+        background: #10b981;
+        width: 100%;
+    }
+</style>
+
+<script>
+    // Profile Photo Upload
+    document.getElementById('profilePhotoInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profilePhotoPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Profile Form Submit
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Profile updated successfully!');
+    });
+
+    // Reset Profile Form
+    function resetProfileForm() {
+        document.getElementById('profileForm').reset();
+    }
+
+    // Toggle 2FA
+    function toggle2FA() {
+        const button = event.target;
+        const statusIcon = document.querySelector('.status-icon');
+        const statusLabel = document.querySelector('.status-label');
+        const statusDescription = document.querySelector('.status-description');
+
+        if (button.textContent.trim() === 'Disable') {
+            if (confirm('Are you sure you want to disable Two-Factor Authentication?')) {
+                button.textContent = 'Enable';
+                statusIcon.textContent = 'gpp_maybe';
+                statusIcon.style.color = '#f59e0b';
+                statusLabel.textContent = 'Disabled';
+                statusDescription.textContent = 'Enable 2FA for better security';
+            }
+        } else {
+            button.textContent = 'Disable';
+            statusIcon.textContent = 'verified_user';
+            statusIcon.style.color = '#10b981';
+            statusLabel.textContent = 'Enabled';
+            statusDescription.textContent = 'Your account is protected with 2FA';
+            alert('Two-Factor Authentication enabled successfully!');
+        }
+    }
+
+    // Toggle Password Visibility
+    function togglePasswordVisibility(fieldId) {
+        const field = document.getElementById(fieldId);
+        const button = event.currentTarget;
+        const icon = button.querySelector('i');
+
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.textContent = 'visibility_off';
+        } else {
+            field.type = 'password';
+            icon.textContent = 'visibility';
+        }
+    }
+
+    // Validate Password Strength
+    function validatePassword() {
+        const password = document.getElementById('newPassword').value;
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        // Check requirements
+        const hasLength = password.length >= 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*]/.test(password);
+
+        // Update requirements UI
+        updateRequirement('req-length', hasLength);
+        updateRequirement('req-uppercase', hasUppercase);
+        updateRequirement('req-lowercase', hasLowercase);
+        updateRequirement('req-number', hasNumber);
+        updateRequirement('req-special', hasSpecial);
+
+        // Calculate strength
+        let strength = 0;
+        if (hasLength) strength += 20;
+        if (hasUppercase) strength += 20;
+        if (hasLowercase) strength += 20;
+        if (hasNumber) strength += 20;
+        if (hasSpecial) strength += 20;
+
+        // Update strength bar
+        strengthFill.style.width = strength + '%';
+
+        if (strength === 0) {
+            strengthFill.className = '';
+            strengthText.textContent = 'Password strength';
+        } else if (strength <= 40) {
+            strengthFill.className = 'weak';
+            strengthText.textContent = 'Weak password';
+        } else if (strength <= 60) {
+            strengthFill.className = 'fair';
+            strengthText.textContent = 'Fair password';
+        } else if (strength <= 80) {
+            strengthFill.className = 'good';
+            strengthText.textContent = 'Good password';
+        } else {
+            strengthFill.className = 'strong';
+            strengthText.textContent = 'Strong password';
+        }
+
+        validatePasswordMatch();
+    }
+
+    function updateRequirement(id, met) {
+        const element = document.getElementById(id);
+        if (met) {
+            element.classList.add('met');
+        } else {
+            element.classList.remove('met');
+        }
+    }
+
+    // Validate Password Match
+    function validatePasswordMatch() {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const matchMessage = document.getElementById('matchMessage');
+
+        if (confirmPassword === '') {
+            matchMessage.textContent = '';
+            matchMessage.className = '';
+        } else if (newPassword === confirmPassword) {
+            matchMessage.textContent = 'Passwords match';
+            matchMessage.className = 'match';
+        } else {
+            matchMessage.textContent = 'Passwords do not match';
+            matchMessage.className = 'no-match';
+        }
+    }
+
+    // Password Form Submit
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            alert('Please fill in all password fields');
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            alert('New passwords do not match');
+            return;
+        }
+
+        // Check password strength
+        const hasLength = newPassword.length >= 8;
+        const hasUppercase = /[A-Z]/.test(newPassword);
+        const hasLowercase = /[a-z]/.test(newPassword);
+        const hasNumber = /[0-9]/.test(newPassword);
+        const hasSpecial = /[!@#$%^&*]/.test(newPassword);
+
+        if (!hasLength || !hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
+            alert('Password does not meet all requirements');
+            return;
+        }
+
+        alert('Password updated successfully!');
+        resetPasswordForm();
+    });
+
+    // Reset Password Form
+    function resetPasswordForm() {
+        document.getElementById('passwordForm').reset();
+        document.getElementById('strengthFill').style.width = '0%';
+        document.getElementById('strengthFill').className = '';
+        document.getElementById('strengthText').textContent = 'Password strength';
+        document.getElementById('matchMessage').textContent = '';
+
+        // Reset requirements
+        ['req-length', 'req-uppercase', 'req-lowercase', 'req-number', 'req-special'].forEach(id => {
+            document.getElementById(id).classList.remove('met');
+        });
+    }
+</script>
+{% endblock extra_scripts %}

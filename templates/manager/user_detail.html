@@ -1,0 +1,2272 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="users-list.html">Users</a></li>
+                            <li class="breadcrumb-item active">John Doe</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title-section">
+                <button class="back-button" onclick="window.location.href='users-list.html'">
+                    <i class="material-icons">arrow_back</i>
+                </button>
+                <div>
+                    <h1 class="page-title">John Doe</h1>
+                    <span class="user-id-badge">ID: USR-12345</span>
+                </div>
+            </div>
+            <div class="page-actions">
+                <button class="btn-action btn-edit" onclick="alert('Edit User Modal - Coming Soon!')">
+                    <i class="material-icons" style="font-size: 18px;">edit</i>
+                    Edit User
+                </button>
+                <button class="btn-action btn-edit" onclick="openBadgeModal()" style="background: #fef3c7; color: #92400e;">
+                    <i class="material-icons" style="font-size: 18px;">workspace_premium</i>
+                    Manage Badges
+                </button>
+                <button class="btn-action btn-suspend">
+                    <i class="material-icons" style="font-size: 18px;">block</i>
+                    Suspend User
+                </button>
+            </div>
+        </div>
+
+        <!-- User Credentials Card -->
+        <div class="user-credentials-card">
+            <div class="credentials-title">
+                <i class="material-icons">vpn_key</i>
+                User Credentials & Information
+            </div>
+            <div class="credentials-grid">
+                <!-- User ID -->
+                <div class="credential-item">
+                    <div class="credential-label">User ID</div>
+                    <div class="credential-value">
+                        <input type="text" value="USR-12345" readonly onclick="this.select()" />
+                        <button class="btn-copy-credential" onclick="copyToClipboard('USR-12345', 'User ID')">
+                            <i class="material-icons">content_copy</i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Username -->
+                <div class="credential-item">
+                    <div class="credential-label">Username</div>
+                    <div class="credential-value">
+                        <input type="text" value="johndoe" readonly onclick="this.select()" />
+                        <button class="btn-copy-credential" onclick="copyToClipboard('johndoe', 'Username')">
+                            <i class="material-icons">content_copy</i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="credential-item">
+                    <div class="credential-label">Email Address</div>
+                    <div class="credential-value">
+                        <input type="text" value="johndoe@example.com" readonly onclick="this.select()" />
+                        <button class="btn-copy-credential" onclick="copyToClipboard('johndoe@example.com', 'Email')">
+                            <i class="material-icons">content_copy</i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="credential-item">
+                    <div class="credential-label">Password</div>
+                    <div class="credential-value">
+                        <input type="text" value="Hj8#mK$2pL9@vN" readonly onclick="this.select()" />
+                        <button class="btn-copy-credential" onclick="copyToClipboard('Hj8#mK$2pL9@vN', 'Password')">
+                            <i class="material-icons">content_copy</i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2FA Secret Key -->
+                <div class="credential-item full-width">
+                    <div class="credential-label">2FA Secret Key (Google Authenticator)</div>
+                    <div class="credential-value">
+                        <input type="text" value="JBSWY3DPEHPK3PXP" readonly onclick="this.select()" style="letter-spacing: 2px;" />
+                        <button class="btn-copy-credential" onclick="copyToClipboard('JBSWY3DPEHPK3PXP', '2FA Secret Key')">
+                            <i class="material-icons">content_copy</i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Header Card -->
+        <div class="user-header-card">
+            <div class="user-header-content">
+                <div class="user-avatar">JD</div>
+                <div class="user-info">
+                    <h2 class="user-name">John Doe</h2>
+                    <div class="user-badges">
+                        <span class="status-badge active">
+                            <i class="material-icons" style="font-size: 14px;">check_circle</i>
+                            Active
+                        </span>
+                        <span class="status-badge verified">
+                            <i class="material-icons" style="font-size: 14px;">verified</i>
+                            KYC Level 3
+                        </span>
+                        <span class="status-badge tier">
+                            <i class="material-icons" style="font-size: 14px;">star</i>
+                            Tier 2 (200X Leverage)
+                        </span>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Registration Date</div>
+                        <div class="stat-value">Jan 15, 2024</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Last Login</div>
+                        <div class="stat-value">Today, 2:30 PM</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">IP Address</div>
+                        <div class="stat-value">192.168.1.100</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet Balance Card -->
+        <div class="wallet-balance-card">
+            <div class="wallet-card-header">
+                <h3 class="wallet-card-title">
+                    <i class="material-icons">account_balance_wallet</i>
+                    Account Balances
+                </h3>
+                <button class="btn-edit-balance" onclick="openBalanceModal()">
+                    <i class="material-icons">edit</i>
+                    Edit Balances
+                </button>
+            </div>
+
+            <div class="wallets-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <!-- Trading Balance Card -->
+                <div style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div style="background: rgba(102, 126, 234, 0.2); padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="material-icons" style="font-size: 28px; color: white;">trending_up</i>
+                        </div>
+                        <div style="font-size: 15px; font-weight: 500; color: white;">Trading Balance</div>
+                    </div>
+                    <div style="font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: white;" id="depositBalance">$30,180.50</div>
+                </div>
+
+                <!-- Holding Balance Card -->
+                <div style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div style="background: rgba(240, 147, 251, 0.2); padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="material-icons" style="font-size: 28px; color: white;">savings</i>
+                        </div>
+                        <div style="font-size: 15px; font-weight: 500; color: white;">Holding Balance</div>
+                    </div>
+                    <div style="font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: white;" id="holdingBalance">$8,450.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="user-tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="switchTab('verification')">KYC & Verification</button>
+            <button class="tab-btn" onclick="switchTab('transactions')">Transactions</button>
+            <button class="tab-btn" onclick="switchTab('trades')">Trading Activity</button>
+            <button class="tab-btn" onclick="switchTab('manual-trading')">Manual Trading</button>
+            <button class="tab-btn" onclick="switchTab('plans')">Plans & Subscriptions</button>
+            <button class="tab-btn" onclick="switchTab('payment-methods')">Payment Methods</button>
+            <button class="tab-btn" onclick="switchTab('settings')">Settings & Controls</button>
+        </div>
+
+        <!-- Tab: Overview -->
+        <div id="overview-tab" class="tab-content active">
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="material-icons">person</i>
+                                Personal Information
+                            </h3>
+                            <button class="card-action-btn">
+                                <i class="material-icons" style="font-size: 16px;">edit</i>
+                                Edit
+                            </button>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value">John Michael Doe</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">johndoe@example.com</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Phone</div>
+                                <div class="info-value">+1 (555) 123-4567</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Date of Birth</div>
+                                <div class="info-value">March 15, 1990</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Nationality</div>
+                                <div class="info-value">United States</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Registration Date</div>
+                                <div class="info-value">Jan 15, 2024</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Last Login</div>
+                                <div class="info-value">Today, 2:30 PM</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">IP Address</div>
+                                <div class="info-value">192.168.1.100</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-6">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="material-icons">location_on</i>
+                                Address Information
+                            </h3>
+                            <button class="card-action-btn">
+                                <i class="material-icons" style="font-size: 16px;">edit</i>
+                                Edit
+                            </button>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item" style="grid-column: 1 / -1;">
+                                <div class="info-label">Street Address</div>
+                                <div class="info-value">123 Main Street, Apt 4B</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">City</div>
+                                <div class="info-value">New York</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">State/Province</div>
+                                <div class="info-value">New York</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Postal Code</div>
+                                <div class="info-value">10001</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Country</div>
+                                <div class="info-value">United States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="material-icons">speed</i>
+                                Account Statistics
+                            </h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Total Deposits</div>
+                                <div class="info-value">$50,000</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Total Withdrawals</div>
+                                <div class="info-value">$15,000</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Total Trades</div>
+                                <div class="info-value">342</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Win Rate</div>
+                                <div class="info-value">68.5%</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Active Plans</div>
+                                <div class="info-value">2</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Referrals</div>
+                                <div class="info-value">7</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: KYC & Verification -->
+        <div id="verification-tab" class="tab-content">
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">verified_user</i>
+                        KYC Verification Status
+                    </h3>
+                    <span class="status-chip approved">Level 3 Approved</span>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">KYC Level</div>
+                        <div class="info-value">Level 3 (Fully Verified)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Verification Date</div>
+                        <div class="info-value">Jan 20, 2024</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Document Type</div>
+                        <div class="info-value">Driver's License</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Document Number</div>
+                        <div class="info-value">DL-12345678</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-4">
+                    <div class="info-card">
+                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">ID Front</h4>
+                        <div class="document-preview">
+                            <div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                                <i class="material-icons" style="font-size: 48px; color: #9ca3af;">insert_drive_file</i>
+                            </div>
+                            <div class="document-actions">
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                    View
+                                </button>
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">download</i>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="info-card">
+                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">ID Back</h4>
+                        <div class="document-preview">
+                            <div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                                <i class="material-icons" style="font-size: 48px; color: #9ca3af;">insert_drive_file</i>
+                            </div>
+                            <div class="document-actions">
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                    View
+                                </button>
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">download</i>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="info-card">
+                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Selfie</h4>
+                        <div class="document-preview">
+                            <div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                                <i class="material-icons" style="font-size: 48px; color: #9ca3af;">person</i>
+                            </div>
+                            <div class="document-actions">
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                    View
+                                </button>
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">download</i>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Verification -->
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">home</i>
+                        Address Verification Status
+                    </h3>
+                    <span class="status-chip approved">Approved</span>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Verification Status</div>
+                        <div class="info-value">Approved</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Verification Date</div>
+                        <div class="info-value">Jan 22, 2024</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Document Type</div>
+                        <div class="info-value">Utility Bill</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Verified Address</div>
+                        <div class="info-value">123 Main Street, Apt 4B, New York</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Verification Document -->
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="info-card">
+                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Proof of Address Document</h4>
+                        <div class="document-preview">
+                            <div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                                <i class="material-icons" style="font-size: 48px; color: #9ca3af;">description</i>
+                            </div>
+                            <div class="document-actions">
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                    View
+                                </button>
+                                <button class="card-action-btn">
+                                    <i class="material-icons" style="font-size: 16px;">download</i>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Verification Settings -->
+            <div class="info-card" style="border: 2px solid #fbbf24; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+                <div class="card-header" style="border-bottom: 2px solid #fbbf24;">
+                    <h3 class="card-title" style="color: #92400e;">
+                        <i class="material-icons" style="color: #f59e0b;">settings</i>
+                        Custom Verification Settings
+                    </h3>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <span class="custom-settings-badge" id="customSettingsBadge">Using Global Settings</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="customSettingsToggle" onchange="toggleCustomSettings()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <p style="margin: 0 0 20px 0; color: #92400e; font-size: 13px;">
+                    <i class="material-icons" style="font-size: 16px; vertical-align: middle;">info</i>
+                    Enable custom settings to override global verification rules for this specific user
+                </p>
+
+                <div class="custom-settings-container" id="customSettingsContainer" style="opacity: 0.5; pointer-events: none;">
+
+                    <!-- KYC Settings -->
+                    <div class="custom-setting-section">
+                        <div class="setting-section-header">
+                            <i class="material-icons">badge</i>
+                            <h4>KYC Verification Override</h4>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-box">
+                                <span class="setting-label-text">Requirement Level</span>
+                                <span class="setting-description">Override KYC requirement for this user</span>
+                            </div>
+                            <select class="setting-select-custom">
+                                <option value="global">Use Global Settings</option>
+                                <option value="optional">Optional</option>
+                                <option value="required">Required</option>
+                                <option value="bypass">Bypass (VIP)</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-box">
+                                <span class="setting-label-text">Custom Deposit Limit</span>
+                                <span class="setting-description">Maximum deposit amount (USD)</span>
+                            </div>
+                            <input type="number" class="setting-input-custom" placeholder="Enter amount or leave blank for unlimited" value="">
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-box">
+                                <span class="setting-label-text">Custom Withdrawal Limit</span>
+                                <span class="setting-description">Maximum withdrawal amount (USD)</span>
+                            </div>
+                            <input type="number" class="setting-input-custom" placeholder="Enter amount or leave blank for unlimited" value="">
+                        </div>
+                    </div>
+
+                    <!-- Address Verification Settings -->
+                    <div class="custom-setting-section">
+                        <div class="setting-section-header">
+                            <i class="material-icons">home</i>
+                            <h4>Address Verification Override</h4>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-box">
+                                <span class="setting-label-text">Requirement Level</span>
+                                <span class="setting-description">Override address verification requirement</span>
+                            </div>
+                            <select class="setting-select-custom">
+                                <option value="global">Use Global Settings</option>
+                                <option value="optional">Optional</option>
+                                <option value="required">Required</option>
+                                <option value="bypass">Bypass (VIP)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Phone Verification Settings -->
+                    <div class="custom-setting-section">
+                        <div class="setting-section-header">
+                            <i class="material-icons">phone</i>
+                            <h4>Phone Verification Override</h4>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-box">
+                                <span class="setting-label-text">Requirement Level</span>
+                                <span class="setting-description">Override phone verification requirement</span>
+                            </div>
+                            <select class="setting-select-custom">
+                                <option value="global">Use Global Settings</option>
+                                <option value="optional">Optional</option>
+                                <option value="required">Required</option>
+                                <option value="bypass">Bypass (VIP)</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-box">
+                                <span class="setting-label-text">Custom OTP Resend Limit</span>
+                                <span class="setting-description">Max OTP resend attempts (per hour)</span>
+                            </div>
+                            <input type="number" class="setting-input-custom" placeholder="Leave blank for global limit" value="">
+                        </div>
+                    </div>
+
+                    <!-- Email Verification Settings -->
+                    <div class="custom-setting-section">
+                        <div class="setting-section-header">
+                            <i class="material-icons">email</i>
+                            <h4>Email Verification Override</h4>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-box">
+                                <span class="setting-label-text">Requirement Level</span>
+                                <span class="setting-description">Override email verification requirement</span>
+                            </div>
+                            <select class="setting-select-custom">
+                                <option value="global">Use Global Settings</option>
+                                <option value="optional">Optional</option>
+                                <option value="required">Required</option>
+                                <option value="bypass">Bypass (VIP)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="custom-settings-actions">
+                        <button class="btn-reset-custom" onclick="resetCustomSettings()">
+                            <i class="material-icons">restart_alt</i>
+                            Reset to Global Settings
+                        </button>
+                        <button class="btn-save-custom" onclick="saveCustomSettings()">
+                            <i class="material-icons">save</i>
+                            Save Custom Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Transactions -->
+        <div id="transactions-tab" class="tab-content">
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">receipt_long</i>
+                        Transaction History
+                    </h3>
+                    <button class="card-action-btn">
+                        <i class="material-icons" style="font-size: 16px;">filter_list</i>
+                        Filter
+                    </button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Transaction ID</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Payment Method</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jan 28, 2024</td>
+                                <td>TXN-78945</td>
+                                <td>Deposit</td>
+                                <td class="amount-positive">+$5,000.00</td>
+                                <td><span class="status-chip completed">Completed</span></td>
+                                <td>Bitcoin (BTC)</td>
+                                <td>
+                                    <button class="btn-icon">
+                                        <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jan 25, 2024</td>
+                                <td>TXN-78910</td>
+                                <td>Withdrawal</td>
+                                <td class="amount-negative">-$2,500.00</td>
+                                <td><span class="status-chip pending">Pending</span></td>
+                                <td>Bank Transfer</td>
+                                <td>
+                                    <button class="btn-icon">
+                                        <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jan 20, 2024</td>
+                                <td>TXN-78823</td>
+                                <td>Deposit</td>
+                                <td class="amount-positive">+$10,000.00</td>
+                                <td><span class="status-chip completed">Completed</span></td>
+                                <td>USDT (TRC20)</td>
+                                <td>
+                                    <button class="btn-icon">
+                                        <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Trading Activity -->
+        <div id="trades-tab" class="tab-content">
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">show_chart</i>
+                        Recent Trades
+                    </h3>
+                    <button class="card-action-btn">
+                        <i class="material-icons" style="font-size: 16px;">filter_list</i>
+                        Filter
+                    </button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Pair</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Entry Price</th>
+                                <th>Exit Price</th>
+                                <th>Profit/Loss</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2:45 PM</td>
+                                <td>BTC/USDT</td>
+                                <td>Long</td>
+                                <td>$1,000</td>
+                                <td>$42,150</td>
+                                <td>$42,580</td>
+                                <td class="amount-positive">+$105.00</td>
+                                <td><span class="status-chip completed">Closed</span></td>
+                            </tr>
+                            <tr>
+                                <td>1:30 PM</td>
+                                <td>ETH/USDT</td>
+                                <td>Short</td>
+                                <td>$500</td>
+                                <td>$2,280</td>
+                                <td>$2,240</td>
+                                <td class="amount-positive">+$87.50</td>
+                                <td><span class="status-chip completed">Closed</span></td>
+                            </tr>
+                            <tr>
+                                <td>12:15 PM</td>
+                                <td>BTC/USDT</td>
+                                <td>Long</td>
+                                <td>$2,000</td>
+                                <td>$42,000</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="status-chip pending">Open</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Manual Trading -->
+        <div id="manual-trading-tab" class="tab-content">
+            <!-- Copy Trading Status -->
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">content_copy</i>
+                        Copy Trading Status
+                    </h3>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Currently Copying</div>
+                        <div class="info-value">3 Traders</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Active Copy Trades</div>
+                        <div class="info-value">12 Positions</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Manual Trades Taken</div>
+                        <div class="info-value">5 Trades</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Trading Volume</div>
+                        <div class="info-value">$25,450</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traders Being Copied -->
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">person</i>
+                        Traders User is Copying
+                    </h3>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Trader</th>
+                                <th>Copy Amount</th>
+                                <th>Active Trades</th>
+                                <th>Profit/Loss</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #01A3FF 0%, #0284c7 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">JD</div>
+                                        <div>
+                                            <div style="font-weight: 600;">John Doe</div>
+                                            <div style="font-size: 12px; color: #6b7280;">@johndoe</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$500 per trade</td>
+                                <td>5 trades</td>
+                                <td style="color: #10b981; font-weight: 600;">+$1,245.50</td>
+                                <td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Active</span></td>
+                                <td>
+                                    <button class="btn-icon" style="background: #fef3c7; color: #92400e;" onclick="stopCopying('John Doe')">
+                                        <i class="material-icons" style="font-size: 18px;">stop_circle</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">SK</div>
+                                        <div>
+                                            <div style="font-weight: 600;">Sarah Kim</div>
+                                            <div style="font-size: 12px; color: #6b7280;">@sarahkim</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$750 per trade</td>
+                                <td>4 trades</td>
+                                <td style="color: #10b981; font-weight: 600;">+$892.30</td>
+                                <td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Active</span></td>
+                                <td>
+                                    <button class="btn-icon" style="background: #fef3c7; color: #92400e;" onclick="stopCopying('Sarah Kim')">
+                                        <i class="material-icons" style="font-size: 18px;">stop_circle</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">ML</div>
+                                        <div>
+                                            <div style="font-weight: 600;">Mike Lee</div>
+                                            <div style="font-size: 12px; color: #6b7280;">@mikelee</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$300 per trade</td>
+                                <td>3 trades</td>
+                                <td style="color: #ef4444; font-weight: 600;">-$125.00</td>
+                                <td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Active</span></td>
+                                <td>
+                                    <button class="btn-icon" style="background: #fef3c7; color: #92400e;" onclick="stopCopying('Mike Lee')">
+                                        <i class="material-icons" style="font-size: 18px;">stop_circle</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Take Manual Trade -->
+            <div class="info-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #fbbf24;">
+                <div class="card-header" style="border-bottom: 2px solid #fbbf24;">
+                    <h3 class="card-title" style="color: #92400e;">
+                        <i class="material-icons" style="color: #f59e0b;">add_circle</i>
+                        Take Manual Trade for User
+                    </h3>
+                </div>
+                <p style="margin: 0 0 20px 0; color: #92400e; font-size: 13px;">
+                    <i class="material-icons" style="font-size: 16px; vertical-align: middle;">info</i>
+                    Create a manual trade position for this user. The trade will execute immediately and close automatically based on the duration and outcome you set.
+                </p>
+                <button class="btn-action" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 14px 28px; width: auto;" onclick="openTakeTradeModal()">
+                    <i class="material-icons" style="font-size: 20px;">trending_up</i>
+                    Take Trade
+                </button>
+            </div>
+
+            <!-- Recent Manual Trades -->
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">history</i>
+                        Recent Manual Trades
+                    </h3>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Pair</th>
+                                <th>Direction</th>
+                                <th>Amount</th>
+                                <th>Leverage</th>
+                                <th>Duration</th>
+                                <th>Result</th>
+                                <th>Profit/Loss</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jan 28, 2024 3:45 PM</td>
+                                <td><strong>BTC/USD</strong></td>
+                                <td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Long</span></td>
+                                <td>$500</td>
+                                <td>50x</td>
+                                <td>5 min</td>
+                                <td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Win</span></td>
+                                <td style="color: #10b981; font-weight: 600;">+$425.00</td>
+                            </tr>
+                            <tr>
+                                <td>Jan 28, 2024 2:30 PM</td>
+                                <td><strong>ETH/USD</strong></td>
+                                <td><span class="status-chip cancelled" style="background: #fee2e2; color: #991b1b;">Short</span></td>
+                                <td>$300</td>
+                                <td>25x</td>
+                                <td>15 min</td>
+                                <td><span class="status-chip cancelled" style="background: #fee2e2; color: #991b1b;">Loss</span></td>
+                                <td style="color: #ef4444; font-weight: 600;">-$300.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Plans & Subscriptions -->
+        <div id="plans-tab" class="tab-content">
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">stars</i>
+                        Active Plans
+                    </h3>
+                    <button class="card-action-btn">
+                        <i class="material-icons" style="font-size: 16px;">add</i>
+                        Assign Plan
+                    </button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Plan Type</th>
+                                <th>Plan Name</th>
+                                <th>Purchase Date</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Trading</td>
+                                <td>Gold Trading Plan</td>
+                                <td>Jan 15, 2024</td>
+                                <td>Feb 15, 2024</td>
+                                <td><span class="status-chip approved">Active</span></td>
+                                <td>
+                                    <button class="btn-icon">
+                                        <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                    </button>
+                                    <button class="btn-icon delete">
+                                        <i class="material-icons" style="font-size: 18px;">delete</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mining</td>
+                                <td>Silver Mining Plan</td>
+                                <td>Jan 10, 2024</td>
+                                <td>Feb 10, 2024</td>
+                                <td><span class="status-chip approved">Active</span></td>
+                                <td>
+                                    <button class="btn-icon">
+                                        <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                    </button>
+                                    <button class="btn-icon delete">
+                                        <i class="material-icons" style="font-size: 18px;">delete</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Payment Methods -->
+        <div id="payment-methods-tab" class="tab-content">
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="material-icons">payment</i>
+                        User's Payment Methods
+                    </h3>
+                </div>
+                <p style="color: #6b7280; margin-bottom: 20px;">Manage payment methods available to this specific user. These methods will be displayed only to this user during deposit/withdrawal.</p>
+
+                <div class="payment-methods-grid">
+                    <!-- Bitcoin -->
+                    <div class="payment-method-card">
+                        <div class="payment-method-icon">
+                            <i class="material-icons" style="color: #f7931a;">currency_bitcoin</i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Bitcoin (BTC)</div>
+                            <div class="payment-method-value">bc1qxy2k...fjhx0wlh</div>
+                        </div>
+                        <div class="payment-method-actions">
+                            <button class="btn-icon">
+                                <i class="material-icons" style="font-size: 18px;">edit</i>
+                            </button>
+                            <button class="btn-icon delete">
+                                <i class="material-icons" style="font-size: 18px;">delete</i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- USDT -->
+                    <div class="payment-method-card">
+                        <div class="payment-method-icon">
+                            <i class="material-icons" style="color: #26a17b;">attach_money</i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">USDT (TRC20)</div>
+                            <div class="payment-method-value">TXYZ...pjX4Mc</div>
+                        </div>
+                        <div class="payment-method-actions">
+                            <button class="btn-icon">
+                                <i class="material-icons" style="font-size: 18px;">edit</i>
+                            </button>
+                            <button class="btn-icon delete">
+                                <i class="material-icons" style="font-size: 18px;">delete</i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer -->
+                    <div class="payment-method-card">
+                        <div class="payment-method-icon">
+                            <i class="material-icons" style="color: #3b82f6;">account_balance</i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Bank Transfer</div>
+                            <div class="payment-method-value">Wells Fargo - **** 4532</div>
+                        </div>
+                        <div class="payment-method-actions">
+                            <button class="btn-icon">
+                                <i class="material-icons" style="font-size: 18px;">edit</i>
+                            </button>
+                            <button class="btn-icon delete">
+                                <i class="material-icons" style="font-size: 18px;">delete</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-add-payment" onclick="alert('Add Payment Method Modal - Coming Soon!\n\nThis will allow you to:\n1. Select payment type (Crypto, Bank, E-Wallet)\n2. Enter payment details\n3. Assign specifically to this user')">
+                    <i class="material-icons">add</i>
+                    Add Payment Method for This User
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab: Settings & Controls -->
+        <div id="settings-tab" class="tab-content">
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="material-icons">tune</i>
+                                Trading Settings
+                            </h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Current Tier</div>
+                                <select style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+                                    <option>Tier 1 (50X Leverage)</option>
+                                    <option selected>Tier 2 (200X Leverage)</option>
+                                    <option>Tier 3 (500X Leverage)</option>
+                                </select>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Max Leverage</div>
+                                <input type="number" value="200" style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Allowed Timeframes</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                                    <label style="display: flex; align-items: center; gap: 4px;">
+                                        <input type="checkbox" checked> 3s
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 4px;">
+                                        <input type="checkbox" checked> 1m
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 4px;">
+                                        <input type="checkbox" checked> 5m
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 4px;">
+                                        <input type="checkbox"> 15m
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 4px;">
+                                        <input type="checkbox"> 30m
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="info-item" style="grid-column: 1 / -1;">
+                                <div class="info-label">Copy Trading Circle (Days)</div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="number" id="copyTradingCircle" value="30" min="1" placeholder="Enter days" style="flex: 1; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+                                    <button onclick="setCopyTradingCircle()" style="background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                                        Set Circle
+                                    </button>
+                                </div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
+                                    Set the number of days for the copy trading cycle. This will start a countdown timer in the user's dashboard.
+                                </div>
+                            </div>
+                        </div>
+                        <button style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 16px;">
+                            Save Trading Settings
+                        </button>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="material-icons">security</i>
+                                Security & Access
+                            </h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="security-item">
+                                <span class="security-item-label">2FA Enabled</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="security-item">
+                                <span class="security-item-label">Email Notifications</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="security-item">
+                                <span class="security-item-label">Trading Enabled</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="security-item">
+                                <span class="security-item-label">Withdrawal Enabled</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-6">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="material-icons">admin_panel_settings</i>
+                                Admin Actions
+                            </h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <button style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="material-icons">password</i>
+                                Reset Password
+                            </button>
+                            <button onclick="openEmailModal()" style="background: #8b5cf6; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="material-icons">email</i>
+                                Send Email
+                            </button>
+                            <button onclick="openNotificationModal()" style="background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="material-icons">campaign</i>
+                                Send Notification
+                            </button>
+                            <button style="background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="material-icons">block</i>
+                                Suspend Account
+                            </button>
+                            <button style="background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="material-icons">gpp_bad</i>
+                                Ban User IP
+                            </button>
+                            <button style="background: #991b1b; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="material-icons">delete_forever</i>
+                                Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Notification Modal -->
+<div class="notification-modal" id="notificationModal">
+    <div class="notification-modal-container">
+        <div class="notification-modal-header">
+            <h3 class="notification-modal-title">
+                <i class="material-icons">campaign</i>
+                Send Notification to User
+            </h3>
+            <button class="modal-close" onclick="closeNotificationModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="notification-modal-body">
+            <div class="notification-form-group">
+                <label class="notification-form-label">Notification Title</label>
+                <input type="text" class="notification-form-input" id="userNotificationTitle" placeholder="Enter notification title..." oninput="updateNotificationPreview()" />
+            </div>
+
+            <div class="notification-form-group">
+                <label class="notification-form-label">Notification Message</label>
+                <textarea class="notification-form-textarea" id="userNotificationMessage" placeholder="Enter your message..." oninput="updateNotificationPreview()"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div class="notification-form-group" style="margin-bottom: 0;">
+                    <label class="notification-form-label">Icon</label>
+                    <select class="notification-form-input" id="userNotificationIcon" onchange="updateNotificationPreview()" style="padding: 0 12px;">
+                        <option value="campaign">Announcement</option>
+                        <option value="warning">Warning</option>
+                        <option value="info">Information</option>
+                        <option value="check_circle">Success</option>
+                        <option value="error">Error</option>
+                        <option value="notifications">Bell</option>
+                        <option value="verified">Verified</option>
+                        <option value="security">Security</option>
+                        <option value="update">Update</option>
+                        <option value="celebration">Celebration</option>
+                        <option value="stars">Stars</option>
+                        <option value="monetization_on">Money</option>
+                    </select>
+                </div>
+
+                <div class="notification-form-group" style="margin-bottom: 0;">
+                    <label class="notification-form-label">Color</label>
+                    <select class="notification-form-input" id="userNotificationColor" onchange="updateNotificationPreview()" style="padding: 0 12px;">
+                        <option value="red">Red (Urgent)</option>
+                        <option value="blue">Blue (Information)</option>
+                        <option value="green">Green (Success)</option>
+                        <option value="yellow">Yellow (Warning)</option>
+                        <option value="purple">Purple (Announcement)</option>
+                        <option value="orange">Orange (Alert)</option>
+                        <option value="gray">Gray (Neutral)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="notification-preview">
+                <div class="notification-preview-title">
+                    <i class="material-icons" style="font-size: 16px;">visibility</i>
+                    Preview
+                </div>
+                <div class="notification-preview-content">
+                    <div class="notification-preview-header">
+                        <div class="notification-preview-icon">
+                            <i class="material-icons">campaign</i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="notification-preview-text-title" id="userNotificationPreviewTitle">Notification Title</div>
+                        </div>
+                    </div>
+                    <p class="notification-preview-text-message" id="userNotificationPreviewMessage">Your notification message will appear here...</p>
+                </div>
+            </div>
+        </div>
+        <div class="notification-modal-footer">
+            <button class="btn-notification-cancel" onclick="closeNotificationModal()">Cancel</button>
+            <button class="btn-notification-send" onclick="sendUserNotification()">
+                <i class="material-icons">send</i>
+                Send Notification
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Badge Management Modal -->
+<div class="badge-modal" id="badgeModal">
+    <div class="badge-modal-container">
+        <div class="badge-modal-header">
+            <h3 class="badge-modal-title">
+                <i class="material-icons">workspace_premium</i>
+                Manage User Badges
+            </h3>
+            <button class="modal-close" onclick="closeBadgeModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="badge-modal-body">
+            <!-- Current Badges -->
+            <div class="current-badges">
+                <div class="current-badges-label">Current Badges</div>
+                <div class="current-badges-list" id="currentBadgesList">
+                    <div class="current-badge-item verified">
+                        <i class="material-icons">verified</i>
+                        Verified
+                        <button class="remove-badge-btn" onclick="removeBadge('verified')">
+                            <i class="material-icons" style="font-size: 14px;">close</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add New Badge -->
+            <div>
+                <div class="current-badges-label">Add Badge</div>
+                <div class="badge-options">
+                    <div class="badge-option blue" onclick="addBadge('verified')">
+                        <i class="material-icons">verified</i>
+                        <div class="badge-option-label">Verified Badge</div>
+                        <div class="badge-option-description">Blue verification checkmark</div>
+                    </div>
+                    <div class="badge-option gold" onclick="addBadge('premium')">
+                        <i class="material-icons">workspace_premium</i>
+                        <div class="badge-option-label">Premium Badge</div>
+                        <div class="badge-option-description">Gold premium star</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="badge-modal-footer">
+            <button class="btn-badge-close" onclick="closeBadgeModal()">
+                <i class="material-icons">close</i>
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Balance Edit Modal -->
+<div class="balance-modal" id="balanceModal">
+    <div class="balance-modal-container">
+        <div class="balance-modal-header">
+            <h3 class="balance-modal-title">Edit User Balances</h3>
+            <button class="modal-close" onclick="closeBalanceModal()" style="background: none; border: none; cursor: pointer; color: #6b7280;">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="balance-modal-body">
+            <div class="balance-form-group">
+                <label class="balance-form-label">Trading Balance</label>
+                <input type="number" class="balance-input" id="depositInput" value="30180.50" step="0.01">
+            </div>
+            <div class="balance-form-group">
+                <label class="balance-form-label">Holding Balance</label>
+                <input type="number" class="balance-input" id="holdingInput" value="8450.00" step="0.01">
+            </div>
+        </div>
+        <div class="balance-modal-footer">
+            <button class="btn-balance-cancel" onclick="closeBalanceModal()">Cancel</button>
+            <button class="btn-balance-save" onclick="saveBalances()">
+                <i class="material-icons">save</i>
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Take Trade Modal -->
+<div class="badge-modal" id="takeTradeModal">
+    <div class="badge-modal-container" style="max-width: 700px;">
+        <div class="badge-modal-header">
+            <h3>
+                <i class="material-icons">trending_up</i>
+                Take Manual Trade
+            </h3>
+            <button class="badge-modal-close" onclick="closeTakeTradeModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="badge-modal-body" style="max-height: 70vh; overflow-y: auto;">
+            <form id="takeTradeForm">
+                <!-- Market Type -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Market Type <span style="color: #ef4444;">*</span>
+                    </label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <label style="padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; font-weight: 600; transition: all 0.3s;" onclick="selectMarketType('crypto', this)">
+                            <input type="radio" name="marketType" value="crypto" style="display: none;">
+                            Crypto
+                        </label>
+                        <label style="padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; font-weight: 600; transition: all 0.3s;" onclick="selectMarketType('stocks', this)">
+                            <input type="radio" name="marketType" value="stocks" style="display: none;">
+                            Stocks
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Asset Selection -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Select Asset <span style="color: #ef4444;">*</span>
+                    </label>
+                    <select id="tradeAsset" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">Choose market type first</option>
+                    </select>
+                </div>
+
+                <!-- Trade Direction -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Direction <span style="color: #ef4444;">*</span>
+                    </label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <label style="padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; font-weight: 600; color: #10b981; transition: all 0.3s;" onclick="selectDirection('buy', this)">
+                            <input type="radio" name="direction" value="buy" style="display: none;">
+                            Buy
+                        </label>
+                        <label style="padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; font-weight: 600; color: #ef4444; transition: all 0.3s;" onclick="selectDirection('sell', this)">
+                            <input type="radio" name="direction" value="sell" style="display: none;">
+                            Sell
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Trade Amount -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Investment Amount <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="number" id="tradeAmount" placeholder="Enter amount in USD" step="0.01" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;" oninput="calculateOutcome()">
+                </div>
+
+                <!-- Leverage (Optional) -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Leverage (Optional)
+                    </label>
+                    <select id="tradeLeverage" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="1">No Leverage (1x)</option>
+                        <option value="5">5x</option>
+                        <option value="10">10x</option>
+                        <option value="25">25x</option>
+                        <option value="50">50x</option>
+                        <option value="100">100x</option>
+                    </select>
+                </div>
+
+                <!-- Trade Duration -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Close After <span style="color: #ef4444;">*</span>
+                    </label>
+                    <select id="tradeDuration" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="1">1 Minute</option>
+                        <option value="5">5 Minutes</option>
+                        <option value="15">15 Minutes</option>
+                        <option value="30">30 Minutes</option>
+                        <option value="60">1 Hour</option>
+                        <option value="240">4 Hours</option>
+                        <option value="1440">24 Hours</option>
+                    </select>
+                </div>
+
+                <!-- Profit or Loss -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Outcome <span style="color: #ef4444;">*</span>
+                    </label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <label style="padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; font-weight: 600; color: #10b981; transition: all 0.3s;" onclick="selectOutcome('profit', this)">
+                            <input type="radio" name="outcome" value="profit" style="display: none;">
+                            Profit
+                        </label>
+                        <label style="padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; font-weight: 600; color: #ef4444; transition: all 0.3s;" onclick="selectOutcome('loss', this)">
+                            <input type="radio" name="outcome" value="loss" style="display: none;">
+                            Loss
+                        </label>
+                    </div>
+                    <input type="number" id="outcomeAmount" placeholder="Enter profit/loss amount in USD" step="0.01" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;" oninput="calculateOutcome()">
+                </div>
+
+                <!-- Attribute to Trader -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Attribute to Trader (Optional)
+                    </label>
+                    <select id="tradeTrader" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">Manual Trade</option>
+                        <option value="johndoe">John Doe (@johndoe)</option>
+                        <option value="sarahkim">Sarah Kim (@sarahkim)</option>
+                        <option value="mikelee">Mike Lee (@mikelee)</option>
+                    </select>
+                </div>
+
+                <!-- Summary Preview -->
+                <div style="background: #f9fafb; border-radius: 8px; padding: 16px; border: 1px solid #e5e7eb;">
+                    <div style="font-size: 13px; font-weight: 600; color: #6b7280; margin-bottom: 12px;">Summary</div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #6b7280;">Investment:</span>
+                        <span style="font-weight: 600;" id="previewAmount">$0.00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #6b7280;">Profit/Loss:</span>
+                        <span style="font-weight: 600;" id="previewProfit">$0.00</span>
+                    </div>
+                    <div style="height: 1px; background: #e5e7eb; margin: 12px 0;"></div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #1a1a1a; font-weight: 600;">Final Return:</span>
+                        <span style="font-weight: 700; font-size: 16px;" id="previewReturn">$0.00</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="badge-modal-footer" style="gap: 10px; padding: 20px;">
+            <button onclick="closeTakeTradeModal()" style="flex: 1; padding: 12px 24px; border: 2px solid #e5e7eb; background: white; color: #6b7280; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                Cancel
+            </button>
+            <button onclick="executeTrade()" style="flex: 1; padding: 12px 24px; border: none; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                Execute Trade
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Send Email Modal -->
+<div class="badge-modal" id="emailModal">
+    <div class="badge-modal-container" style="max-width: 700px;">
+        <div class="badge-modal-header">
+            <h3>
+                <i class="material-icons">email</i>
+                Send Email to User
+            </h3>
+            <button class="badge-modal-close" onclick="closeEmailModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="badge-modal-body" style="max-height: 70vh; overflow-y: auto;">
+            <form id="emailForm">
+                <!-- Email Template Selection -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Select Email Template
+                    </label>
+                    <select id="emailTemplate" onchange="loadEmailTemplate()" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">Choose a template...</option>
+                        <option value="welcome">Welcome Email</option>
+                        <option value="verification">Account Verification</option>
+                        <option value="warning">Account Warning</option>
+                    </select>
+                </div>
+
+                <!-- Subject -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Subject
+                    </label>
+                    <input type="text" id="emailSubject" placeholder="Enter email subject" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                </div>
+
+                <!-- Email Body -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
+                        Message
+                    </label>
+                    <textarea id="emailBody" rows="10" placeholder="Enter your message here..." style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; resize: vertical;"></textarea>
+                    <div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
+                        You can edit the template before sending
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="badge-modal-footer" style="gap: 10px; padding: 20px;">
+            <button onclick="closeEmailModal()" style="flex: 1; padding: 12px 24px; border: 2px solid #e5e7eb; background: white; color: #6b7280; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                Cancel
+            </button>
+            <button onclick="sendEmail()" style="flex: 1; padding: 12px 24px; border: none; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+                Send Email
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // Tab Switching
+    function switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected tab
+        document.getElementById(tabName + '-tab').classList.add('active');
+
+        // Add active class to clicked button
+        event.target.classList.add('active');
+    }
+
+    // Copy to Clipboard Function
+    function copyToClipboard(text, label) {
+        // Create temporary input to copy text
+        const tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        // Show success feedback
+        alert(`${label} copied to clipboard!\n\n${text}`);
+    }
+
+    // Notification Modal Functions
+    function openNotificationModal() {
+        const modal = document.getElementById('notificationModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeNotificationModal() {
+        const modal = document.getElementById('notificationModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+
+        // Reset form
+        document.getElementById('userNotificationTitle').value = '';
+        document.getElementById('userNotificationMessage').value = '';
+        updateNotificationPreview();
+    }
+
+    function updateNotificationPreview() {
+        const title = document.getElementById('userNotificationTitle').value || 'Notification Title';
+        const message = document.getElementById('userNotificationMessage').value || 'Your notification message will appear here...';
+        const icon = document.getElementById('userNotificationIcon').value || 'campaign';
+        const color = document.getElementById('userNotificationColor').value || 'red';
+
+        // Update preview text
+        document.getElementById('userNotificationPreviewTitle').textContent = title;
+        document.getElementById('userNotificationPreviewMessage').textContent = message;
+
+        // Update preview icon
+        const previewIconElement = document.querySelector('.notification-preview-icon i');
+        previewIconElement.textContent = icon;
+
+        // Update preview color
+        const previewIconContainer = document.querySelector('.notification-preview-icon');
+        const colorMap = {
+            'red': 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+            'blue': 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+            'green': 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            'yellow': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+            'purple': 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+            'orange': 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+            'gray': 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'
+        };
+        previewIconContainer.style.background = colorMap[color];
+    }
+
+    function sendUserNotification() {
+        const title = document.getElementById('userNotificationTitle').value;
+        const message = document.getElementById('userNotificationMessage').value;
+        const icon = document.getElementById('userNotificationIcon').value;
+        const color = document.getElementById('userNotificationColor').value;
+
+        if (!title || !message) {
+            alert('Please enter both a title and message for the notification!');
+            return;
+        }
+
+        const userName = document.querySelector('.user-name').textContent;
+
+        // Get icon and color labels for display
+        const iconLabel = document.querySelector(`#userNotificationIcon option[value="${icon}"]`).textContent;
+        const colorLabel = document.querySelector(`#userNotificationColor option[value="${color}"]`).textContent;
+
+        if (confirm(`Send notification to ${userName}?\n\nTitle: ${title}\nMessage: ${message}\nIcon: ${iconLabel}\nColor: ${colorLabel}`)) {
+            // In production, this would send data to backend including icon and color
+            const notificationData = {
+                userId: 'USR-10245', // Would be dynamic
+                userName: userName,
+                title: title,
+                message: message,
+                icon: icon,
+                color: color,
+                timestamp: new Date().toISOString()
+            };
+
+            console.log('Sending notification to user:', notificationData);
+            alert(`Notification sent successfully to ${userName}!\n\n(Demo Mode)`);
+            closeNotificationModal();
+
+            // Reset form
+            document.getElementById('userNotificationTitle').value = '';
+            document.getElementById('userNotificationMessage').value = '';
+            document.getElementById('userNotificationIcon').value = 'campaign';
+            document.getElementById('userNotificationColor').value = 'red';
+            updateNotificationPreview();
+        }
+    }
+
+    // Badge Management Functions
+    let userBadges = ['verified']; // Store current badges
+
+    function openBadgeModal() {
+        const modal = document.getElementById('badgeModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        updateBadgesList();
+    }
+
+    function closeBadgeModal() {
+        const modal = document.getElementById('badgeModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function updateBadgesList() {
+        const badgesList = document.getElementById('currentBadgesList');
+
+        if (userBadges.length === 0) {
+            badgesList.innerHTML = '<div style="color: #6b7280; font-size: 13px; padding: 8px;">No badges assigned</div>';
+            return;
+        }
+
+        badgesList.innerHTML = userBadges.map(badge => {
+            if (badge === 'verified') {
+                return `
+                    <div class="current-badge-item verified">
+                        <i class="material-icons">verified</i>
+                        Verified
+                        <button class="remove-badge-btn" onclick="removeBadge('verified')">
+                            <i class="material-icons" style="font-size: 14px;">close</i>
+                        </button>
+                    </div>
+                `;
+            } else if (badge === 'premium') {
+                return `
+                    <div class="current-badge-item premium">
+                        <i class="material-icons">workspace_premium</i>
+                        Premium
+                        <button class="remove-badge-btn" onclick="removeBadge('premium')">
+                            <i class="material-icons" style="font-size: 14px;">close</i>
+                        </button>
+                    </div>
+                `;
+            }
+        }).join('');
+    }
+
+    function addBadge(badgeType) {
+        if (userBadges.includes(badgeType)) {
+            alert('This badge is already assigned to the user!');
+            return;
+        }
+
+        userBadges.push(badgeType);
+        updateBadgesList();
+        updateUserHeaderBadges();
+        alert(`Badge added successfully!\n\n${badgeType === 'verified' ? 'Verified Badge' : 'Premium Badge'} has been added to the user.`);
+    }
+
+    function removeBadge(badgeType) {
+        if (confirm(`Remove ${badgeType === 'verified' ? 'Verified' : 'Premium'} badge from this user?`)) {
+            userBadges = userBadges.filter(badge => badge !== badgeType);
+            updateBadgesList();
+            updateUserHeaderBadges();
+            alert('Badge removed successfully!');
+        }
+    }
+
+    function updateUserHeaderBadges() {
+        const badgesContainer = document.querySelector('.user-badges');
+        const existingBadges = badgesContainer.querySelectorAll('.status-badge');
+
+        // Remove all badge elements except status badges
+        existingBadges.forEach(badge => {
+            if (!badge.classList.contains('active') && !badge.classList.contains('suspended') && !badge.classList.contains('tier')) {
+                badge.remove();
+            }
+        });
+
+        // Add current badges
+        if (userBadges.includes('verified')) {
+            const verifiedBadge = document.createElement('span');
+            verifiedBadge.className = 'status-badge verified';
+            verifiedBadge.innerHTML = '<i class="material-icons" style="font-size: 14px;">verified</i> Verified Badge';
+            badgesContainer.appendChild(verifiedBadge);
+        }
+
+        if (userBadges.includes('premium')) {
+            const premiumBadge = document.createElement('span');
+            premiumBadge.className = 'status-badge';
+            premiumBadge.style.background = '#fef3c7';
+            premiumBadge.style.color = '#92400e';
+            premiumBadge.innerHTML = '<i class="material-icons" style="font-size: 14px;">workspace_premium</i> Premium Badge';
+            badgesContainer.appendChild(premiumBadge);
+        }
+    }
+
+    // Balance Modal Functions
+    function openBalanceModal(account) {
+        const modal = document.getElementById('balanceModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Optionally focus specific account if provided
+        if (account) {
+            document.getElementById(account + 'Input').focus();
+        }
+    }
+
+    function closeBalanceModal() {
+        const modal = document.getElementById('balanceModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function saveBalances() {
+        const trading = parseFloat(document.getElementById('depositInput').value);
+        const holding = parseFloat(document.getElementById('holdingInput').value);
+
+        // Update display values with proper formatting
+        document.getElementById('depositBalance').textContent = '$' + trading.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('holdingBalance').textContent = '$' + holding.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+        // Update total balance in user header card
+        const totalBalance = trading + holding;
+        const balanceElement = document.querySelector('.user-stats .stat-item:first-child .stat-value');
+        if (balanceElement) {
+            balanceElement.textContent = '$' + totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        // In production: send to backend API
+        console.log('Balances updated:', { trading, holding, total: totalBalance });
+        alert('Balances updated successfully!\n\nTrading: $' + trading.toFixed(2) + '\nHolding: $' + holding.toFixed(2) + '\nTotal: $' + totalBalance.toFixed(2));
+
+        closeBalanceModal();
+    }
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const balanceModal = document.getElementById('balanceModal');
+            const badgeModal = document.getElementById('badgeModal');
+            const notificationModal = document.getElementById('notificationModal');
+
+            if (balanceModal.classList.contains('active')) {
+                closeBalanceModal();
+            } else if (badgeModal.classList.contains('active')) {
+                closeBadgeModal();
+            } else if (notificationModal.classList.contains('active')) {
+                closeNotificationModal();
+            }
+        }
+    });
+
+    // Mobile Sidebar Toggle
+    (function() {
+        let overlay = document.querySelector('.sidebar-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.dlabnav');
+
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('is-active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', function() {
+                hamburger.classList.remove('is-active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            sidebar.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        setTimeout(function() {
+                            hamburger.classList.remove('is-active');
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }, 300);
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    hamburger.classList.remove('is-active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    })();
+
+    // Custom Verification Settings Functions
+    function toggleCustomSettings() {
+        const toggle = document.getElementById('customSettingsToggle');
+        const container = document.getElementById('customSettingsContainer');
+        const badge = document.getElementById('customSettingsBadge');
+
+        if (toggle.checked) {
+            // Enable custom settings
+            container.style.opacity = '1';
+            container.style.pointerEvents = 'auto';
+            badge.textContent = 'Custom Settings Active';
+            badge.classList.add('active');
+        } else {
+            // Disable custom settings
+            container.style.opacity = '0.5';
+            container.style.pointerEvents = 'none';
+            badge.textContent = 'Using Global Settings';
+            badge.classList.remove('active');
+        }
+    }
+
+    function saveCustomSettings() {
+        const toggle = document.getElementById('customSettingsToggle');
+
+        if (!toggle.checked) {
+            alert('Please enable custom settings first!');
+            return;
+        }
+
+        // Collect all custom settings values
+        const settings = {
+            customSettingsEnabled: toggle.checked,
+            kyc: {
+                requirementLevel: document.querySelectorAll('.setting-select-custom')[0].value,
+                depositLimit: document.querySelectorAll('.setting-input-custom')[0].value,
+                withdrawalLimit: document.querySelectorAll('.setting-input-custom')[1].value
+            },
+            address: {
+                requirementLevel: document.querySelectorAll('.setting-select-custom')[1].value
+            },
+            phone: {
+                requirementLevel: document.querySelectorAll('.setting-select-custom')[2].value,
+                otpResendLimit: document.querySelectorAll('.setting-input-custom')[2].value
+            },
+            email: {
+                requirementLevel: document.querySelectorAll('.setting-select-custom')[3].value
+            }
+        };
+
+        console.log('Saving custom verification settings:', settings);
+
+        // Show success message
+        const saveBtn = document.querySelector('.btn-save-custom');
+        const originalHTML = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="material-icons">check_circle</i> Saved!';
+        saveBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+
+        setTimeout(() => {
+            saveBtn.innerHTML = originalHTML;
+            saveBtn.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+        }, 2000);
+
+        // In production, this would send the settings to the backend
+        // fetch('/admin/api/users/12345/custom-verification-settings', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(settings)
+        // });
+    }
+
+    function resetCustomSettings() {
+        if (!confirm('Are you sure you want to reset all custom settings to global defaults?')) {
+            return;
+        }
+
+        // Reset toggle
+        const toggle = document.getElementById('customSettingsToggle');
+        toggle.checked = false;
+        toggleCustomSettings();
+
+        // Reset all select dropdowns to "Use Global Settings"
+        document.querySelectorAll('.setting-select-custom').forEach(select => {
+            select.value = 'global';
+        });
+
+        // Clear all input fields
+        document.querySelectorAll('.setting-input-custom').forEach(input => {
+            input.value = '';
+        });
+
+        alert('Custom settings have been reset to global defaults!');
+    }
+
+    // Take Trade Modal Functions
+    function openTakeTradeModal() {
+        document.getElementById('takeTradeModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeTakeTradeModal() {
+        document.getElementById('takeTradeModal').classList.remove('active');
+        document.body.style.overflow = '';
+        document.getElementById('takeTradeForm').reset();
+        document.getElementById('tradeAsset').innerHTML = '<option value="">Choose market type first</option>';
+        resetPreview();
+    }
+
+    function selectMarketType(type, element) {
+        document.querySelectorAll('[name="marketType"]').forEach(radio => {
+            radio.closest('label').style.borderColor = '#e5e7eb';
+            radio.closest('label').style.background = 'white';
+        });
+        element.style.borderColor = '#ef4444';
+        element.style.background = '#fef2f2';
+        element.querySelector('input').checked = true;
+
+        // Update asset dropdown based on market type
+        const assetSelect = document.getElementById('tradeAsset');
+        if (type === 'crypto') {
+            assetSelect.innerHTML = `
+                <option value="">Select Crypto</option>
+                <option value="BTC/USD">Bitcoin (BTC)</option>
+                <option value="ETH/USD">Ethereum (ETH)</option>
+                <option value="BNB/USD">Binance Coin (BNB)</option>
+                <option value="SOL/USD">Solana (SOL)</option>
+                <option value="XRP/USD">Ripple (XRP)</option>
+                <option value="ADA/USD">Cardano (ADA)</option>
+                <option value="DOGE/USD">Dogecoin (DOGE)</option>
+            `;
+        } else {
+            assetSelect.innerHTML = `
+                <option value="">Select Stock</option>
+                <option value="AAPL">Apple Inc. (AAPL)</option>
+                <option value="GOOGL">Google (GOOGL)</option>
+                <option value="MSFT">Microsoft (MSFT)</option>
+                <option value="TSLA">Tesla (TSLA)</option>
+                <option value="AMZN">Amazon (AMZN)</option>
+                <option value="META">Meta (META)</option>
+                <option value="NVDA">NVIDIA (NVDA)</option>
+            `;
+        }
+    }
+
+    function selectDirection(direction, element) {
+        document.querySelectorAll('[name="direction"]').forEach(radio => {
+            radio.closest('label').style.borderColor = '#e5e7eb';
+            radio.closest('label').style.background = 'white';
+        });
+        element.style.borderColor = direction === 'buy' ? '#10b981' : '#ef4444';
+        element.style.background = direction === 'buy' ? '#f0fdf4' : '#fef2f2';
+        element.querySelector('input').checked = true;
+    }
+
+    function selectOutcome(outcome, element) {
+        document.querySelectorAll('[name="outcome"]').forEach(radio => {
+            radio.closest('label').style.borderColor = '#e5e7eb';
+            radio.closest('label').style.background = 'white';
+        });
+        element.style.borderColor = outcome === 'profit' ? '#10b981' : '#ef4444';
+        element.style.background = outcome === 'profit' ? '#f0fdf4' : '#fef2f2';
+        element.querySelector('input').checked = true;
+        calculateOutcome();
+    }
+
+    function calculateOutcome() {
+        const amount = parseFloat(document.getElementById('tradeAmount').value) || 0;
+        const outcomeAmount = parseFloat(document.getElementById('outcomeAmount').value) || 0;
+        const outcomeType = document.querySelector('[name="outcome"]:checked')?.value;
+
+        if (amount > 0 && outcomeAmount > 0 && outcomeType) {
+            const finalReturn = outcomeType === 'profit' ? amount + outcomeAmount : amount - outcomeAmount;
+
+            document.getElementById('previewAmount').textContent = '$' + amount.toFixed(2);
+            document.getElementById('previewProfit').textContent = (outcomeType === 'profit' ? '+' : '-') + '$' + outcomeAmount.toFixed(2);
+            document.getElementById('previewProfit').style.color = outcomeType === 'profit' ? '#10b981' : '#ef4444';
+            document.getElementById('previewReturn').textContent = '$' + finalReturn.toFixed(2);
+            document.getElementById('previewReturn').style.color = outcomeType === 'profit' ? '#10b981' : '#ef4444';
+        } else {
+            resetPreview();
+        }
+    }
+
+    function resetPreview() {
+        document.getElementById('previewAmount').textContent = '$0.00';
+        document.getElementById('previewReturn').textContent = '$0.00';
+        document.getElementById('previewProfit').textContent = '$0.00';
+        document.getElementById('previewReturn').style.color = '#1a1a1a';
+    }
+
+    function executeTrade() {
+        const marketType = document.querySelector('[name="marketType"]:checked')?.value;
+        const asset = document.getElementById('tradeAsset').value;
+        const direction = document.querySelector('[name="direction"]:checked')?.value;
+        const amount = document.getElementById('tradeAmount').value;
+        const leverage = document.getElementById('tradeLeverage').value;
+        const duration = document.getElementById('tradeDuration').value;
+        const outcome = document.querySelector('[name="outcome"]:checked')?.value;
+        const outcomeAmount = document.getElementById('outcomeAmount').value;
+        const trader = document.getElementById('tradeTrader').value;
+
+        // Validation
+        if (!marketType || !asset || !direction || !amount || !outcome || !outcomeAmount) {
+            alert('Please fill in all required fields!');
+            return;
+        }
+
+        // Collect trade data
+        const tradeData = {
+            userId: 'USR-12345',
+            marketType: marketType,
+            asset: asset,
+            direction: direction,
+            amount: amount,
+            leverage: leverage,
+            duration: duration,
+            outcome: outcome,
+            outcomeAmount: outcomeAmount,
+            trader: trader || 'Manual Trade',
+            timestamp: new Date().toISOString()
+        };
+
+        console.log('Executing trade:', tradeData);
+
+        // Show success message
+        alert('Trade executed successfully!\n\n' +
+            'Asset: ' + asset + '\n' +
+            'Direction: ' + direction.toUpperCase() + '\n' +
+            'Amount: $' + amount + '\n' +
+            'Will close in ' + duration + ' minute(s) with a ' + outcome + ' of $' + outcomeAmount);
+
+        // Close modal
+        closeTakeTradeModal();
+
+        // In production, this would send the trade data to the backend
+        // fetch('/admin/api/execute-manual-trade', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(tradeData)
+        // });
+    }
+
+    function stopCopying(traderName) {
+        if (confirm('Are you sure you want to stop copying ' + traderName + '?\n\nAll active copy trades from this trader will remain open.')) {
+            alert('User has stopped copying ' + traderName);
+            // In production: fetch('/admin/api/stop-copying', { ... });
+        }
+    }
+
+    // Email Modal Functions
+    function openEmailModal() {
+        document.getElementById('emailModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEmailModal() {
+        document.getElementById('emailModal').classList.remove('active');
+        document.body.style.overflow = '';
+        document.getElementById('emailForm').reset();
+    }
+
+    function loadEmailTemplate() {
+        const template = document.getElementById('emailTemplate').value;
+        const subjectInput = document.getElementById('emailSubject');
+        const bodyInput = document.getElementById('emailBody');
+
+        const templates = {
+            welcome: {
+                subject: 'Welcome to Norvia.io - Start Trading Today!',
+                body: `Dear John Doe,\n\nWelcome to Norvia.io! We're excited to have you join our trading community.\n\nYour account has been successfully created and verified. You can now:\n- Start copy trading from expert traders\n- Deposit funds and begin trading\n- Access our premium trading tools\n\nIf you have any questions, our support team is here to help 24/7.\n\nBest regards,\nThe Norvia.io Team`
+            },
+            verification: {
+                subject: 'Account Verification Required - Norvia.io',
+                body: `Dear John Doe,\n\nTo comply with regulatory requirements and ensure the security of your account, we need you to complete the verification process.\n\nPlease log in to your account and upload the following documents:\n- Government-issued ID\n- Proof of address (utility bill or bank statement)\n- Selfie with ID\n\nOnce verified, you'll have full access to all trading features.\n\nThank you for your cooperation.\n\nBest regards,\nThe Norvia.io Team`
+            },
+            warning: {
+                subject: 'Important: Account Activity Notice - Norvia.io',
+                body: `Dear John Doe,\n\nWe've detected unusual activity on your account that requires your attention.\n\nFor your account security, please:\n- Review your recent transactions\n- Update your password if necessary\n- Enable two-factor authentication\n\nIf you did not authorize recent activities, please contact our support team immediately.\n\nStay safe,\nThe Norvia.io Team`
+            }
+        };
+
+        if (template && templates[template]) {
+            subjectInput.value = templates[template].subject;
+            bodyInput.value = templates[template].body;
+        }
+    }
+
+    function sendEmail() {
+        const template = document.getElementById('emailTemplate').value;
+        const subject = document.getElementById('emailSubject').value;
+        const body = document.getElementById('emailBody').value;
+
+        if (!subject || !body) {
+            alert('Please fill in subject and message!');
+            return;
+        }
+
+        const emailData = {
+            userId: 'USR-12345',
+            userEmail: 'johndoe@example.com',
+            template: template,
+            subject: subject,
+            body: body,
+            timestamp: new Date().toISOString()
+        };
+
+        console.log('Sending email:', emailData);
+
+        alert('Email sent successfully to johndoe@example.com!');
+        closeEmailModal();
+
+        // In production: fetch('/admin/api/send-email', {...});
+    }
+
+    // Copy Trading Circle Functions
+    function setCopyTradingCircle() {
+        const days = document.getElementById('copyTradingCircle').value;
+
+        if (!days || days < 1) {
+            alert('Please enter a valid number of days!');
+            return;
+        }
+
+        const circleData = {
+            userId: 'USR-12345',
+            days: parseInt(days),
+            startDate: new Date().toISOString(),
+            endDate: new Date(Date.now() + (days * 24 * 60 * 60 * 1000)).toISOString()
+        };
+
+        console.log('Setting copy trading circle:', circleData);
+        alert(`Copy trading circle set to ${days} days. Countdown will start in user dashboard.`);
+
+        // In production: fetch('/admin/api/set-copy-trading-circle', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(circleData)
+        // });
+    }
+</script>
+{% endblock extra_scripts %}

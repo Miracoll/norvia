@@ -1,0 +1,239 @@
+{% extends 'account/base.html' %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+        <!-- Breadcrumb and Page Title -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Plans</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="plans-container">
+
+            <!-- Trading Plans -->
+            <div class="plan-section">
+                <h2 class="plan-section-title">Trading</h2>
+                <div class="plans-grid">
+                    <!-- Gold Plan -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Gold</div>
+                        <div class="plan-price">$16,700.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> 1-100 leverage</li>
+                            <li><i class="material-icons">check_circle</i> All-time functions</li>
+                            <li><i class="material-icons">check_circle</i> Invitation to strategy webinars</li>
+                            <li><i class="material-icons">check_circle</i> Access to premium trading signals</li>
+                            <li><i class="material-icons">check_circle</i> Lower spreads & time-fast execution</li>
+                        </ul>
+                        <button class="plan-button">PLANS TRADING</button>
+                    </div>
+
+                    <!-- Silver Plan -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Silver</div>
+                        <div class="plan-price">$5,600.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> 1-100 leverage</li>
+                            <li><i class="material-icons">check_circle</i> All-time functions</li>
+                            <li><i class="material-icons">check_circle</i> Priority support (Level 2 live)</li>
+                            <li><i class="material-icons">check_circle</i> Reduced spreads to favor execution</li>
+                        </ul>
+                        <button class="plan-button">PLANS TRADING</button>
+                    </div>
+
+                    <!-- Bronze Plan -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Bronze</div>
+                        <div class="plan-price">$1,700.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> 1-50 leverage</li>
+                            <li><i class="material-icons">check_circle</i> Free market analysis videos</li>
+                            <li><i class="material-icons">check_circle</i> Access to web platform</li>
+                            <li><i class="material-icons">check_circle</i> Standard customer support</li>
+                        </ul>
+                        <button class="plan-button">PLANS TRADING</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signals Plans -->
+            <div class="plan-section">
+                <h2 class="plan-section-title">Signals</h2>
+                <div class="plans-grid">
+                    <!-- Gold Signals -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Gold</div>
+                        <div class="plan-price">$4,000.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> +25% Signal Strength</li>
+                        </ul>
+                        <button class="plan-button">PURCHASE SIGNALS PLAN</button>
+                    </div>
+
+                    <!-- Silver Signals -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Silver</div>
+                        <div class="plan-price">$2,000.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> +15% Signal Strength</li>
+                        </ul>
+                        <button class="plan-button">PURCHASE SIGNALS PLAN</button>
+                    </div>
+
+                    <!-- Bronze Signals -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Bronze</div>
+                        <div class="plan-price">$1,000.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> +6% Signal Strength</li>
+                        </ul>
+                        <button class="plan-button">PURCHASE SIGNALS PLAN</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mining Plans -->
+            <div class="plan-section">
+                <h2 class="plan-section-title">Mining</h2>
+                <div class="plans-grid">
+                    <!-- Gold Mining -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Gold</div>
+                        <div class="plan-price">$2,500.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> 1000 TH/s</li>
+                            <li><i class="material-icons">check_circle</i> No Downtime</li>
+                            <li><i class="material-icons">check_circle</i> ~ 10 Antminer S19</li>
+                            <li><i class="material-icons">check_circle</i> Duration: One Month</li>
+                            <li><i class="material-icons">check_circle</i> No Electricity Cost</li>
+                        </ul>
+                        <div class="plan-dropdown">
+                            <span>Bitcoin</span>
+                            <i class="material-icons">expand_more</i>
+                        </div>
+                        <button class="plan-button">PURCHASE MINING PLAN</button>
+                    </div>
+
+                    <!-- Silver Mining -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Silver</div>
+                        <div class="plan-price">$600.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> 250 TH/s</li>
+                            <li><i class="material-icons">check_circle</i> No Downtime</li>
+                            <li><i class="material-icons">check_circle</i> ~ 2.5 Antminer S19</li>
+                            <li><i class="material-icons">check_circle</i> Duration: One Month</li>
+                            <li><i class="material-icons">check_circle</i> No Electricity Cost</li>
+                        </ul>
+                        <div class="plan-dropdown">
+                            <span>Bitcoin</span>
+                            <i class="material-icons">expand_more</i>
+                        </div>
+                        <button class="plan-button">PURCHASE MINING PLAN</button>
+                    </div>
+
+                    <!-- Bronze Mining -->
+                    <div class="plan-card">
+                        <div class="plan-tier">Bronze</div>
+                        <div class="plan-price">$250.00</div>
+                        <ul class="plan-features">
+                            <li><i class="material-icons">check_circle</i> 100 TH/s</li>
+                            <li><i class="material-icons">check_circle</i> No Downtime</li>
+                            <li><i class="material-icons">check_circle</i> ~ 1 Antminer S19</li>
+                            <li><i class="material-icons">check_circle</i> Duration: One Month</li>
+                            <li><i class="material-icons">check_circle</i> No Electricity Cost</li>
+                        </ul>
+                        <div class="plan-dropdown">
+                            <span>Bitcoin</span>
+                            <i class="material-icons">expand_more</i>
+                        </div>
+                        <button class="plan-button">PURCHASE MINING PLAN</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staking Plans -->
+            <div class="plan-section">
+                <h2 class="plan-section-title">Staking</h2>
+                <div class="staking-table-container">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 24px; text-align: center;">Staking Plans</h3>
+                    <table class="staking-table">
+                        <thead>
+                            <tr>
+                                <th>Duration</th>
+                                <th>Returns</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>30 Days - 5% Return</td>
+                                <td>5% Return</td>
+                                <td style="text-align: center;"><i class="material-icons">check_circle</i></td>
+                            </tr>
+                            <tr>
+                                <td>60 Days - 10% Return</td>
+                                <td>10% Return</td>
+                                <td style="text-align: center;"><i class="material-icons">check_circle</i></td>
+                            </tr>
+                            <tr>
+                                <td>90 Days - 15% Return</td>
+                                <td>15% Return</td>
+                                <td style="text-align: center;"><i class="material-icons">check_circle</i></td>
+                            </tr>
+                            <tr>
+                                <td>180 Days - 20% Return</td>
+                                <td>20% Return</td>
+                                <td style="text-align: center;"><i class="material-icons">check_circle</i></td>
+                            </tr>
+                            <tr>
+                                <td>365 Days - 25% Return</td>
+                                <td>25% Return</td>
+                                <td style="text-align: center;"><i class="material-icons">check_circle</i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="staking-plan-button">PURCHASE STAKING PLAN</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+    // Add onclick events to all plan buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trading Plans
+        const tradingButtons = document.querySelectorAll('.plan-section:nth-child(1) .plan-button');
+        tradingButtons[0].onclick = () => window.location.href = 'plan-deposit.html?type=trading&tier=gold&price=16700.00';
+        tradingButtons[1].onclick = () => window.location.href = 'plan-deposit.html?type=trading&tier=silver&price=5600.00';
+        tradingButtons[2].onclick = () => window.location.href = 'plan-deposit.html?type=trading&tier=bronze&price=1700.00';
+
+        // Signals Plans
+        const signalsButtons = document.querySelectorAll('.plan-section:nth-child(2) .plan-button');
+        signalsButtons[0].onclick = () => window.location.href = 'plan-deposit.html?type=signals&tier=gold&price=4000.00';
+        signalsButtons[1].onclick = () => window.location.href = 'plan-deposit.html?type=signals&tier=silver&price=2000.00';
+        signalsButtons[2].onclick = () => window.location.href = 'plan-deposit.html?type=signals&tier=bronze&price=1000.00';
+
+        // Mining Plans
+        const miningButtons = document.querySelectorAll('.plan-section:nth-child(3) .plan-button');
+        miningButtons[0].onclick = () => window.location.href = 'plan-deposit.html?type=mining&tier=gold&price=2500.00';
+        miningButtons[1].onclick = () => window.location.href = 'plan-deposit.html?type=mining&tier=silver&price=600.00';
+        miningButtons[2].onclick = () => window.location.href = 'plan-deposit.html?type=mining&tier=bronze&price=250.00';
+
+        // Staking Plan
+        const stakingButton = document.querySelector('.staking-plan-button');
+        stakingButton.onclick = () => window.location.href = 'plan-deposit.html?type=staking&tier=30days&price=0';
+    });
+</script>
+{% endblock extra_scripts %}

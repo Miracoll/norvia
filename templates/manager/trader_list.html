@@ -1,0 +1,305 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Traders</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">All Traders (12)</h1>
+            <button class="btn-add-trader" onclick="window.location.href='trader-add.html'">
+                <i class="material-icons">add</i>
+                <span>Add New Trader</span>
+            </button>
+        </div>
+
+        <!-- Traders Grid -->
+        <div class="traders-grid">
+
+            <!-- Trader Card 1 -->
+            <div class="trader-card">
+                <div class="trader-header">
+                    <div class="trader-avatar">JD</div>
+                    <div class="trader-info">
+                        <div class="trader-name">
+                            John Crypto
+                            <span class="verified-badge">
+                                <i class="material-icons" style="font-size: 12px;">verified</i>
+                                Verified
+                            </span>
+                        </div>
+                        <div class="trader-username">@johncrypto</div>
+                    </div>
+                </div>
+
+                <div class="trader-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-value success">96%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Profit Share</div>
+                        <div class="stat-value">20%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Wins</div>
+                        <div class="stat-value success">7,847</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Losses</div>
+                        <div class="stat-value danger">290</div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-row">
+                        <span class="config-label">Copy Mode:</span>
+                        <span class="badge-mode flexible">Flexible</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Min. Balance:</span>
+                        <span class="config-value">$1,000</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Approval Required:</span>
+                        <span class="config-value">No</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Copiers:</span>
+                        <span class="config-value">1,234</span>
+                    </div>
+                </div>
+
+                <div class="status-toggle">
+                    <input type="checkbox" id="trader1" checked>
+                    <label for="trader1">Active & Visible</label>
+                </div>
+
+                <div class="trader-actions">
+                    <button class="btn-edit" onclick="window.location.href='trader-edit.html?id=1'">
+                        <i class="material-icons" style="font-size: 18px;">edit</i>
+                        Edit
+                    </button>
+                    <button class="btn-delete" onclick="deleteTrader('John Crypto')">
+                        <i class="material-icons" style="font-size: 18px;">delete</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Trader Card 2 -->
+            <div class="trader-card">
+                <div class="trader-header">
+                    <div class="trader-avatar">SM</div>
+                    <div class="trader-info">
+                        <div class="trader-name">
+                            Sarah Master
+                            <span class="verified-badge">
+                                <i class="material-icons" style="font-size: 12px;">verified</i>
+                                Verified
+                            </span>
+                        </div>
+                        <div class="trader-username">@sarahmaster</div>
+                    </div>
+                </div>
+
+                <div class="trader-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-value success">87%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Profit Share</div>
+                        <div class="stat-value">20%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Wins</div>
+                        <div class="stat-value success">6,325</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Losses</div>
+                        <div class="stat-value danger">98</div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-row">
+                        <span class="config-label">Copy Mode:</span>
+                        <span class="badge-mode full">Full Balance</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Min. Balance:</span>
+                        <span class="config-value">$2,500</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Approval Required:</span>
+                        <span class="config-value" style="color: #f59e0b;">Yes</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Copiers:</span>
+                        <span class="config-value">987</span>
+                    </div>
+                </div>
+
+                <div class="status-toggle">
+                    <input type="checkbox" id="trader2" checked>
+                    <label for="trader2">Active & Visible</label>
+                </div>
+
+                <div class="trader-actions">
+                    <button class="btn-edit" onclick="window.location.href='trader-edit.html?id=2'">
+                        <i class="material-icons" style="font-size: 18px;">edit</i>
+                        Edit
+                    </button>
+                    <button class="btn-delete" onclick="deleteTrader('Sarah Master')">
+                        <i class="material-icons" style="font-size: 18px;">delete</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Trader Card 3 -->
+            <div class="trader-card">
+                <div class="trader-header">
+                    <div class="trader-avatar">MP</div>
+                    <div class="trader-info">
+                        <div class="trader-name">Mike Pro</div>
+                        <div class="trader-username">@mikepro</div>
+                    </div>
+                </div>
+
+                <div class="trader-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-value success">95%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Profit Share</div>
+                        <div class="stat-value">18%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Wins</div>
+                        <div class="stat-value success">8,932</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Losses</div>
+                        <div class="stat-value danger">421</div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-row">
+                        <span class="config-label">Copy Mode:</span>
+                        <span class="badge-mode flexible">Flexible</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Min. Balance:</span>
+                        <span class="config-value">$750</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Approval Required:</span>
+                        <span class="config-value" style="color: #f59e0b;">Yes</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-label">Copiers:</span>
+                        <span class="config-value">756</span>
+                    </div>
+                </div>
+
+                <div class="status-toggle">
+                    <input type="checkbox" id="trader3" checked>
+                    <label for="trader3">Active & Visible</label>
+                </div>
+
+                <div class="trader-actions">
+                    <button class="btn-edit" onclick="window.location.href='trader-edit.html?id=3'">
+                        <i class="material-icons" style="font-size: 18px;">edit</i>
+                        Edit
+                    </button>
+                    <button class="btn-delete" onclick="deleteTrader('Mike Pro')">
+                        <i class="material-icons" style="font-size: 18px;">delete</i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    function deleteTrader(name) {
+        if (confirm(`Delete trader "${name}"?\n\nThis will also affect all users currently copying this trader. Are you sure?`)) {
+            alert(`Trader "${name}" deleted successfully! (Demo)`);
+            location.reload();
+        }
+    }
+
+    // Mobile Sidebar Toggle
+    (function() {
+        let overlay = document.querySelector('.sidebar-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.dlabnav');
+
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('is-active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', function() {
+                hamburger.classList.remove('is-active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            sidebar.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        setTimeout(function() {
+                            hamburger.classList.remove('is-active');
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }, 300);
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    hamburger.classList.remove('is-active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    })();
+
+</script>
+{% endblock extra_scripts %}

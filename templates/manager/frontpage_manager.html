@@ -1,0 +1,243 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>Page Manager</h2>
+            <p>Manage all frontend and legal pages from one place</p>
+        </div>
+
+        <!-- Frontend Pages Section -->
+        <div class="content-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="material-icons">public</i>
+                    Frontend Pages
+                    <span class="section-badge" id="frontendCount">17</span>
+                </div>
+            </div>
+
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Icon</th>
+                        <th>Page</th>
+                        <th style="width: 120px;">Status</th>
+                        <th style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="frontendPagesTable">
+                    <!-- Pages will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Legal/Policy Pages Section -->
+        <div class="content-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="material-icons">gavel</i>
+                    Legal & Policy Pages
+                    <span class="section-badge">4</span>
+                </div>
+            </div>
+
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Icon</th>
+                        <th>Page</th>
+                        <th style="width: 120px;">Status</th>
+                        <th style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">gavel</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Copy Trading Agreement</div>
+                            <div class="page-description">Terms and conditions for copy trading service</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-copy-trading-agreement.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">article</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Terms & Conditions</div>
+                            <div class="page-description">Platform terms and conditions</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-terms-conditions.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">privacy_tip</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Privacy Policy</div>
+                            <div class="page-description">Data privacy and protection policy</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-privacy-policy.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td data-label="Icon">
+                            <span class="page-icon">
+                                <i class="material-icons">warning</i>
+                            </span>
+                        </td>
+                        <td data-label="Page">
+                            <div class="page-title">Risk Disclosure</div>
+                            <div class="page-description">Trading risks and disclaimers</div>
+                        </td>
+                        <td data-label="Status">
+                            <span class="status-badge status-published">
+                                <i class="material-icons">check_circle</i>
+                                <span>Published</span>
+                            </span>
+                        </td>
+                        <td data-label="Action">
+                            <a href="edit-risk-disclosure.html" class="btn-edit">
+                                <i class="material-icons">edit</i>
+                                <span>Edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+    // Frontend pages data
+    const frontendPages = [
+        { name: 'Home Page', filename: 'index.html', icon: 'home', description: 'Main landing page' },
+        { name: 'About Us', filename: 'aboutus.html', icon: 'info', description: 'Company information' },
+        { name: 'Contact Us', filename: 'contactus.html', icon: 'email', description: 'Contact form' },
+        { name: 'Copy Trading', filename: 'copytrading.html', icon: 'content_copy', description: 'Copy trading service page' },
+        { name: 'Copy Expert Traders', filename: 'copyexperttrading.html', icon: 'stars', description: 'Expert traders showcase' },
+        { name: 'Options Trading', filename: 'optionstrading.html', icon: 'bar_chart', description: 'Options trading information' },
+        { name: 'Stocks Trading', filename: 'stockstrading.html', icon: 'show_chart', description: 'Stock trading page' },
+        { name: 'Forex Trading', filename: 'forextrading.html', icon: 'currency_exchange', description: 'Forex trading page' },
+        { name: 'What is Leverage', filename: 'whatisleverage.html', icon: 'trending_up', description: 'Leverage explained' },
+        { name: 'Responsible Trading', filename: 'responsibletrading.html', icon: 'verified_user', description: 'Trading guidelines' },
+        { name: 'FAQ', filename: 'faq.html', icon: 'help', description: 'Frequently asked questions' },
+        { name: 'Terms of Service', filename: 'termsofservice.html', icon: 'description', description: 'Service terms' },
+        { name: 'Privacy Policy', filename: 'Privacypolicy.html', icon: 'shield', description: 'Privacy policy' },
+        { name: 'Cookie Policy', filename: 'cookiepolicy.html', icon: 'cookie', description: 'Cookie usage policy' },
+        { name: 'Referral Program', filename: 'referral.html', icon: 'group_add', description: 'Referral system' },
+        { name: 'Become a Trader', filename: 'become-trader.html', icon: 'person_add', description: 'Trader application' },
+        { name: 'Blog', filename: 'blog.html', icon: 'article', description: 'Blog posts' }
+    ];
+
+    // Render frontend pages
+    function renderFrontendPages() {
+        const tbody = document.getElementById('frontendPagesTable');
+        tbody.innerHTML = '';
+
+        frontendPages.forEach(page => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td data-label="Icon">
+                    <span class="page-icon">
+                        <i class="material-icons">${page.icon}</i>
+                    </span>
+                </td>
+                <td data-label="Page">
+                    <div class="page-title">${page.name}</div>
+                    <div class="page-description">${page.description}</div>
+                    <div class="page-filename">${page.filename}</div>
+                </td>
+                <td data-label="Status">
+                    <span class="status-badge status-published">
+                        <i class="material-icons">check_circle</i>
+                        <span>Published</span>
+                    </span>
+                </td>
+                <td data-label="Action">
+                    <a href="javascript:void(0)" onclick="editPage('${page.filename}')" class="btn-edit">
+                        <i class="material-icons">edit</i>
+                        <span>Edit</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="viewPage('${page.filename}')" class="btn-view" title="View Page">
+                        <i class="material-icons">visibility</i>
+                    </a>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        document.getElementById('frontendCount').textContent = frontendPages.length;
+    }
+
+    // Edit page function
+    function editPage(filename) {
+        // Use section-based editor for index.html and aboutus.html, regular editor for others
+        if (filename === 'index.html') {
+            window.location.href = `page-section-editor.html?file=${filename}`;
+        } else if (filename === 'aboutus.html') {
+            window.location.href = `about-section-editor.html?file=${filename}`;
+        } else {
+            window.location.href = `frontend-page-editor.html?file=${filename}`;
+        }
+    }
+
+    // View page function
+    function viewPage(filename) {
+        window.open(`../frontend/${filename}`, '_blank');
+    }
+
+    // Initial render
+    renderFrontendPages();
+</script>
+{% endblock extra_scripts %}

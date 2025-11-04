@@ -1,0 +1,304 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+    <!-- Dashboard Welcome Banner -->
+    <div class="dashboard-banner" style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px;">
+            <h2>Welcome back, Admin!</h2>
+            <p>Monitor and manage your Norvia.io platform efficiently.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.15); padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; backdrop-filter: blur(10px);">
+            <i class="material-icons" style="font-size: 20px;">schedule</i>
+            <span id="currentTime"></span>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
+        <div class="stat-card" style="display: flex; align-items: flex-start; gap: 20px;">
+            <div class="stat-icon users" style="flex-shrink: 0;">
+                <i class="material-icons">people</i>
+            </div>
+            <div style="flex: 1;">
+                <div class="stat-value">2,847</div>
+                <div class="stat-label">Total Users</div>
+                <div style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; margin-top: 8px; background: #d1fae5; color: #065f46;">
+                    <i class="material-icons" style="font-size: 16px;">trending_up</i>
+                    <span>+12% this month</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card" style="display: flex; align-items: flex-start; gap: 20px;">
+            <div class="stat-icon pending" style="flex-shrink: 0;">
+                <i class="material-icons">verified_user</i>
+            </div>
+            <div style="flex: 1;">
+                <div class="stat-value">23</div>
+                <div class="stat-label">Pending KYC</div>
+                <div style="margin-top: 8px;">
+                    <a href="kyc-approvals.html" style="color: #ef4444; text-decoration: none; font-size: 13px; font-weight: 600;">Review Now →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card" style="display: flex; align-items: flex-start; gap: 20px;">
+            <div class="stat-icon deposits" style="flex-shrink: 0;">
+                <i class="material-icons">account_balance_wallet</i>
+            </div>
+            <div style="flex: 1;">
+                <div class="stat-value">$24,380</div>
+                <div class="stat-label">Pending Deposits</div>
+                <div style="color: #94a3b8; font-size: 13px; margin-top: 4px; font-weight: 500;">9 transactions</div>
+            </div>
+        </div>
+
+        <div class="stat-card" style="display: flex; align-items: flex-start; gap: 20px;">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); flex-shrink: 0;">
+                <i class="material-icons">send</i>
+            </div>
+            <div style="flex: 1;">
+                <div class="stat-value">$18,950</div>
+                <div class="stat-label">Pending Withdrawals</div>
+                <div style="color: #94a3b8; font-size: 13px; margin-top: 4px; font-weight: 500;">15 transactions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="background: white; border-radius: 20px; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); border: 1px solid rgba(0, 0, 0, 0.04);">
+        <h3 style="display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 24px;">
+            <i class="material-icons" style="color: #ef4444; font-size: 28px;">flash_on</i>
+            Quick Actions
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            <a href="deposits-list.html" class="action-card" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border: 2px solid transparent; border-radius: 14px; text-decoration: none; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-green); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">check_circle</i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Approve Deposits</div>
+                    <div style="font-size: 13px; color: #64748b; font-weight: 500;">9 pending</div>
+                </div>
+                <i class="material-icons action-arrow" style="color: #cbd5e1; font-size: 20px;">arrow_forward</i>
+            </a>
+
+            <a href="withdrawals-list.html" class="action-card" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border: 2px solid transparent; border-radius: 14px; text-decoration: none; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-blue); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">send</i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Process Withdrawals</div>
+                    <div style="font-size: 13px; color: #64748b; font-weight: 500;">15 pending</div>
+                </div>
+                <i class="material-icons action-arrow" style="color: #cbd5e1; font-size: 20px;">arrow_forward</i>
+            </a>
+
+            <a href="kyc-approvals.html" class="action-card" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border: 2px solid transparent; border-radius: 14px; text-decoration: none; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-orange); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">verified_user</i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Review KYC</div>
+                    <div style="font-size: 13px; color: #64748b; font-weight: 500;">23 pending</div>
+                </div>
+                <i class="material-icons action-arrow" style="color: #cbd5e1; font-size: 20px;">arrow_forward</i>
+            </a>
+
+            <a href="users-list.html" class="action-card" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border: 2px solid transparent; border-radius: 14px; text-decoration: none; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-purple); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">person_add</i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Manage Users</div>
+                    <div style="font-size: 13px; color: #64748b; font-weight: 500;">View all users</div>
+                </div>
+                <i class="material-icons action-arrow" style="color: #cbd5e1; font-size: 20px;">arrow_forward</i>
+            </a>
+
+            <a href="take-trade.html" class="action-card" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border: 2px solid transparent; border-radius: 14px; text-decoration: none; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-red); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">trending_up</i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Execute Trade</div>
+                    <div style="font-size: 13px; color: #64748b; font-weight: 500;">For user account</div>
+                </div>
+                <i class="material-icons action-arrow" style="color: #cbd5e1; font-size: 20px;">arrow_forward</i>
+            </a>
+
+            <a href="frontend-pages.html" class="action-card" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border: 2px solid transparent; border-radius: 14px; text-decoration: none; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">web</i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Edit Pages</div>
+                    <div style="font-size: 13px; color: #64748b; font-weight: 500;">Frontend & Legal</div>
+                </div>
+                <i class="material-icons action-arrow" style="color: #cbd5e1; font-size: 20px;">arrow_forward</i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div style="background: white; border-radius: 20px; padding: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); border: 1px solid rgba(0, 0, 0, 0.04);">
+        <h3 style="display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 800; color: #1e293b; margin: 0 0 24px 0;">
+            <i class="material-icons" style="color: #ef4444; font-size: 28px;">history</i>
+            Recent Activity
+        </h3>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="activity-item" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-green); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">add</i>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">New Deposit Request</div>
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500;">John Doe deposited $5,000 via BTC (TRC20)</div>
+                    <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">2 hours ago</div>
+                </div>
+                <a href="deposits-list.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 700; background: var(--gradient-green); color: white; flex-shrink: 0; transition: all 0.3s ease;">
+                    <i class="material-icons" style="font-size: 18px;">check</i>
+                    Approve
+                </a>
+            </div>
+
+            <div class="activity-item" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-red); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">remove</i>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Withdrawal Completed</div>
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500;">Sarah Anderson withdrew $1,200 via PayPal</div>
+                    <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">5 hours ago</div>
+                </div>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; background: #d1fae5; color: #065f46; flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 16px;">check_circle</i>
+                    Completed
+                </span>
+            </div>
+
+            <div class="activity-item" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-orange); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">verified_user</i>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">KYC Verification Pending</div>
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500;">Michael Brown submitted identity documents</div>
+                    <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">8 hours ago</div>
+                </div>
+                <a href="kyc-approvals.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 700; background: var(--gradient-orange); color: white; flex-shrink: 0; transition: all 0.3s ease;">
+                    <i class="material-icons" style="font-size: 18px;">visibility</i>
+                    Review
+                </a>
+            </div>
+
+            <div class="activity-item" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-green); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">add</i>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Withdrawal Request</div>
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500;">Emma Wilson requested $3,500 via Bank Transfer</div>
+                    <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">1 day ago</div>
+                </div>
+                <a href="withdrawals-list.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 700; background: var(--gradient-green); color: white; flex-shrink: 0; transition: all 0.3s ease;">
+                    <i class="material-icons" style="font-size: 18px;">check</i>
+                    Process
+                </a>
+            </div>
+
+            <div class="activity-item" style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.3s ease;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--gradient-blue); flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 24px; color: white;">person</i>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">New User Registration</div>
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500;">Lisa Chen created an account</div>
+                    <div style="font-size: 12px; color: #94a3b8; font-weight: 500;">1 day ago</div>
+                </div>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; background: #dbeafe; color: #1e40af; flex-shrink: 0;">
+                    <i class="material-icons" style="font-size: 16px;">fiber_new</i>
+                    New
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+</div>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+    // Mobile Sidebar Toggle
+    (function() {
+        let overlay = document.querySelector('.sidebar-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.dlabnav');
+
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('is-active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', function() {
+                hamburger.classList.remove('is-active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            sidebar.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        setTimeout(function() {
+                            hamburger.classList.remove('is-active');
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }, 300);
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    hamburger.classList.remove('is-active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    })();
+
+
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const timeEl = document.getElementById('currentTime');
+        if (timeEl) {
+            timeEl.textContent = hours + ':' + minutes;
+        }
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+
+</script>
+{% endblock extra_scripts %}

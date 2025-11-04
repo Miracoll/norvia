@@ -1,0 +1,576 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+    <!-- Meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Premium HTML5 Template by Indonez">
+    <meta name="keywords" content="blockit, uikit3, indonez, handlebars, scss, javascript">
+    <meta name="author" content="Indonez">
+    <meta name="theme-color" content="#01A3FF">
+    <!-- critical preload -->
+    <link rel="preload" href="{% static 'interface/js/vendors/bootstrap.bundle.min.js' %}" as="script">
+    <link rel="preload" href="{% static 'interface/css/style.css' %}" as="style">
+    <!-- icon preload -->
+    <link rel="preload" href="fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <!-- font preload -->
+    <link rel="preload" href="fonts/dm-sans-v11-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/dm-sans-v11-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="{% static 'interface/css/style.css' %}">
+    <!-- Norvia.io Color & Font Override -->
+    <link rel="stylesheet" href="{% static 'interface/css/norvia-override.css' %}">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'interface/img/favicon.svg' %}" type="image/x-icon">
+    <!-- Touch icon -->
+    <link rel="apple-touch-icon-precomposed" href="{% static 'interface/img/apple-touch-icon.png' %}">
+    <title>Norvia.io - Start Trading Financial Markets With Confidence</title>
+
+	
+
+
+	<!-- Material Icons -->
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+	<style>
+		:root {
+			--primary: #01A3FF;
+			--primary-dark: #0284c7;
+			--text-primary: #1a1a1a;
+			--text-secondary: #6b7280;
+			--bg-light: #f5f7fa;
+			--bg-white: #ffffff;
+			--border: #e5e7eb;
+		}
+
+		[data-theme="dark"] {
+			--text-primary: #ffffff;
+			--text-secondary: #9ca3af;
+			--bg-light: #1f2937;
+			--bg-white: #111827;
+			--border: #374151;
+		}
+
+		[data-theme="dark"] body {
+			background: #111827;
+			color: #ffffff;
+		}
+
+		[data-theme="dark"] .top-navbar {
+			background: #1f2937;
+			border-bottom-color: #374151;
+		}
+
+		[data-theme="dark"] .sidebar {
+			background: #1f2937;
+			border-right-color: #374151;
+		}
+
+		[data-theme="dark"] .carousel-caption h1,
+		[data-theme="dark"] .carousel-caption p,
+		[data-theme="dark"] h1, [data-theme="dark"] h2,
+		[data-theme="dark"] h3, [data-theme="dark"] h4,
+		[data-theme="dark"] p {
+			color: var(--text-primary) !important;
+		}
+
+		[data-theme="dark"] .card {
+			background: #1f2937;
+			border-color: #374151;
+			color: #ffffff;
+		}
+
+		[data-theme="dark"] .user-dropdown {
+			background: #1f2937;
+			border-color: #374151;
+		}
+
+		body {
+			font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			color: var(--text-primary);
+			transition: background 0.3s, color 0.3s;
+		}
+
+		/* Top Navigation Bar */
+		.top-navbar {
+			position: fixed;
+			top: 0;
+			width: 100%;
+			background: var(--bg-white);
+			border-bottom: 1px solid var(--border);
+			z-index: 1000;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+			transition: background 0.3s, border 0.3s;
+		}
+
+		.top-nav-container {
+			max-width: 1400px;
+			margin: 0 auto;
+			padding: 0 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			height: 70px;
+		}
+
+		.nav-left {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+		}
+
+		.hamburger-menu {
+			width: 40px;
+			height: 40px;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			gap: 6px;
+			padding: 8px;
+			border-radius: 8px;
+			transition: all 0.3s;
+		}
+
+		.hamburger-menu:hover {
+			background: var(--bg-light);
+		}
+
+		.hamburger-menu span {
+			display: block;
+			width: 24px;
+			height: 2px;
+			background: var(--text-primary);
+			transition: all 0.3s;
+			border-radius: 2px;
+		}
+
+		.hamburger-menu.active span:nth-child(1) {
+			transform: rotate(45deg) translate(6px, 6px);
+		}
+
+		.hamburger-menu.active span:nth-child(2) {
+			opacity: 0;
+		}
+
+		.hamburger-menu.active span:nth-child(3) {
+			transform: rotate(-45deg) translate(6px, -6px);
+		}
+
+		.nav-logo {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-size: 24px;
+			font-weight: 700;
+			color: var(--primary);
+			text-decoration: none;
+			transition: opacity 0.3s;
+		}
+
+		.nav-logo:hover {
+			opacity: 0.8;
+		}
+
+		.nav-logo svg {
+			width: 35px;
+			height: 35px;
+		}
+
+		.nav-right {
+			display: flex;
+			gap: 15px;
+			align-items: center;
+		}
+
+		.theme-toggle {
+			width: 40px;
+			height: 40px;
+			border: none;
+			background: var(--bg-light);
+			border-radius: 8px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.3s;
+		}
+
+		.theme-toggle:hover {
+			background: var(--primary);
+		}
+
+		.theme-toggle i {
+			font-size: 20px;
+			color: var(--text-primary);
+			transition: color 0.3s;
+		}
+
+		.theme-toggle:hover i {
+			color: white;
+		}
+
+		.user-menu {
+			position: relative;
+		}
+
+		.user-icon-btn {
+			width: 40px;
+			height: 40px;
+			border: 2px solid var(--primary);
+			background: var(--bg-white);
+			border-radius: 8px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.3s;
+		}
+
+		.user-icon-btn:hover {
+			background: var(--primary);
+		}
+
+		.user-icon-btn i {
+			font-size: 22px;
+			color: var(--primary);
+			transition: color 0.3s;
+		}
+
+		.user-icon-btn:hover i {
+			color: white;
+		}
+
+		.user-dropdown {
+			position: absolute;
+			top: 55px;
+			right: 0;
+			width: 180px;
+			background: var(--bg-white);
+			border: 2px solid var(--border);
+			border-radius: 12px;
+			box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(-10px);
+			transition: all 0.3s;
+		}
+
+		.user-dropdown.active {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0);
+		}
+
+		.user-dropdown a {
+			display: block;
+			padding: 14px 18px;
+			color: var(--text-primary);
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 14px;
+			transition: all 0.3s;
+		}
+
+		.user-dropdown a:first-child {
+			border-radius: 10px 10px 0 0;
+		}
+
+		.user-dropdown a:last-child {
+			border-radius: 0 0 10px 10px;
+		}
+
+		.user-dropdown a:hover {
+			background: var(--primary);
+			color: white;
+		}
+
+		.sidebar {
+			position: fixed;
+			top: 70px;
+			left: -300px;
+			width: 280px;
+			height: calc(100vh - 70px);
+			background: var(--bg-white);
+			border-right: 1px solid var(--border);
+			z-index: 999;
+			transition: all 0.3s ease;
+			overflow-y: auto;
+			box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+		}
+
+		.sidebar.active {
+			left: 0;
+		}
+
+		.sidebar-menu {
+			list-style: none;
+			padding: 20px 0;
+		}
+
+		.sidebar-menu li {
+			margin-bottom: 5px;
+		}
+
+		.sidebar-menu a {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 14px 20px;
+			color: var(--text-primary);
+			text-decoration: none;
+			font-weight: 500;
+			transition: all 0.3s;
+		}
+
+		.sidebar-menu a:hover {
+			background: var(--bg-light);
+			color: var(--primary);
+			padding-left: 25px;
+		}
+
+		.sidebar-menu a i {
+			font-size: 20px;
+		}
+
+		.sidebar-menu ul {
+			list-style: none;
+			padding-left: 30px;
+		}
+
+		.sidebar-menu ul a {
+			padding: 10px 20px;
+			font-size: 14px;
+		}
+
+		.sidebar-menu ul a i {
+			font-size: 16px;
+		}
+
+		.sidebar-overlay {
+			position: fixed;
+			top: 70px;
+			left: 0;
+			width: 100%;
+			height: calc(100vh - 70px);
+			background: rgba(0, 0, 0, 0.5);
+			z-index: 998;
+			display: none;
+			transition: all 0.3s;
+		}
+
+		.sidebar-overlay.active {
+			display: block;
+		}
+
+		/* Add top margin to main content */
+		main {
+			margin-top: 70px;
+		}
+	</style>
+
+</head>
+
+<body>
+    
+    
+    <!-- Top Navigation -->
+	<nav class="top-navbar">
+		<div class="top-nav-container">
+			<div class="nav-left">
+				<button class="hamburger-menu" id="hamburgerBtn">
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+				<a href="{% url 'interface_home' %}" class="nav-logo">
+					<svg width="35" height="35" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="url(#blue-gradient)"/>
+						<defs>
+							<linearGradient id="blue-gradient" x1="5" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse">
+								<stop offset="0%" stop-color="#01A3FF"/>
+								<stop offset="100%" stop-color="#0284c7"/>
+							</linearGradient>
+						</defs>
+					</svg>
+					Norvia.io
+				</a>
+			</div>
+
+			<div class="nav-right">
+				<button class="theme-toggle" id="themeToggle" title="Toggle theme">
+					<i class="material-icons">dark_mode</i>
+				</button>
+
+				<div class="user-menu">
+					<button class="user-icon-btn" id="userMenuBtn">
+						<i class="material-icons">person</i>
+					</button>
+					<div class="user-dropdown" id="userDropdown">
+						<a href="{% url 'sign_in' %}">Login</a>
+						<a href="{% url 'sign_up_step_1' %}">Register</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Sidebar -->
+	<div class="sidebar" id="sidebar">
+		<ul class="sidebar-menu">
+			<li><a href="{% url 'interface_home' %}"><i class="material-icons">home</i> Home</a></li>
+			<li><a href="{% url 'interface_about' %}"><i class="material-icons">info</i> About</a></li>
+			<li>
+				<a href="javascript:void(0)"><i class="material-icons">trending_up</i> Trading</a>
+				<ul>
+					<li><a href="{% url 'interface_copy_expert_trading' %}"><i class="material-icons">arrow_forward</i> Copy Expert Traders</a></li>
+					<li><a href="{% url 'interface_options_trading' %}"><i class="material-icons">arrow_forward</i> Options Trading</a></li>
+					<li><a href="{% url 'interface_crypto_trading' %}"><i class="material-icons">arrow_forward</i> Crypto Trading</a></li>
+					<li><a href="{% url 'interface_stocks_trading' %}"><i class="material-icons">arrow_forward</i> Stocks Trading</a></li>
+					<li><a href="{% url 'interface_forex_trading' %}"><i class="material-icons">arrow_forward</i> Forex Trading</a></li>
+				</ul>
+			</li>
+			<li><a href="{% url 'interface_contact' %}"><i class="material-icons">email</i> Contact</a></li>
+			<li>
+				<a href="javascript:void(0)"><i class="material-icons">gavel</i> Legal</a>
+				<ul>
+					<li><a href="{% url 'interface_privacy_policy' %}"><i class="material-icons">arrow_forward</i> Privacy Policy</a></li>
+					<li><a href="{% url 'interface_cookie_policy' %}"><i class="material-icons">arrow_forward</i> Cookie Policy</a></li>
+					<li><a href="{% url 'interface_terms_of_service' %}"><i class="material-icons">arrow_forward</i> Terms of Service</a></li>
+					<li><a href="{% url 'interface_general_risk_disclosure' %}"><i class="material-icons">arrow_forward</i> Risk Disclosure</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+
+	<!-- Sidebar Overlay -->
+	<div class="sidebar-overlay" id="sidebarOverlay"></div>
+	<div class="my-5"></div>
+
+    {% block content %}
+    {% endblock content %}
+    <!-- footer begin -->
+    <footer class="bg-light pb-4 in-avo-footer">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 gy-4 gy-lg-0">
+                <div class="col">
+                    <h5>Useful</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'interface_about' %}">About Us</a></li>
+                        <li><a href="{% url 'interface_responsible_trading' %}">Responsible Trading</a></li>
+                        <li><a href="{% url 'interface_what_is_leverage' %}">What is Leverage</a></li>
+                        <li><a href="{% url 'interface_terms_of_service' %}">Terms Of Service</a></li>
+                        <li><a href="{% url 'interface_privacy_policy' %}">Privacy Policy</a></li>
+                        <li><a href="{% url 'interface_cookie_policy' %}">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col">
+                    <h5>Get in Touch</h5>
+                    <p>Contact us any time for getting support.</p>
+                    <a class="footer-email" href="mailto:hello@norvia.io">hello@norvia.io</a>
+                    
+                </div>
+                <div class="col-md-12 col-lg-12 text-center small mt-4">
+                    <div class="trade-warning">
+                        <h6 class="mb-1"><span><i class="fas fa-triangle-exclamation fa-sm"></i>Risk warning</span></h6>
+                        <p class="mb-0">The Transactions offered by this Website can be executed only by fully competent adults. Transactions with financial instruments offered on the Website involve substantial risk and trading may be very risky. If you make Transactions with the financial instruments offered on this Website, you might incur substantial losses or even lose everything in your Account. Before you decide to start Transactions with the financial instruments offered on the Website, you must review the Service Agreement and Risk Disclosure Information.</p>
+                    </div>
+                    <p class="copyright-text">Copyright ©2010 - 2025 Norvia.io. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- footer end -->
+    <!-- javascript -->
+    <script src="{% static 'interface/js/vendors/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'interface/js/vendors/vanilla-marquee.min.js' %}"></script>
+    <script src="{% static 'interface/js/vendors/tradingview-widget.min.js' %}"></script>
+    <script src="{% static 'interface/js/utilities.min.js' %}"></script>
+    <script src="{% static 'interface/js/config-theme.js' %}"></script>
+
+	
+	<!-- Navbar JavaScript -->
+	<script>
+		// Hamburger menu toggle
+		const hamburgerBtn = document.getElementById('hamburgerBtn');
+		const sidebar = document.getElementById('sidebar');
+		const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+		if (hamburgerBtn) {
+			hamburgerBtn.addEventListener('click', function() {
+				this.classList.toggle('active');
+				sidebar.classList.toggle('active');
+				sidebarOverlay.classList.toggle('active');
+			});
+		}
+
+		if (sidebarOverlay) {
+			sidebarOverlay.addEventListener('click', function() {
+				hamburgerBtn.classList.remove('active');
+				sidebar.classList.remove('active');
+				sidebarOverlay.classList.remove('active');
+			});
+		}
+
+		// User menu dropdown
+		const userMenuBtn = document.getElementById('userMenuBtn');
+		const userDropdown = document.getElementById('userDropdown');
+
+		if (userMenuBtn) {
+			userMenuBtn.addEventListener('click', function(e) {
+				e.stopPropagation();
+				userDropdown.classList.toggle('active');
+			});
+		}
+
+		// Close dropdown when clicking outside
+		document.addEventListener('click', function(e) {
+			if (userMenuBtn && !userMenuBtn.contains(e.target) && userDropdown && !userDropdown.contains(e.target)) {
+				userDropdown.classList.remove('active');
+			}
+		});
+
+		// Theme toggle with proper icon switching
+		const themeToggle = document.getElementById('themeToggle');
+		const html = document.documentElement;
+
+		if (themeToggle) {
+			// Load saved theme
+			const savedTheme = localStorage.getItem('theme') || 'light';
+			html.setAttribute('data-theme', savedTheme);
+
+			const themeIcon = themeToggle.querySelector('i');
+			if (savedTheme === 'dark') {
+				themeIcon.textContent = 'light_mode';
+			} else {
+				themeIcon.textContent = 'dark_mode';
+			}
+
+			// Toggle theme
+			themeToggle.addEventListener('click', function() {
+				const currentTheme = html.getAttribute('data-theme');
+				const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+				html.setAttribute('data-theme', newTheme);
+				localStorage.setItem('theme', newTheme);
+
+				const icon = this.querySelector('i');
+				if (newTheme === 'dark') {
+					icon.textContent = 'light_mode';
+				} else {
+					icon.textContent = 'dark_mode';
+				}
+			});
+		}
+	</script>
+
+</body>
+</html>

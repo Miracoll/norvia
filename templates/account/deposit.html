@@ -1,0 +1,249 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <!-- Row -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="page-titles">
+                            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                  <li class="breadcrumb-item"><a href="dashboard_new.html">Dashboard</a></li>
+                                  <li class="breadcrumb-item active" aria-current="page">Deposit</li>
+                                </ol>
+                              </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <!-- Center Column - Deposit Form -->
+                            <div class="col-xl-8 col-lg-10">
+                                <h4 class="card-title mb-4" style="font-size: 22px; font-weight: 700;">Deposit Funds</h4>
+
+                                <!-- Payment Method Selection -->
+                                <div class="payment-methods mb-5">
+                                    <label class="form-label fw-bold mb-3">Select Payment Method</label>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="payment-method-card active" data-method="crypto" onclick="switchPaymentMethod('crypto')">
+                                                <i class="material-icons">currency_bitcoin</i>
+                                                <span>Cryptocurrency</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="payment-method-card" data-method="gateway" onclick="switchPaymentMethod('gateway')">
+                                                <i class="material-icons">payment</i>
+                                                <span>Payment Gateway</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Deposit Form -->
+                                <form method="post" id="depositForm">
+                                    {% csrf_token %}
+                                    <!-- Deposit To Wallet Selection -->
+                                    <div class="form-group mb-4">
+                                        <label class="form-label fw-bold">Deposit To</label>
+                                        <select id="walletSelect" class="deposit-select" name="deposit_to">
+                                            <option value="trading" selected>Trading Wallet</option>
+                                            <option value="holding">Holding Wallet</option>
+                                        </select>
+                                        <small class="text-muted d-block mt-2">
+                                            <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+                                            Select which wallet to deposit funds into
+                                        </small>
+                                    </div>
+
+                                    <!-- Crypto Section (shown by default) -->
+                                    <div id="cryptoSection">
+                                        <!-- Currency Selection -->
+                                        <div class="form-group mb-4">
+                                            <label class="form-label fw-bold">Select Currency</label>
+                                            <select id="currencySelect" class="deposit-select" name="currency">
+                                                <option value="" disabled selected>Choose a currency</option>
+                                                {% for currency in currency_list %}
+                                                <option value="{{ currency.ref }}">{{ currency.currency }} ({{ currency.abbr }})</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Gateway Section (hidden by default) -->
+                                    <div id="gatewaySection" style="display: none;">
+                                        <!-- Payment Gateway Selection -->
+                                        <div class="form-group mb-4">
+                                            <label class="form-label fw-bold">Select Payment Method</label>
+                                            <select id="gatewaySelect" class="deposit-select" name="payment_gateway">
+                                                <option value="" disabled selected>Choose a payment method</option>
+                                                {% for gateway in payment_gateway_list %}
+                                                <option value="{{ gateway.ref }}">{{ gateway.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Amount Input -->
+                                    <div class="form-group mb-4">
+                                        <label class="form-label fw-bold">Amount (USD)</label>
+                                        <div class="amount-input-wrapper">
+                                            <span class="input-prefix">$</span>
+                                            <input type="number" id="depositAmount" placeholder="Enter amount" name="amount" min="10" step="0.01">
+                                            <span class="input-suffix" id="currencyLabel">USDT</span>
+                                        </div>
+                                        <small class="text-muted d-block mt-2">Minimum deposit: $10.00</small>
+                                    </div>
+
+                                    <!-- Fee Display -->
+                                    <div class="mb-5">
+                                        <div class="fee-breakdown">
+                                            <div class="fee-row">
+                                                <span>Deposit Amount:</span>
+                                                <span id="displayAmount">$0.00</span>
+                                            </div>
+                                            <div class="fee-row">
+                                                <span>Network Fee:</span>
+                                                <span id="displayFee">$0.00</span>
+                                            </div>
+                                            <div class="fee-row total">
+                                                <span><strong>Total Deposit:</strong></span>
+                                                <span><strong id="displayTotal">$0.00</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn btn-primary btn-lg w-100" style="height: 58px; font-size: 16px; font-weight: 600; border-radius: 12px;">
+                                        <i class="material-icons me-2" style="vertical-align: middle; font-size: 20px;">add_circle</i>
+                                        Generate Deposit Address
+                                    </button>
+                                </form>
+
+                                <!-- Buy Crypto Button -->
+                                <div class="text-center mt-4 mb-4">
+                                    <p class="text-muted mb-3" style="font-size: 14px;">Don't have crypto?</p>
+                                    <a href="buy-crypto.php" class="btn btn-outline-primary btn-lg" style="height: 58px; padding: 0 35px; display: inline-flex; align-items: center; font-weight: 600; border-radius: 12px; border-width: 2px;">
+                                        <i class="material-icons me-2" style="font-size: 20px;">shopping_cart</i>
+                                        Buy Crypto Now
+                                    </a>
+                                </div>
+
+                                <!-- Important Information -->
+                                <div class="alert alert-info mt-4" style="border-radius: 12px; border-left: none;">
+                                    <h6 class="alert-heading"><i class="material-icons me-2" style="vertical-align: middle;">info</i>Important Information</h6>
+                                    <ul class="mb-0 ps-3" style="font-size: 14px;">
+                                        <li>Send only the selected cryptocurrency to the generated address</li>
+                                        <li>Minimum deposit: $10.00 USD</li>
+                                        <li>Deposits require network confirmations</li>
+                                        <li>Your account will be credited automatically after confirmation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // Network options for each currency
+    const currencyNetworks = {
+        'btc': [
+            { value: 'bitcoin', label: 'Bitcoin Network' }
+        ],
+        'eth': [
+            { value: 'erc20', label: 'ERC20 (Ethereum)' }
+        ],
+        'usdt': [
+            { value: 'erc20', label: 'ERC20 (Ethereum)' },
+            { value: 'trc20', label: 'TRC20 (Tron)' },
+            { value: 'bep20', label: 'BEP20 (BSC)' }
+        ],
+        'bnb': [
+            { value: 'bep20', label: 'BEP20 (BSC)' },
+            { value: 'bep2', label: 'BEP2 (Binance Chain)' }
+        ],
+        'sol': [
+            { value: 'solana', label: 'Solana Network' }
+        ]
+    };
+
+    // Switch between payment methods
+    function switchPaymentMethod(method) {
+        // Update active state
+        document.querySelectorAll('.payment-method-card').forEach(card => card.classList.remove('active'));
+        document.querySelector(`[data-method="${method}"]`).classList.add('active');
+
+        // Show/hide sections
+        if (method === 'crypto') {
+            document.getElementById('cryptoSection').style.display = 'block';
+            document.getElementById('gatewaySection').style.display = 'none';
+        } else {
+            document.getElementById('cryptoSection').style.display = 'none';
+            document.getElementById('gatewaySection').style.display = 'block';
+        }
+    }
+
+    // Update currency label and network options
+    function updateCurrencyLabel() {
+        const select = document.getElementById('currencySelect');
+        const selectedOption = select.options[select.selectedIndex];
+        const currency = selectedOption.text.match(/\(([^)]+)\)/)[1]; // Extract BTC, ETH, etc.
+        const currencyValue = select.value;
+
+        // Update the currency label
+        document.getElementById('currencyLabel').textContent = currency;
+
+        // Update network dropdown based on selected currency
+        const networkSelect = document.getElementById('networkSelect');
+        const networks = currencyNetworks[currencyValue] || [];
+
+        // Clear current options
+        networkSelect.innerHTML = '';
+
+        // Add new options
+        networks.forEach((network, index) => {
+            const option = document.createElement('option');
+            option.value = network.value;
+            option.textContent = network.label;
+            if (index === 0) option.selected = true; // Select first option by default
+            networkSelect.appendChild(option);
+        });
+    }
+
+    // Update amount display (no fee calculation - admin will set fees)
+    document.getElementById('depositAmount').addEventListener('input', function() {
+        const amount = parseFloat(this.value) || 0;
+
+        document.getElementById('displayAmount').textContent = '$' + amount.toFixed(2);
+        // Network fee will be set by admin based on selected payment method/network
+        document.getElementById('displayFee').textContent = '$0.00';
+        document.getElementById('displayTotal').textContent = '$' + amount.toFixed(2);
+    });
+
+    // Form submission
+    document.getElementById('depositForm').addEventListener('submit', function(e) {
+        const amount = document.getElementById('depositAmount').value;
+        if (!amount || amount < 10) {
+            e.preventDefault();
+            alert('Please enter an amount of at least $10.00');
+        }
+    });
+
+    // Initialize networks for default currency on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        updateCurrencyLabel();
+    });
+</script>
+{% endblock extra_scripts %}

@@ -1,0 +1,468 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 style="font-size: 24px; font-weight: 700; color: #1a1a1a; margin: 0;">Email Templates</h2>
+                        <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Manage and customize automated email templates</p>
+                    </div>
+                    <div>
+                        <button style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);" onclick="createNewTemplate()">
+                            <i class="material-icons">add</i>
+                            Create New Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Templates Grid -->
+        <div class="row">
+            <!-- Template 1: Welcome Email -->
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
+                        <iframe src="email-templates/welcome-email.html" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Welcome Email</h4>
+                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when a new user registers on the platform</p>
+                            </div>
+                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
+                                <span>Last Updated: Oct 20, 2025</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
+                                <span>Sent: 1,234 times</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b;" onclick="previewTemplate('welcome-email')">
+                                <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                Preview
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;" onclick="editTemplate('welcome-email')">
+                                <i class="material-icons" style="font-size: 18px;">edit</i>
+                                Edit
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white;" onclick="testTemplate('welcome-email')">
+                                <i class="material-icons" style="font-size: 18px;">email</i>
+                                Test Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template 2: Password Reset -->
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
+                        <iframe src="email-templates/password-reset.html" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Password Reset</h4>
+                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when user requests password reset</p>
+                            </div>
+                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
+                                <span>Last Updated: Oct 18, 2025</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
+                                <span>Sent: 456 times</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b;" onclick="previewTemplate('password-reset')">
+                                <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                Preview
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;" onclick="editTemplate('password-reset')">
+                                <i class="material-icons" style="font-size: 18px;">edit</i>
+                                Edit
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white;" onclick="testTemplate('password-reset')">
+                                <i class="material-icons" style="font-size: 18px;">email</i>
+                                Test Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template 3: Deposit Confirmation -->
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
+                        <iframe src="email-templates/deposit-confirmation.html" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Deposit Confirmation</h4>
+                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when deposit is successful</p>
+                            </div>
+                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
+                                <span>Last Updated: Oct 22, 2025</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
+                                <span>Sent: 2,847 times</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b;" onclick="previewTemplate('deposit-confirmation')">
+                                <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                Preview
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;" onclick="editTemplate('deposit-confirmation')">
+                                <i class="material-icons" style="font-size: 18px;">edit</i>
+                                Edit
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white;" onclick="testTemplate('deposit-confirmation')">
+                                <i class="material-icons" style="font-size: 18px;">email</i>
+                                Test Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template 4: Withdrawal Request -->
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                    <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
+                        <iframe src="email-templates/withdrawal-request.html" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Withdrawal Request</h4>
+                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when withdrawal is processed</p>
+                            </div>
+                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
+                                <span>Last Updated: Oct 19, 2025</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
+                                <span>Sent: 1,573 times</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b;" onclick="previewTemplate('withdrawal-request')">
+                                <i class="material-icons" style="font-size: 18px;">visibility</i>
+                                Preview
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;" onclick="editTemplate('withdrawal-request')">
+                                <i class="material-icons" style="font-size: 18px;">edit</i>
+                                Edit
+                            </button>
+                            <button style="flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white;" onclick="testTemplate('withdrawal-request')">
+                                <i class="material-icons" style="font-size: 18px;">email</i>
+                                Test Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Template Editor Modal -->
+<div id="templateEditorModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: white; border-radius: 16px; max-width: 1200px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 30px; border-bottom: 2px solid #e5e7eb;">
+            <h3 style="font-size: 20px; font-weight: 700; color: #1a1a1a; margin: 0;">Edit Email Template</h3>
+            <button style="background: #f8fafc; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="closeTemplateEditor()">
+                <i class="material-icons" style="font-size: 20px; color: #64748b;">close</i>
+            </button>
+        </div>
+
+        <!-- Editor Tabs -->
+        <div style="display: flex; gap: 8px; padding: 16px 30px; border-bottom: 2px solid #e5e7eb;">
+            <button id="editTabBtn" style="background: transparent; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; color: #ef4444; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid #ef4444; margin-bottom: -2px;" onclick="switchTab('edit')">
+                <i class="material-icons" style="font-size: 20px;">edit</i>
+                Edit
+            </button>
+            <button id="previewTabBtn" style="background: transparent; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; margin-bottom: -2px;" onclick="switchTab('preview')">
+                <i class="material-icons" style="font-size: 20px;">visibility</i>
+                Preview
+            </button>
+        </div>
+
+        <div style="flex: 1; overflow-y: auto; padding: 30px;">
+            <!-- Edit Tab -->
+            <div id="editTab">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Template Name</label>
+                            <input type="text" id="templateName" placeholder="e.g., Welcome Email" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Subject Line</label>
+                            <input type="text" id="templateSubject" placeholder="e.g., Welcome to Norvia.io!" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Template Description</label>
+                    <input type="text" id="templateDescription" placeholder="Brief description of when this email is sent" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Email Header Title</label>
+                            <input type="text" id="emailHeaderTitle" placeholder="e.g., Welcome to Norvia.io!" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Email Header Subtitle</label>
+                            <input type="text" id="emailHeaderSubtitle" placeholder="e.g., Your trading journey starts here" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Email Body Content</label>
+                    <textarea id="emailBodyContent" placeholder="Enter the main email message here. You can use [User Name], [Email], [Amount], etc." style="width: 100%; height: 150px; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; line-height: 1.6; resize: vertical;"></textarea>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 6px;">Use variables like [User Name], [Email], [Amount], [Date], [Transaction ID], [Balance], [Status]</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Button Text (Optional)</label>
+                            <input type="text" id="emailButtonText" placeholder="e.g., Get Started Now" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Button Link (Optional)</label>
+                            <input type="text" id="emailButtonLink" placeholder="e.g., https://norvia.io/dashboard" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Template Status</label>
+                    <select id="templateStatus" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="draft">Draft</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Preview Tab -->
+            <div id="previewTab" style="display: none;">
+                <div style="width: 100%; height: 500px; border: 2px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #f9fafb;">
+                    <iframe id="modalPreviewFrame" frameborder="0" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+                <p style="font-size: 13px; color: #64748b; margin-top: 12px; text-align: center;">This is a preview of the current email template</p>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px; padding: 20px 30px; border-top: 2px solid #e5e7eb; background: #f9fafb;">
+            <button style="background: white; border: 2px solid #e5e7eb; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer;" onclick="closeTemplateEditor()">Cancel</button>
+            <button style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);" onclick="saveTemplate()">
+                <i class="material-icons" style="font-size: 18px;">save</i>
+                Save Template
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    let currentTemplate = null;
+
+    // Create New Template
+    function createNewTemplate() {
+        alert('Create New Template functionality - Coming soon!');
+    }
+
+    // Preview Template - Opens in new window
+    function previewTemplate(templateName) {
+        window.open('email-templates/' + templateName + '.html', '_blank', 'width=800,height=600');
+    }
+
+    // Edit Template - Opens modal
+    function editTemplate(templateName) {
+        currentTemplate = templateName;
+
+        // Template data
+        const templates = {
+            'welcome-email': {
+                name: 'Welcome Email',
+                subject: 'Welcome to Norvia.io!',
+                description: 'Sent when a new user registers on the platform',
+                headerTitle: 'Welcome to Norvia.io!',
+                headerSubtitle: 'Your trading journey starts here',
+                bodyContent: 'We\'re thrilled to have you join the Norvia.io community. Your account has been successfully created and you\'re now ready to start your trading adventure!\n\nHere\'s what you can do next:\n• Complete your profile\n• Make your first deposit\n• Explore our traders',
+                buttonText: 'Get Started Now',
+                buttonLink: 'https://norvia.io/dashboard',
+                status: 'active'
+            },
+            'password-reset': {
+                name: 'Password Reset',
+                subject: 'Reset Your Password - Norvia.io',
+                description: 'Sent when user requests password reset',
+                headerTitle: 'Password Reset Request',
+                headerSubtitle: '',
+                bodyContent: 'Hi [User Name],\n\nWe received a request to reset your password for your Norvia.io account. Click the button below to create a new password.\n\nThis link will expire in 15 minutes for security reasons.',
+                buttonText: 'Reset Password',
+                buttonLink: 'https://norvia.io/reset-password',
+                status: 'active'
+            },
+            'deposit-confirmation': {
+                name: 'Deposit Confirmation',
+                subject: 'Deposit Successful - Norvia.io',
+                description: 'Sent when deposit is successful',
+                headerTitle: 'Deposit Successful!',
+                headerSubtitle: 'Your funds have been credited to your account',
+                bodyContent: 'Hi [User Name],\n\nYour deposit of [Amount] has been successfully processed and credited to your Norvia.io account.\n\nTransaction ID: [Transaction ID]\nNew Balance: [Balance]',
+                buttonText: 'View Dashboard',
+                buttonLink: 'https://norvia.io/dashboard',
+                status: 'active'
+            },
+            'withdrawal-request': {
+                name: 'Withdrawal Request',
+                subject: 'Withdrawal Processing - Norvia.io',
+                description: 'Sent when withdrawal is processed',
+                headerTitle: 'Withdrawal Request Received',
+                headerSubtitle: 'Processing Time: 1-3 Business Days',
+                bodyContent: 'Hi [User Name],\n\nWe have received your withdrawal request of [Amount].\n\nTransaction ID: [Transaction ID]\nStatus: [Status]\n\nYour request will be processed within 1-3 business days.',
+                buttonText: 'Track Withdrawal',
+                buttonLink: 'https://norvia.io/withdrawals',
+                status: 'active'
+            }
+        };
+
+        if (templates[templateName]) {
+            document.getElementById('templateName').value = templates[templateName].name;
+            document.getElementById('templateSubject').value = templates[templateName].subject;
+            document.getElementById('templateDescription').value = templates[templateName].description;
+            document.getElementById('emailHeaderTitle').value = templates[templateName].headerTitle;
+            document.getElementById('emailHeaderSubtitle').value = templates[templateName].headerSubtitle;
+            document.getElementById('emailBodyContent').value = templates[templateName].bodyContent;
+            document.getElementById('emailButtonText').value = templates[templateName].buttonText;
+            document.getElementById('emailButtonLink').value = templates[templateName].buttonLink;
+            document.getElementById('templateStatus').value = templates[templateName].status;
+
+            // Load template preview in modal
+            document.getElementById('modalPreviewFrame').src = 'email-templates/' + templateName + '.html';
+        }
+
+        // Show edit tab by default
+        switchTab('edit');
+        openTemplateEditor();
+    }
+
+    // Switch between Edit and Preview tabs
+    function switchTab(tab) {
+        const editTab = document.getElementById('editTab');
+        const previewTab = document.getElementById('previewTab');
+        const editTabBtn = document.getElementById('editTabBtn');
+        const previewTabBtn = document.getElementById('previewTabBtn');
+
+        if (tab === 'edit') {
+            editTab.style.display = 'block';
+            previewTab.style.display = 'none';
+            editTabBtn.style.color = '#ef4444';
+            editTabBtn.style.borderBottomColor = '#ef4444';
+            previewTabBtn.style.color = '#64748b';
+            previewTabBtn.style.borderBottomColor = 'transparent';
+        } else {
+            editTab.style.display = 'none';
+            previewTab.style.display = 'block';
+            editTabBtn.style.color = '#64748b';
+            editTabBtn.style.borderBottomColor = 'transparent';
+            previewTabBtn.style.color = '#ef4444';
+            previewTabBtn.style.borderBottomColor = '#ef4444';
+        }
+    }
+
+    // Open Template Editor Modal
+    function openTemplateEditor() {
+        document.getElementById('templateEditorModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close Template Editor Modal
+    function closeTemplateEditor() {
+        document.getElementById('templateEditorModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Save Template
+    function saveTemplate() {
+        const name = document.getElementById('templateName').value;
+        const subject = document.getElementById('templateSubject').value;
+        const description = document.getElementById('templateDescription').value;
+        const headerTitle = document.getElementById('emailHeaderTitle').value;
+        const headerSubtitle = document.getElementById('emailHeaderSubtitle').value;
+        const bodyContent = document.getElementById('emailBodyContent').value;
+        const buttonText = document.getElementById('emailButtonText').value;
+        const buttonLink = document.getElementById('emailButtonLink').value;
+        const status = document.getElementById('templateStatus').value;
+
+        if (!name || !subject || !headerTitle || !bodyContent) {
+            alert('Please fill in all required fields (Name, Subject, Header Title, and Body Content)');
+            return;
+        }
+
+        alert('Template Saved Successfully!\n\nName: ' + name + '\nSubject: ' + subject + '\nDescription: ' + description + '\nStatus: ' + status + '\n\n(In production, this would save the template to the server)');
+        closeTemplateEditor();
+    }
+
+    // Close modal on outside click
+    document.getElementById('templateEditorModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeTemplateEditor();
+        }
+    });
+
+    // Test Send Template
+    function testTemplate(templateName) {
+        const email = prompt('Enter email address to send test email:');
+        if (email) {
+            alert('Test email sent to: ' + email + '\n\nTemplate: ' + templateName);
+        }
+    }
+</script>
+{% endblock extra_scripts %}

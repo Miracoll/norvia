@@ -1,0 +1,433 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Verification Settings</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <i class="material-icons" style="font-size: 32px;">verified_user</i>
+            <div>
+                <h2>Verification Settings</h2>
+                <p>Configure verification requirements for user accounts</p>
+            </div>
+        </div>
+
+        <!-- Statistics Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="material-icons">verified</i>
+                </div>
+                <div class="stat-details">
+                    <h4>847</h4>
+                    <p>KYC Verified Users</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="material-icons">pending</i>
+                </div>
+                <div class="stat-details">
+                    <h4>123</h4>
+                    <p>Pending Verifications</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon info">
+                    <i class="material-icons">home</i>
+                </div>
+                <div class="stat-details">
+                    <h4>654</h4>
+                    <p>Address Verified</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="material-icons">cancel</i>
+                </div>
+                <div class="stat-details">
+                    <h4>45</h4>
+                    <p>Rejected</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KYC Verification Settings -->
+        <div class="settings-section">
+            <div class="section-header">
+                <div class="section-icon-header">
+                    <i class="material-icons">badge</i>
+                </div>
+                <div class="section-title">
+                    <h3>KYC Verification</h3>
+                    <p>Configure identity verification settings</p>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Enable KYC Verification</h4>
+                    <p>Require users to verify their identity</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="kycEnabled" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Requirement Level</h4>
+                    <p>When users must complete KYC verification</p>
+                </div>
+                <select class="setting-select" style="max-width: 300px;">
+                    <option value="optional">Optional</option>
+                    <option value="before_deposit" selected>Before First Deposit</option>
+                    <option value="before_withdrawal">Before First Withdrawal</option>
+                    <option value="mandatory">Mandatory (Upon Registration)</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Transaction Limits (Unverified Users)</h4>
+                    <p>Maximum transaction amounts for unverified users</p>
+                </div>
+                <div class="setting-input-group">
+                    <div>
+                        <label class="form-label">Max Deposit</label>
+                        <input type="number" class="setting-input" value="1000" placeholder="USD">
+                    </div>
+                    <div>
+                        <label class="form-label">Max Withdrawal</label>
+                        <input type="number" class="setting-input" value="500" placeholder="USD">
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Required Documents</h4>
+                    <p>Select which documents users must upload</p>
+                </div>
+                <div class="documents-grid">
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="doc1" checked>
+                        <label for="doc1">Government ID</label>
+                    </div>
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="doc2" checked>
+                        <label for="doc2">Passport</label>
+                    </div>
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="doc3">
+                        <label for="doc3">Driver's License</label>
+                    </div>
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="doc4" checked>
+                        <label for="doc4">Selfie with ID</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Retry Limit</h4>
+                    <p>Maximum failed verification attempts before review</p>
+                </div>
+                <input type="number" class="setting-input" value="3" style="max-width: 150px;">
+            </div>
+        </div>
+
+        <!-- Address Verification Settings -->
+        <div class="settings-section">
+            <div class="section-header">
+                <div class="section-icon-header">
+                    <i class="material-icons">home</i>
+                </div>
+                <div class="section-title">
+                    <h3>Address Verification</h3>
+                    <p>Configure proof of address requirements</p>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Enable Address Verification</h4>
+                    <p>Require users to verify their residential address</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="addressEnabled" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Requirement Level</h4>
+                    <p>When users must complete address verification</p>
+                </div>
+                <select class="setting-select" style="max-width: 300px;">
+                    <option value="optional">Optional</option>
+                    <option value="after_kyc" selected>After KYC Verification</option>
+                    <option value="before_withdrawal">Before Withdrawals Over $5,000</option>
+                    <option value="mandatory">Mandatory</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Accepted Documents</h4>
+                    <p>Select which documents are accepted as proof of address</p>
+                </div>
+                <div class="documents-grid">
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="addr1" checked>
+                        <label for="addr1">Utility Bill</label>
+                    </div>
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="addr2" checked>
+                        <label for="addr2">Bank Statement</label>
+                    </div>
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="addr3" checked>
+                        <label for="addr3">Tax Document</label>
+                    </div>
+                    <div class="document-checkbox">
+                        <input type="checkbox" id="addr4">
+                        <label for="addr4">Lease Agreement</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Document Age Limit</h4>
+                    <p>Maximum age of documents accepted (in months)</p>
+                </div>
+                <input type="number" class="setting-input" value="3" style="max-width: 150px;">
+            </div>
+        </div>
+
+        <!-- Phone Verification Settings -->
+        <div class="settings-section">
+            <div class="section-header">
+                <div class="section-icon-header">
+                    <i class="material-icons">phone</i>
+                </div>
+                <div class="section-title">
+                    <h3>Phone Verification</h3>
+                    <p>Configure phone number verification via OTP</p>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Enable Phone Verification</h4>
+                    <p>Require users to verify their phone number</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="phoneEnabled" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>OTP Expiry Time</h4>
+                    <p>Time before OTP code expires</p>
+                </div>
+                <select class="setting-select" style="max-width: 200px;">
+                    <option value="2">2 minutes</option>
+                    <option value="5" selected>5 minutes</option>
+                    <option value="10">10 minutes</option>
+                    <option value="15">15 minutes</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Resend Limit</h4>
+                    <p>Maximum OTP resend attempts per hour</p>
+                </div>
+                <input type="number" class="setting-input" value="3" style="max-width: 150px;">
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Cooldown Period</h4>
+                    <p>Wait time between OTP resend attempts</p>
+                </div>
+                <select class="setting-select" style="max-width: 200px;">
+                    <option value="30">30 seconds</option>
+                    <option value="60" selected>1 minute</option>
+                    <option value="120">2 minutes</option>
+                    <option value="300">5 minutes</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Email Verification Settings -->
+        <div class="settings-section">
+            <div class="section-header">
+                <div class="section-icon-header">
+                    <i class="material-icons">email</i>
+                </div>
+                <div class="section-title">
+                    <h3>Email Verification</h3>
+                    <p>Configure email verification requirements</p>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Enable Email Verification</h4>
+                    <p>Require users to verify their email address</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="emailEnabled" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Verification Link Expiry</h4>
+                    <p>Time before verification link expires</p>
+                </div>
+                <select class="setting-select" style="max-width: 200px;">
+                    <option value="1">1 hour</option>
+                    <option value="6">6 hours</option>
+                    <option value="24" selected>24 hours</option>
+                    <option value="72">72 hours</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Resend Limit</h4>
+                    <p>Maximum verification email resend attempts</p>
+                </div>
+                <input type="number" class="setting-input" value="5" style="max-width: 150px;">
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-reset" onclick="resetSettings()">
+                Reset to Defaults
+            </button>
+            <button class="btn-save" onclick="saveSettings()">
+                <i class="material-icons">save</i>
+                Save Settings
+            </button>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    function saveSettings() {
+        // Collect all settings
+        const settings = {
+            kyc: {
+                enabled: document.getElementById('kycEnabled').checked,
+                // Add other KYC settings
+            },
+            address: {
+                enabled: document.getElementById('addressEnabled').checked,
+                // Add other address settings
+            },
+            phone: {
+                enabled: document.getElementById('phoneEnabled').checked,
+                // Add other phone settings
+            },
+            email: {
+                enabled: document.getElementById('emailEnabled').checked,
+                // Add other email settings
+            }
+        };
+
+        // Show success message
+        alert('Settings saved successfully!');
+        console.log('Saved settings:', settings);
+    }
+
+    function resetSettings() {
+        if (confirm('Are you sure you want to reset all settings to defaults?')) {
+            // Reset all form fields to default values
+            location.reload();
+        }
+    }
+
+    // Mobile Sidebar Toggle
+    (function() {
+        let overlay = document.querySelector('.sidebar-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.dlabnav');
+
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('is-active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', function() {
+                hamburger.classList.remove('is-active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            sidebar.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        setTimeout(function() {
+                            hamburger.classList.remove('is-active');
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }, 300);
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    hamburger.classList.remove('is-active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    })();
+
+</script>
+{% endblock extra_scripts %}

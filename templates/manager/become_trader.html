@@ -1,0 +1,356 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>Manage Trader Benefits</h2>
+            <p>Add, edit, or remove benefit cards shown on the "Become a Trader" page</p>
+        </div>
+
+        <!-- Info Alert -->
+        <div class="alert alert-info">
+            <i class="material-icons">info</i>
+            <div>
+                <strong>Note:</strong> Changes made here will appear on the user-facing "Become a Trader" application page. Cards are displayed in the order shown below.
+            </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid" id="cardsGrid">
+            <!-- Cards will be rendered here by JavaScript -->
+        </div>
+
+    </div>
+</div>
+
+<!-- Add/Edit Card Modal -->
+<div id="cardModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add Benefit Card</h3>
+            <button class="modal-close" onclick="closeModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+
+        <form id="cardForm">
+            <input type="hidden" id="cardId">
+
+            <div class="form-group">
+                <label class="form-label">Select Icon <span class="required">*</span></label>
+                <div class="icon-selector" id="iconSelector">
+                    <!-- Icons will be populated by JavaScript -->
+                </div>
+                <input type="hidden" id="cardIcon" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Card Title <span class="required">*</span></label>
+                <input type="text" class="form-control" id="cardTitle" placeholder="e.g., Earn Extra Income" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Card Description <span class="required">*</span></label>
+                <textarea class="form-control" id="cardDescription" placeholder="Brief description of this benefit..." required></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                    <i class="material-icons">close</i>
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-success">
+                    <i class="material-icons">save</i>
+                    Save Card
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // Sample data - In production, this would come from a database
+    let benefitCards = [
+        {
+            id: 1,
+            icon: 'payments',
+            title: 'Earn Extra Income',
+            description: 'Receive commission from followers who copy your trades'
+        },
+        {
+            id: 2,
+            icon: 'group',
+            title: 'Build Your Reputation',
+            description: 'Grow your follower base and establish yourself as a trusted trader'
+        },
+        {
+            id: 3,
+            icon: 'analytics',
+            title: 'Performance Tracking',
+            description: 'Access advanced analytics and insights on your trading performance'
+        },
+        {
+            id: 4,
+            icon: 'verified',
+            title: 'Verified Badge',
+            description: 'Get a verified trader badge to boost your credibility'
+        }
+    ];
+
+    // Available Material Icons
+    const availableIcons = [
+        'payments', 'group', 'analytics', 'verified', 'trending_up', 'star',
+        'workspace_premium', 'emoji_events', 'military_tech', 'shield',
+        'local_atm', 'account_balance', 'attach_money', 'monetization_on',
+        'security', 'check_circle', 'thumb_up', 'favorite', 'visibility',
+        'groups', 'support_agent', 'handshake', 'business_center'
+    ];
+
+    let editingCardId = null;
+
+    // Render cards
+    function renderCards() {
+        const grid = document.getElementById('cardsGrid');
+        grid.innerHTML = '';
+
+        // Render existing cards
+        benefitCards.forEach(card => {
+            const cardElement = document.createElement('div');
+            cardElement.className = 'benefit-card-admin';
+            cardElement.innerHTML = `
+                <div class="benefit-card-preview">
+                    <i class="material-icons">${card.icon}</i>
+                    <h4>${card.title}</h4>
+                    <p>${card.description}</p>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="editCard(${card.id})" style="flex: 1;">
+                        <i class="material-icons">edit</i>
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm btn-icon" onclick="deleteCard(${card.id})">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </div>
+            `;
+            grid.appendChild(cardElement);
+        });
+
+        // Add "Add New Card" button
+        const addButton = document.createElement('div');
+        addButton.className = 'add-card-button';
+        addButton.onclick = openModal;
+        addButton.innerHTML = `
+            <i class="material-icons">add_circle</i>
+            <h4>Add New Benefit</h4>
+            <p>Click to create a new benefit card</p>
+        `;
+        grid.appendChild(addButton);
+    }
+
+    // Populate icon selector
+    function populateIconSelector() {
+        const selector = document.getElementById('iconSelector');
+        selector.innerHTML = '';
+
+        availableIcons.forEach(icon => {
+            const iconOption = document.createElement('div');
+            iconOption.className = 'icon-option';
+            iconOption.innerHTML = `<i class="material-icons">${icon}</i>`;
+            iconOption.onclick = () => selectIcon(icon, iconOption);
+            selector.appendChild(iconOption);
+        });
+    }
+
+    // Select icon
+    function selectIcon(icon, element) {
+        // Remove previous selection
+        document.querySelectorAll('.icon-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+        // Select new icon
+        element.classList.add('selected');
+        document.getElementById('cardIcon').value = icon;
+    }
+
+    // Open modal
+    function openModal(cardId = null) {
+        editingCardId = cardId;
+        const modal = document.getElementById('cardModal');
+        const form = document.getElementById('cardForm');
+        const title = document.getElementById('modalTitle');
+
+        form.reset();
+        document.querySelectorAll('.icon-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+        if (cardId) {
+            // Edit mode
+            const card = benefitCards.find(c => c.id === cardId);
+            if (card) {
+                title.textContent = 'Edit Benefit Card';
+                document.getElementById('cardId').value = card.id;
+                document.getElementById('cardTitle').value = card.title;
+                document.getElementById('cardDescription').value = card.description;
+                document.getElementById('cardIcon').value = card.icon;
+
+                // Select the icon
+                const iconOptions = document.querySelectorAll('.icon-option');
+                iconOptions.forEach(opt => {
+                    if (opt.querySelector('i').textContent === card.icon) {
+                        opt.classList.add('selected');
+                    }
+                });
+            }
+        } else {
+            // Add mode
+            title.textContent = 'Add Benefit Card';
+        }
+
+        modal.classList.add('show');
+    }
+
+    // Close modal
+    function closeModal() {
+        document.getElementById('cardModal').classList.remove('show');
+        editingCardId = null;
+    }
+
+    // Edit card
+    function editCard(id) {
+        openModal(id);
+    }
+
+    // Delete card
+    function deleteCard(id) {
+        if (confirm('Are you sure you want to delete this benefit card?')) {
+            benefitCards = benefitCards.filter(card => card.id !== id);
+            renderCards();
+
+            // In production, send delete request to backend
+            console.log('Deleted card:', id);
+            showNotification('Card deleted successfully!', 'success');
+        }
+    }
+
+    // Save card (form submission)
+    document.getElementById('cardForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const icon = document.getElementById('cardIcon').value;
+        const title = document.getElementById('cardTitle').value;
+        const description = document.getElementById('cardDescription').value;
+
+        if (!icon) {
+            alert('Please select an icon');
+            return;
+        }
+
+        if (editingCardId) {
+            // Update existing card
+            const card = benefitCards.find(c => c.id === editingCardId);
+            if (card) {
+                card.icon = icon;
+                card.title = title;
+                card.description = description;
+                console.log('Updated card:', card);
+                showNotification('Card updated successfully!', 'success');
+            }
+        } else {
+            // Add new card
+            const newCard = {
+                id: benefitCards.length > 0 ? Math.max(...benefitCards.map(c => c.id)) + 1 : 1,
+                icon: icon,
+                title: title,
+                description: description
+            };
+            benefitCards.push(newCard);
+            console.log('Added card:', newCard);
+            showNotification('Card added successfully!', 'success');
+        }
+
+        // In production, send data to backend
+        // fetch('/api/trader-benefits', { method: 'POST', body: JSON.stringify(benefitCards) });
+
+        renderCards();
+        closeModal();
+    });
+
+    // Show notification
+    function showNotification(message, type) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : '#ef4444'};
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            font-weight: 600;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Mobile sidebar toggle
+    (function() {
+        let overlay = document.querySelector('.sidebar-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.dlabnav');
+
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('is-active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', function() {
+                hamburger.classList.remove('is-active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+    })();
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCards();
+        populateIconSelector();
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('cardModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+</script>
+{% endblock extra_scripts %}

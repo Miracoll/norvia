@@ -1,0 +1,154 @@
+{% extends 'account/base.html' %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+        <!-- Breadcrumb -->
+        <div class="row page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Referrals</a></li>
+            </ol>
+        </div>
+
+        <!-- Referral Header -->
+        <div class="row">
+            <div class="col-12">
+                <div class="referral-header">
+                    <div class="referral-header-content">
+                        <h1>Refer Friends & Earn Rewards</h1>
+                        <p>Invite your friends to join InferraAI and earn commission on their trading activity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Referral Link Section -->
+        <div class="row">
+            <div class="col-xl-10 mx-auto">
+                <div class="referral-link-card">
+                    <h3 class="card-title">
+                        <i class="material-icons">link</i>
+                        Referral Link
+                    </h3>
+                    <p class="card-subtitle">Share this unique link with your friends to start earning rewards</p>
+
+                    <div class="referral-link-input-group">
+                        <input type="text" class="referral-link-input" id="referralLink" value="https://inferraai.com/ref/JOHN2024" readonly>
+                        <button class="btn-copy" onclick="copyReferralLink()">
+                            <i class="material-icons">content_copy</i>
+                            Copy Link
+                        </button>
+                    </div>
+
+                    <div class="share-buttons">
+                        <button class="btn-share" onclick="shareViaEmail()">
+                            <i class="material-icons">email</i>
+                            Email
+                        </button>
+                        <button class="btn-share" onclick="shareViaWhatsApp()">
+                            <i class="material-icons">chat</i>
+                            WhatsApp
+                        </button>
+                        <button class="btn-share" onclick="shareViaTwitter()">
+                            <i class="material-icons">share</i>
+                            Twitter
+                        </button>
+                        <button class="btn-share" onclick="shareViaFacebook()">
+                            <i class="material-icons">thumb_up</i>
+                            Facebook
+                        </button>
+                    </div>
+                </div>
+
+                <!-- How It Works Section -->
+                <div class="how-it-works-card">
+                    <h3 class="card-title">
+                        <i class="material-icons">info</i>
+                        How It Works
+                    </h3>
+                    <p class="card-subtitle">Earn rewards in 3 simple steps</p>
+
+                    <div class="steps-grid">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Share Your Link</div>
+                            <div class="step-description">Send your unique referral link to friends via email, social media, or any platform</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-title">They Sign Up</div>
+                            <div class="step-description">Your friends create an account using your referral link and start trading</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Earn Rewards</div>
+                            <div class="step-description">Get 2% commission on their trading fees for life, paid instantly</div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="material-icons">stars</i>
+                        <div class="info-box-content">
+                            <h4>Referral Benefits</h4>
+                            <p>• Earn 2% lifetime commission on trading fees<br>
+                            • Unlimited referrals allowed<br>
+                            • Instant commission payouts<br>
+                            • Track earnings in real-time<br>
+                            • Withdraw anytime to your wallet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // Copy referral link
+    function copyReferralLink() {
+        const linkInput = document.getElementById('referralLink');
+        linkInput.select();
+        linkInput.setSelectionRange(0, 99999); // For mobile devices
+
+        navigator.clipboard.writeText(linkInput.value).then(() => {
+            alert('Referral link copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            // Fallback for older browsers
+            document.execCommand('copy');
+            alert('Referral link copied to clipboard!');
+        });
+    }
+
+    // Share via Email
+    function shareViaEmail() {
+        const link = document.getElementById('referralLink').value;
+        const subject = encodeURIComponent('Join me on InferraAI - Copy Trading Platform');
+        const body = encodeURIComponent(`Hey! I've been using InferraAI for copy trading and thought you might be interested.\n\nUse my referral link to sign up: ${link}\n\nHappy Trading!`);
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    // Share via WhatsApp
+    function shareViaWhatsApp() {
+        const link = document.getElementById('referralLink').value;
+        const text = encodeURIComponent(`Join me on InferraAI Copy Trading Platform! Use my referral link: ${link}`);
+        window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    // Share via Twitter
+    function shareViaTwitter() {
+        const link = document.getElementById('referralLink').value;
+        const text = encodeURIComponent(`I'm using InferraAI for copy trading. Join me and let's grow our portfolios together!`);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(link)}`, '_blank');
+    }
+
+    // Share via Facebook
+    function shareViaFacebook() {
+        const link = document.getElementById('referralLink').value;
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`, '_blank');
+    }
+</script>
+{% endblock extra_scripts %}

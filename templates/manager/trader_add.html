@@ -1,0 +1,428 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="traders-list.html">Traders</a></li>
+                            <li class="breadcrumb-item active">Add New Trader</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+
+            <!-- Section 1: Basic Information -->
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="material-icons">person</i>
+                    Basic Information
+                </h3>
+                <p class="section-description">Enter basic details about the trader.</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Trader Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="e.g., John Crypto" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Username <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="e.g., johncrypto" required />
+                        <div class="form-help">No spaces, lowercase letters and numbers only</div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Profile Photo <span class="required">*</span></label>
+                    <label class="file-upload" for="photo-upload">
+                        <i class="material-icons upload-icon">cloud_upload</i>
+                        <div class="upload-text">Click to upload profile photo</div>
+                        <div class="upload-hint">PNG, JPG or GIF (max. 5MB)</div>
+                        <input type="file" id="photo-upload" accept="image/*" />
+                    </label>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Verification Badge</label>
+                    <div class="form-help" style="margin-bottom: 12px;">Select the verification badge type for this trader</div>
+                    <div class="badge-selector">
+                        <label class="badge-color-option blue selected" onclick="selectBadge('blue')">
+                            <input type="radio" name="badge" value="blue" checked />
+                            <i class="material-icons badge-icon">verified</i>
+                            <span class="badge-label-text">Blue Badge</span>
+                            <span class="badge-description">Standard verified</span>
+                        </label>
+                        <label class="badge-color-option gold" onclick="selectBadge('gold')">
+                            <input type="radio" name="badge" value="gold" />
+                            <i class="material-icons badge-icon">workspace_premium</i>
+                            <span class="badge-label-text">Gold Badge</span>
+                            <span class="badge-description">Premium verified</span>
+                        </label>
+                        <label class="badge-color-option none" onclick="selectBadge('none')">
+                            <input type="radio" name="badge" value="none" />
+                            <i class="material-icons badge-icon">remove_circle_outline</i>
+                            <span class="badge-label-text">No Badge</span>
+                            <span class="badge-description">Unverified</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Trading Statistics -->
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="material-icons">analytics</i>
+                    Trading Statistics
+                </h3>
+                <p class="section-description">Enter the trader's performance metrics.</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Total Wins <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="e.g., 7847" min="0" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Total Losses <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="e.g., 290" min="0" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Win Rate (%) <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="e.g., 96.50" min="0" max="100" step="0.01" required />
+                        <div class="form-help">Enter as percentage (e.g., 96.5 for 96.5%)</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Profit Share (%) <span class="required">*</span></label>
+                        <input type="number" class="form-input" placeholder="e.g., 20.00" min="0" max="100" step="0.01" required />
+                        <div class="form-help">Percentage trader takes from user profits</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Copy Trading Configuration -->
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="material-icons">content_copy</i>
+                    Copy Trading Configuration
+                </h3>
+                <p class="section-description">Configure how users can copy this trader.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Copy Mode <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option selected">
+                            <input type="radio" name="copy_mode" value="flexible" checked />
+                            <div class="radio-content">
+                                <span class="radio-label">Flexible Percentage</span>
+                                <span class="radio-description">Users can select any percentage (1-100%) of their balance to allocate. Provides more flexibility.</span>
+                            </div>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="copy_mode" value="full" />
+                            <div class="radio-content">
+                                <span class="radio-label">Full Balance Only (100%)</span>
+                                <span class="radio-description">Users must allocate their entire trading balance. No percentage slider shown - fixed at 100%.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Minimum Balance Required (USD) <span class="required">*</span></label>
+                    <input type="number" class="form-input" placeholder="e.g., 1000.00" min="0" step="0.01" value="100.00" required />
+                    <div class="form-help">Minimum amount a user must have in their trading account to copy this trader</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="require_approval" />
+                        <label class="checkbox-label" for="require_approval">
+                            Require trader approval before users can start copying
+                        </label>
+                    </div>
+                    <div class="form-help" style="margin-left: 44px; margin-top: 8px;">
+                        If enabled, users must send a "Request to Copy" and wait for approval. If disabled, users can start copying immediately.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: About Trader -->
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="material-icons">info</i>
+                    About This Trader
+                </h3>
+                <p class="section-description">Add detailed information about the trader's strategies, hours, and approach. These will be displayed on the trader's profile page.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Bio / Description</label>
+                    <textarea class="form-textarea" id="traderBio" placeholder="e.g., Professional cryptocurrency trader with over 5 years of experience..." style="min-height: 100px;"></textarea>
+                    <div class="form-help">Short introduction about the trader (2-3 sentences)</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">About Items</label>
+                    <div class="form-help" style="margin-bottom: 16px;">Add information sections that will appear on the trader's profile (Trading Strategy, Trading Hours, etc.)</div>
+
+                    <div id="aboutItemsList">
+                        <!-- About items will be added here -->
+                    </div>
+
+                    <button type="button" class="btn-add-item" onclick="addAboutItem()">
+                        <i class="material-icons">add_circle</i>
+                        Add About Item
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section 5: Status -->
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="material-icons">toggle_on</i>
+                    Status
+                </h3>
+                <p class="section-description">Control trader visibility and status.</p>
+
+                <div class="form-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="is_active" checked />
+                        <label class="checkbox-label" for="is_active">
+                            Trader is active and visible to users
+                        </label>
+                    </div>
+                    <div class="form-help" style="margin-left: 44px; margin-top: 8px;">
+                        Uncheck to hide this trader from users
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button class="btn-cancel" onclick="window.location.href='traders-list.html'">
+                    Cancel
+                </button>
+                <button class="btn-save" onclick="saveTrader()">
+                    <i class="material-icons" style="font-size: 18px;">save</i>
+                    Save Trader
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // Badge selection
+    function selectBadge(badgeType) {
+        document.querySelectorAll('.badge-color-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+        event.currentTarget.querySelector('input[type="radio"]').checked = true;
+    }
+
+    // Radio button styling
+    document.querySelectorAll('.radio-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.radio-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+        });
+    });
+
+    // File upload preview
+    document.getElementById('photo-upload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const uploadText = this.closest('.file-upload').querySelector('.upload-text');
+            uploadText.textContent = `Selected: ${file.name}`;
+        }
+    });
+
+    // About Items Management
+    let aboutItemsCount = 0;
+    const availableIcons = [
+        { name: 'psychology', label: 'Strategy' },
+        { name: 'schedule', label: 'Time' },
+        { name: 'account_balance', label: 'Markets' },
+        { name: 'shield', label: 'Risk' },
+        { name: 'trending_up', label: 'Chart' },
+        { name: 'analytics', label: 'Analytics' },
+        { name: 'lightbulb', label: 'Idea' },
+        { name: 'star', label: 'Star' },
+        { name: 'emoji_events', label: 'Trophy' },
+        { name: 'school', label: 'Education' },
+        { name: 'workspace_premium', label: 'Premium' },
+        { name: 'verified', label: 'Verified' }
+    ];
+
+    function addAboutItem() {
+        aboutItemsCount++;
+        const itemId = `about-item-${aboutItemsCount}`;
+
+        const itemHTML = `
+            <div class="about-item-card" id="${itemId}">
+                <div class="about-item-header">
+                    <span class="about-item-number">Item ${aboutItemsCount}</span>
+                    <button type="button" class="btn-remove-item" onclick="removeAboutItem('${itemId}')">
+                        <i class="material-icons">delete</i>
+                        Remove
+                    </button>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="form-label">Title <span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="e.g., Trading Strategy" required />
+                    <div class="form-help">The heading for this information section</div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="form-label">Description <span class="required">*</span></label>
+                    <textarea class="form-textarea" placeholder="e.g., Technical Analysis, Support/Resistance, Moving Averages..." style="min-height: 80px;" required></textarea>
+                    <div class="form-help">Detailed description of this aspect</div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Icon <span class="required">*</span></label>
+                    <div class="icon-selector">
+                        ${availableIcons.map((icon, index) => `
+                            <div class="icon-option ${index === 0 ? 'selected' : ''}" onclick="selectIcon(this, '${itemId}')" title="${icon.label}">
+                                <i class="material-icons">${icon.name}</i>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <input type="hidden" class="selected-icon" value="${availableIcons[0].name}" />
+                </div>
+            </div>
+        `;
+
+        document.getElementById('aboutItemsList').insertAdjacentHTML('beforeend', itemHTML);
+    }
+
+    function removeAboutItem(itemId) {
+        if (confirm('Remove this about item?')) {
+            document.getElementById(itemId).remove();
+        }
+    }
+
+    function selectIcon(element, itemId) {
+        // Remove selected class from all icons in this item
+        const card = document.getElementById(itemId);
+        card.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+
+        // Add selected class to clicked icon
+        element.classList.add('selected');
+
+        // Store selected icon value
+        const iconName = element.querySelector('i').textContent;
+        card.querySelector('.selected-icon').value = iconName;
+    }
+
+    function saveTrader() {
+        // Get form values (in production, this would validate and send to backend)
+        const name = document.querySelector('input[placeholder="e.g., John Crypto"]').value;
+        const username = document.querySelector('input[placeholder="e.g., johncrypto"]').value;
+
+        if (!name || !username) {
+            alert('Please fill in all required fields!');
+            return;
+        }
+
+        // Collect about items
+        const aboutItems = [];
+        document.querySelectorAll('.about-item-card').forEach(card => {
+            const title = card.querySelector('input[type="text"]').value;
+            const description = card.querySelector('textarea').value;
+            const icon = card.querySelector('.selected-icon').value;
+
+            if (title && description) {
+                aboutItems.push({ title, description, icon });
+            }
+        });
+
+        console.log('Trader data:', {
+            name,
+            username,
+            bio: document.getElementById('traderBio').value,
+            aboutItems
+        });
+
+        if (confirm(`Create new trader "${name}" (@${username})?\n\nThis trader will be visible to users immediately if marked as active.`)) {
+            alert(`Trader "${name}" created successfully! (Demo)\n\n${aboutItems.length} about items added.\n\nRedirecting to traders list...`);
+            window.location.href = 'traders-list.html';
+        }
+    }
+
+    // Mobile Sidebar Toggle
+    (function() {
+        let overlay = document.querySelector('.sidebar-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.dlabnav');
+
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('is-active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', function() {
+                hamburger.classList.remove('is-active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            sidebar.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        setTimeout(function() {
+                            hamburger.classList.remove('is-active');
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }, 300);
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    hamburger.classList.remove('is-active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    })();
+
+</script>
+{% endblock extra_scripts %}

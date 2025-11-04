@@ -1,0 +1,350 @@
+{% extends 'account/base.html' %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+        <!-- Breadcrumb -->
+        <div class="row page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="settings.html">Settings</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">KYC Verification</a></li>
+            </ol>
+        </div>
+
+        <div class="kyc-container">
+            <!-- KYC Header -->
+            <div class="kyc-header">
+                <div class="kyc-header-content">
+                    <i class="material-icons" style="font-size: 48px; margin-bottom: 15px;">verified_user</i>
+                    <h1>Identity Verification (KYC)</h1>
+                    <p>Complete your identity verification to unlock all platform features, increase your trading limits, and receive the verified badge on your profile</p>
+                </div>
+            </div>
+
+            <!-- Current Status Card -->
+            <div class="kyc-status-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a;">Verification Status</h3>
+                        <p style="font-size: 14px; color: #6b7280; margin: 0;">Track your verification progress</p>
+                    </div>
+                    <span class="status-badge not-submitted">
+                        <i class="material-icons" style="font-size: 18px;">pending</i>
+                        Not Submitted
+                    </span>
+                </div>
+
+                <div style="background: #f9fafb; border-radius: 12px; padding: 20px;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;">
+                        <div>
+                            <div style="font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px;">1</div>
+                            <div style="font-size: 13px; color: #6b7280;">Personal Info</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px;">2</div>
+                            <div style="font-size: 13px; color: #6b7280;">ID Upload</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px;">3</div>
+                            <div style="font-size: 13px; color: #6b7280;">Selfie Verification</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1: Personal Information -->
+            <div class="kyc-form-card">
+                <div class="kyc-form-title">
+                    <i class="material-icons" style="color: var(--primary); font-size: 28px;">person</i>
+                    Step 1: Personal Information
+                </div>
+                <p class="kyc-form-desc">Please provide your personal details exactly as they appear on your government-issued ID</p>
+
+                <form id="kycPersonalInfoForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-kyc">
+                                <label class="form-label-kyc" for="firstName">First Name *</label>
+                                <input type="text" class="form-input-kyc" id="firstName" placeholder="Enter your first name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-kyc">
+                                <label class="form-label-kyc" for="lastName">Last Name *</label>
+                                <input type="text" class="form-input-kyc" id="lastName" placeholder="Enter your last name" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-kyc">
+                                <label class="form-label-kyc" for="dob">Date of Birth *</label>
+                                <input type="date" class="form-input-kyc" id="dob" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-kyc">
+                                <label class="form-label-kyc" for="nationality">Nationality *</label>
+                                <select class="form-select-kyc" id="nationality" required>
+                                    <option value="">Select your nationality</option>
+                                    <option value="US">United States</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="NG">Nigeria</option>
+                                    <option value="ZA">South Africa</option>
+                                    <option value="IN">India</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-kyc">
+                        <label class="form-label-kyc" for="address">Residential Address *</label>
+                        <input type="text" class="form-input-kyc" id="address" placeholder="Street address, apartment, suite, unit, building, floor, etc." required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group-kyc">
+                                <label class="form-label-kyc" for="city">City *</label>
+                                <input type="text" class="form-input-kyc" id="city" placeholder="City" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-kyc">
+                                <label class="form-label-kyc" for="state">State/Province *</label>
+                                <input type="text" class="form-input-kyc" id="state" placeholder="State or Province" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-kyc">
+                                <label class="form-label-kyc" for="postalCode">Postal Code *</label>
+                                <input type="text" class="form-input-kyc" id="postalCode" placeholder="Postal code" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: ID Document Upload -->
+            <div class="kyc-form-card">
+                <div class="kyc-form-title">
+                    <i class="material-icons" style="color: var(--primary); font-size: 28px;">badge</i>
+                    Step 2: ID Document Upload
+                </div>
+                <p class="kyc-form-desc">Upload a clear photo of your government-issued ID (Passport, Driver's License, or National ID Card)</p>
+
+                <div class="requirements-box">
+                    <div class="requirements-title">
+                        <i class="material-icons">check_circle</i>
+                        Document Requirements
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>Document must be valid and not expired</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>All corners of the document must be visible</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>Information must be clearly readable</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>Supported formats: JPG, PNG, PDF (Max 10MB)</span>
+                    </div>
+                </div>
+
+                <div class="form-group-kyc">
+                    <label class="form-label-kyc" for="idType">ID Document Type *</label>
+                    <select class="form-select-kyc" id="idType" required>
+                        <option value="">Select document type</option>
+                        <option value="passport">Passport</option>
+                        <option value="drivers_license">Driver's License</option>
+                        <option value="national_id">National ID Card</option>
+                    </select>
+                </div>
+
+                <div class="form-group-kyc">
+                    <label class="form-label-kyc">Upload Front Side *</label>
+                    <div class="upload-area" id="uploadAreaFront" onclick="document.getElementById('idFrontUpload').click();">
+                        <div class="upload-icon">
+                            <i class="material-icons">cloud_upload</i>
+                        </div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                        <div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
+                    </div>
+                    <input type="file" id="idFrontUpload" accept="image/*,.pdf" style="display: none;">
+                </div>
+
+                <div class="form-group-kyc">
+                    <label class="form-label-kyc">Upload Back Side *</label>
+                    <div class="upload-area" id="uploadAreaBack" onclick="document.getElementById('idBackUpload').click();">
+                        <div class="upload-icon">
+                            <i class="material-icons">cloud_upload</i>
+                        </div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                        <div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
+                    </div>
+                    <input type="file" id="idBackUpload" accept="image/*,.pdf" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Step 3: Selfie Verification -->
+            <div class="kyc-form-card">
+                <div class="kyc-form-title">
+                    <i class="material-icons" style="color: var(--primary); font-size: 28px;">photo_camera</i>
+                    Step 3: Selfie Verification
+                </div>
+                <p class="kyc-form-desc">Take a clear selfie holding your ID document next to your face for verification</p>
+
+                <div class="requirements-box">
+                    <div class="requirements-title">
+                        <i class="material-icons">check_circle</i>
+                        Selfie Requirements
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>Your face and ID document must be clearly visible</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>Remove sunglasses, hats, or anything covering your face</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>Ensure good lighting and no shadows on your face</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="material-icons">check</i>
+                        <span>Hold your ID next to your face (both must be in frame)</span>
+                    </div>
+                </div>
+
+                <div class="form-group-kyc">
+                    <label class="form-label-kyc">Take Selfie with ID *</label>
+                    <div class="upload-area" id="uploadAreaSelfie" onclick="document.getElementById('selfieUpload').click();">
+                        <div class="upload-icon">
+                            <i class="material-icons">portrait</i>
+                        </div>
+                        <div class="upload-text">Click to take your selfie</div>
+                        <div class="upload-hint">JPG or PNG (Max 10MB)</div>
+                    </div>
+                    <input type="file" id="selfieUpload" accept="image/*" capture="user" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="kyc-form-card">
+                <div style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; gap: 12px; align-items: flex-start;">
+                    <i class="material-icons" style="color: #d97706; font-size: 24px;">info</i>
+                    <div>
+                        <h4 style="font-size: 15px; font-weight: 700; color: #92400e; margin-bottom: 6px;">Important Information</h4>
+                        <p style="font-size: 14px; color: #78350f; margin: 0; line-height: 1.6;">
+                            By submitting this verification, you confirm that all information provided is accurate and truthful. False information may result in account suspension. Verification typically takes 24-48 hours.
+                        </p>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-submit-kyc" onclick="submitKYC()">
+                    <i class="material-icons">send</i>
+                    Submit for Verification
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // File upload previews
+    document.getElementById('idFrontUpload').addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            const fileName = e.target.files[0].name;
+            document.getElementById('uploadAreaFront').classList.add('has-file');
+            document.getElementById('uploadAreaFront').querySelector('.upload-text').textContent = fileName;
+            document.getElementById('uploadAreaFront').querySelector('.upload-hint').textContent = 'File uploaded successfully';
+        }
+    });
+
+    document.getElementById('idBackUpload').addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            const fileName = e.target.files[0].name;
+            document.getElementById('uploadAreaBack').classList.add('has-file');
+            document.getElementById('uploadAreaBack').querySelector('.upload-text').textContent = fileName;
+            document.getElementById('uploadAreaBack').querySelector('.upload-hint').textContent = 'File uploaded successfully';
+        }
+    });
+
+    document.getElementById('selfieUpload').addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            const fileName = e.target.files[0].name;
+            document.getElementById('uploadAreaSelfie').classList.add('has-file');
+            document.getElementById('uploadAreaSelfie').querySelector('.upload-text').textContent = fileName;
+            document.getElementById('uploadAreaSelfie').querySelector('.upload-hint').textContent = 'Selfie uploaded successfully';
+        }
+    });
+
+    // Submit KYC form
+    function submitKYC() {
+        // Validate all required fields
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const dob = document.getElementById('dob').value;
+        const nationality = document.getElementById('nationality').value;
+        const address = document.getElementById('address').value;
+        const city = document.getElementById('city').value;
+        const state = document.getElementById('state').value;
+        const postalCode = document.getElementById('postalCode').value;
+        const idType = document.getElementById('idType').value;
+        const idFront = document.getElementById('idFrontUpload').files[0];
+        const idBack = document.getElementById('idBackUpload').files[0];
+        const selfie = document.getElementById('selfieUpload').files[0];
+
+        // Check if all required fields are filled
+        if (!firstName || !lastName || !dob || !nationality || !address || !city || !state || !postalCode) {
+            alert('Please fill in all personal information fields');
+            return;
+        }
+
+        if (!idType || !idFront || !idBack) {
+            alert('Please select ID type and upload both sides of your ID document');
+            return;
+        }
+
+        if (!selfie) {
+            alert('Please upload your selfie with ID document');
+            return;
+        }
+
+        // TODO: Programmer will implement actual API call to submit KYC data
+        console.log('KYC Submission:', {
+            firstName,
+            lastName,
+            dob,
+            nationality,
+            address,
+            city,
+            state,
+            postalCode,
+            idType,
+            idFront: idFront.name,
+            idBack: idBack.name,
+            selfie: selfie.name
+        });
+
+        // Show success message
+        alert('KYC verification submitted successfully! You will receive an email notification once your verification is complete (typically within 24-48 hours).');
+
+        // Redirect to profile or dashboard
+        // window.location.href = 'profile.html';
+    }
+</script>
+{% endblock extra_scripts %}

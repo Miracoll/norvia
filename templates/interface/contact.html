@@ -1,0 +1,122 @@
+{% extends 'interface/base.html' %}
+{% load static %}
+{% block content %}
+<!-- breadcrumb content begin -->
+<section class="section-breadcrumb">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 position-relative text-center">
+                <h1 class="mt-0 mb-1">Contact Us</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    </ol>
+                </nav>
+                <img class="position-absolute card-decor animate-5" src="{% static 'interface/img/in-avo-4-decor-1.svg' %}" alt="decor" style="top: 25%; left: 5%;">
+                <img class="position-absolute card-decor animate-6" src="{% static 'interface/img/in-avo-4-decor-2.svg' %}" alt="decor" style="top: -22%; left: 30%;">
+                <img class="position-absolute card-decor animate-7" src="{% static 'interface/img/in-avo-4-decor-3.svg' %}" alt="decor" style="top: -16%; left: 72%;">
+                <img class="position-absolute card-decor animate-6" src="{% static 'interface/img/in-avo-4-decor-4.svg' %}" alt="decor" style="top: 89%; left: 94%;">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb content end -->
+<main>
+<!-- section content begin -->
+
+<!-- section content begin -->
+<section class="py-5" style="width: 100%; box-sizing: border-box; padding: 0 10px;">
+<div class="container-fluid" style="padding: 0;">
+    <div class="row justify-content-center" style="margin: 0;">
+        <div class="col-12" style="padding: 0;">
+            <div class="card" style="margin: 0;">
+                <div class="card-body p-3 p-md-5">
+                    <h4 class="text-secondary mb-0">Have a questions?</h4>
+              <h1 class="mb-0">Let's <span class="text-highlight">get in touch</span></h1> <br><br>
+                    
+                    <form>
+<div class="row mb-3">
+    <div class="col-md-6 mb-3 mb-md-0">
+        <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-user fa-sm text-secondary"></i></span>
+            <input id="first-name" type="text" class="form-control" placeholder="First Name" aria-label="First Name" required>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-user fa-sm text-secondary"></i></span>
+            <input id="last-name" type="text" class="form-control" placeholder="Last Name" aria-label="Last Name" required>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="input-group">
+        <span class="input-group-text"><i class="fas fa-envelope fa-sm text-secondary"></i></span>
+        <input id="email" type="email" class="form-control" placeholder="Email" aria-label="Email" required>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="input-group">
+        <span class="input-group-text"><i class="fas fa-phone fa-sm text-secondary"></i></span>
+        <input id="phone" type="tel" class="form-control" placeholder="Phone Number" aria-label="Phone Number">
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="input-group">
+        <span class="input-group-text"><i class="fas fa-tag fa-sm text-secondary"></i></span>
+        <input id="subject" type="text" class="form-control" placeholder="Subject" aria-label="Subject" required>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="input-group">
+        <span class="input-group-text"><i class="fas fa-comment fa-sm text-secondary"></i></span>
+        <textarea id="message" class="form-control" placeholder="Your Message" aria-label="Your Message" rows="4" required></textarea>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="input-group">
+        <span class="input-group-text"><i class="fas fa-question-circle fa-sm text-secondary"></i></span>
+        <select id="contact-reason" class="form-select" aria-label="Reason for Contact" required>
+            <option value="" selected disabled>Reason for Contact</option>
+            <option value="support">Support Request</option>
+            <option value="sales">Sales Inquiry</option>
+            <option value="feedback">Feedback</option>
+            <option value="other">Other</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-check mb-4">
+    <input class="form-check-input" type="checkbox" id="subscribe">
+    <label class="form-check-label" for="subscribe">
+        Subscribe to our newsletter
+    </label>
+</div>
+
+<div class="d-grid mb-4">
+    <button type="submit" class="btn btn-primary rounded-pill" name="submit">Send Message</button>
+</div>
+</form>
+
+
+                    <hr class="my-4">
+                    
+                    <div class="card bg-light border-0 mt-4 mb-1">
+                        <div class="card-body px-2 py-1">
+                            <small>For general inquiries please contact <a class="link-primary text-decoration-none" href="mailto:">info@Norvia.io.org</a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<!-- section content end -->
+</main>
+{% endblock content %}

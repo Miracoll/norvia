@@ -1,0 +1,281 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Copy Requests</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Pending Copy Requests (6)</h1>
+        </div>
+
+        <!-- Stats Mini Cards -->
+        <div class="stats-row">
+            <div class="stat-mini">
+                <div class="stat-mini-label">Pending Requests</div>
+                <div class="stat-mini-value" style="color: #f59e0b;">6</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-label">Approved Today</div>
+                <div class="stat-mini-value" style="color: #10b981;">12</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-label">Rejected Today</div>
+                <div class="stat-mini-value" style="color: #ef4444;">2</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-label">Active Copy Trades</div>
+                <div class="stat-mini-value">2,847</div>
+            </div>
+        </div>
+
+        <!-- Requests Grid -->
+        <div class="requests-grid">
+
+            <!-- Request Card 1 -->
+            <div class="request-card">
+                <div class="request-header">
+                    <div class="user-info">
+                        <div class="user-avatar">JD</div>
+                        <div class="user-details">
+                            <h4>John Doe</h4>
+                            <p>#USR-10245 • john@example.com</p>
+                        </div>
+                    </div>
+                    <div class="request-time">
+                        <i class="material-icons" style="font-size: 14px;">schedule</i>
+                        2h ago
+                    </div>
+                </div>
+
+                <div class="trader-section">
+                    <div class="trader-label">Wants to Copy</div>
+                    <div class="trader-name">
+                        Sarah Master
+                        <i class="material-icons verified-icon">verified</i>
+                    </div>
+                </div>
+
+                <div class="allocation-info">
+                    <div class="info-box">
+                        <div class="info-label">Allocation</div>
+                        <div class="info-value amount">$1,500.00</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">Percentage</div>
+                        <div class="info-value">30%</div>
+                    </div>
+                </div>
+
+                <div class="user-balance">
+                    <span class="balance-label">User's Trading Balance</span>
+                    <span class="balance-value">$5,000.00</span>
+                </div>
+
+                <div class="request-actions">
+                    <button class="btn-approve" onclick="approveRequest('John Doe', 'Sarah Master', 1500)">
+                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                        Approve
+                    </button>
+                    <button class="btn-reject" onclick="rejectRequest('John Doe', 'Sarah Master')">
+                        <i class="material-icons" style="font-size: 18px;">cancel</i>
+                        Reject
+                    </button>
+                </div>
+            </div>
+
+            <!-- Request Card 2 -->
+            <div class="request-card">
+                <div class="request-header">
+                    <div class="user-info">
+                        <div class="user-avatar">EW</div>
+                        <div class="user-details">
+                            <h4>Emma Wilson</h4>
+                            <p>#USR-10242 • emma@example.com</p>
+                        </div>
+                    </div>
+                    <div class="request-time">
+                        <i class="material-icons" style="font-size: 14px;">schedule</i>
+                        4h ago
+                    </div>
+                </div>
+
+                <div class="trader-section">
+                    <div class="trader-label">Wants to Copy</div>
+                    <div class="trader-name">
+                        Mike Pro
+                        <i class="material-icons verified-icon">verified</i>
+                    </div>
+                </div>
+
+                <div class="allocation-info">
+                    <div class="info-box">
+                        <div class="info-label">Allocation</div>
+                        <div class="info-value amount">$800.00</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">Percentage</div>
+                        <div class="info-value">50%</div>
+                    </div>
+                </div>
+
+                <div class="user-balance">
+                    <span class="balance-label">User's Trading Balance</span>
+                    <span class="balance-value">$1,600.00</span>
+                </div>
+
+                <div class="request-actions">
+                    <button class="btn-approve" onclick="approveRequest('Emma Wilson', 'Mike Pro', 800)">
+                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                        Approve
+                    </button>
+                    <button class="btn-reject" onclick="rejectRequest('Emma Wilson', 'Mike Pro')">
+                        <i class="material-icons" style="font-size: 18px;">cancel</i>
+                        Reject
+                    </button>
+                </div>
+            </div>
+
+            <!-- Request Card 3 -->
+            <div class="request-card">
+                <div class="request-header">
+                    <div class="user-info">
+                        <div class="user-avatar">RJ</div>
+                        <div class="user-details">
+                            <h4>Robert Johnson</h4>
+                            <p>#USR-10241 • robert@example.com</p>
+                        </div>
+                    </div>
+                    <div class="request-time">
+                        <i class="material-icons" style="font-size: 14px;">schedule</i>
+                        6h ago
+                    </div>
+                </div>
+
+                <div class="trader-section">
+                    <div class="trader-label">Wants to Copy</div>
+                    <div class="trader-name">
+                        John Crypto
+                        <i class="material-icons verified-icon">verified</i>
+                    </div>
+                </div>
+
+                <div class="allocation-info">
+                    <div class="info-box">
+                        <div class="info-label">Allocation</div>
+                        <div class="info-value amount">$2,500.00</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">Percentage</div>
+                        <div class="info-value">100%</div>
+                    </div>
+                </div>
+
+                <div class="user-balance">
+                    <span class="balance-label">User's Trading Balance</span>
+                    <span class="balance-value">$2,500.00</span>
+                </div>
+
+                <div class="request-actions">
+                    <button class="btn-approve" onclick="approveRequest('Robert Johnson', 'John Crypto', 2500)">
+                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                        Approve
+                    </button>
+                    <button class="btn-reject" onclick="rejectRequest('Robert Johnson', 'John Crypto')">
+                        <i class="material-icons" style="font-size: 18px;">cancel</i>
+                        Reject
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    function approveRequest(user, trader, amount) {
+        if (confirm(`Approve copy request?\n\nUser: ${user}\nTrader: ${trader}\nAllocation: $${amount.toLocaleString()}\n\nThis will start copy trading immediately.`)) {
+            alert(`Request approved! ${user} is now copying ${trader} with $${amount.toLocaleString()} allocation. (Demo)`);
+            location.reload();
+        }
+    }
+
+    function rejectRequest(user, trader) {
+        const reason = prompt(`Reject copy request from ${user} for ${trader}?\n\nEnter rejection reason (user will be notified):`);
+        if (reason) {
+            alert(`Request rejected. Reason: "${reason}"\nUser notified via email. (Demo)`);
+            location.reload();
+        }
+    }
+
+    // Mobile Sidebar Toggle
+    (function() {
+        let overlay = document.querySelector('.sidebar-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.dlabnav');
+
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('is-active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', function() {
+                hamburger.classList.remove('is-active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            sidebar.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        setTimeout(function() {
+                            hamburger.classList.remove('is-active');
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }, 300);
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    hamburger.classList.remove('is-active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    })();
+
+</script>
+{% endblock extra_scripts %}

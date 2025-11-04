@@ -1,0 +1,359 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+        <!-- Breadcrumb -->
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Wallet</a></li>
+                <li class="breadcrumb-item active">Deposit History</li>
+            </ol>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <div>
+                    <h3>Deposit History</h3>
+                    <p class="page-header-subtitle">View all your deposit transactions and their status</p>
+                </div>
+                <div class="header-actions">
+                    <a href="deposit.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="material-icons" style="font-size: 20px;">add_circle</i>
+                        New Deposit
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <div class="search-wrapper">
+                        <i class="material-icons">search</i>
+                        <input type="text" class="filter-input" id="searchInput" placeholder="Transaction ID, Amount...">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="success">Successful</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Currency</label>
+                    <select class="filter-select" id="currencyFilter">
+                        <option value="all">All Currencies</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="USDT">Tether (USDT)</option>
+                        <option value="BNB">Binance Coin (BNB)</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="display: flex; gap: 8px;">
+                    <button class="filter-btn primary" onclick="applyFilters()">
+                        <i class="material-icons" style="font-size: 18px;">filter_list</i>
+                        Apply
+                    </button>
+                    <button class="filter-btn secondary" onclick="resetFilters()">
+                        <i class="material-icons" style="font-size: 18px;">refresh</i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposits Table -->
+        <div class="deposits-card">
+            <table class="deposits-table">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date & Time</th>
+                        <th>Currency</th>
+                        <th>Amount</th>
+                        <th>Network</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="depositsTableBody">
+                    <!-- Sample Data - Will be populated dynamically -->
+                </tbody>
+            </table>
+
+            <!-- Empty State (shown when no results) -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="material-icons">inbox</i>
+                <h4>No Deposits Found</h4>
+                <p>You haven't made any deposits yet or no results match your filters.</p>
+                <a href="deposit.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="material-icons">add_circle</i>
+                    Make Your First Deposit
+                </a>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-wrapper" id="paginationWrapper">
+                <div class="pagination-info">
+                    Showing <strong id="showingStart">1</strong> to <strong id="showingEnd">10</strong> of <strong id="totalRecords">25</strong> deposits
+                </div>
+                <div class="pagination">
+                    <button class="page-btn" onclick="changePage('prev')" id="prevBtn">
+                        <i class="material-icons" style="font-size: 18px;">chevron_left</i>
+                    </button>
+                    <button class="page-btn active" onclick="changePage(1)">1</button>
+                    <button class="page-btn" onclick="changePage(2)">2</button>
+                    <button class="page-btn" onclick="changePage(3)">3</button>
+                    <button class="page-btn" onclick="changePage('next')" id="nextBtn">
+                        <i class="material-icons" style="font-size: 18px;">chevron_right</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    // Sample deposit data (in production, this will come from backend)
+    const sampleDeposits = [
+        {
+            id: 'DEP-2025-001234',
+            date: '2025-01-15 14:32:00',
+            currency: 'USDT',
+            amount: 500.00,
+            network: 'TRC20',
+            status: 'success'
+        },
+        {
+            id: 'DEP-2025-001233',
+            date: '2025-01-14 09:15:00',
+            currency: 'BTC',
+            amount: 0.015,
+            network: 'Bitcoin',
+            status: 'success'
+        },
+        {
+            id: 'DEP-2025-001232',
+            date: '2025-01-13 18:45:00',
+            currency: 'ETH',
+            amount: 0.5,
+            network: 'ERC20',
+            status: 'pending'
+        },
+        {
+            id: 'DEP-2025-001231',
+            date: '2025-01-12 11:22:00',
+            currency: 'USDT',
+            amount: 1000.00,
+            network: 'BEP20',
+            status: 'success'
+        },
+        {
+            id: 'DEP-2025-001230',
+            date: '2025-01-11 16:08:00',
+            currency: 'BNB',
+            amount: 2.5,
+            network: 'BEP20',
+            status: 'failed'
+        },
+        {
+            id: 'DEP-2025-001229',
+            date: '2025-01-10 13:55:00',
+            currency: 'USDT',
+            amount: 250.00,
+            network: 'TRC20',
+            status: 'success'
+        },
+        {
+            id: 'DEP-2025-001228',
+            date: '2025-01-09 10:30:00',
+            currency: 'ETH',
+            amount: 1.2,
+            network: 'ERC20',
+            status: 'success'
+        },
+        {
+            id: 'DEP-2025-001227',
+            date: '2025-01-08 15:45:00',
+            currency: 'BTC',
+            amount: 0.025,
+            network: 'Bitcoin',
+            status: 'pending'
+        }
+    ];
+
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let filteredDeposits = [...sampleDeposits];
+
+    // Render deposits table
+    function renderDeposits() {
+        const tbody = document.getElementById('depositsTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const paginationWrapper = document.getElementById('paginationWrapper');
+
+        if (filteredDeposits.length === 0) {
+            tbody.innerHTML = '';
+            emptyState.style.display = 'block';
+            paginationWrapper.style.display = 'none';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+        paginationWrapper.style.display = 'flex';
+
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageDeposits = filteredDeposits.slice(start, end);
+
+        tbody.innerHTML = pageDeposits.map(deposit => {
+            const statusConfig = {
+                success: { icon: 'check_circle', label: 'Successful' },
+                pending: { icon: 'schedule', label: 'Pending' },
+                failed: { icon: 'cancel', label: 'Failed' }
+            };
+
+            const status = statusConfig[deposit.status];
+            const usdAmount = deposit.currency === 'USDT' ? deposit.amount : deposit.amount * getPriceInUSD(deposit.currency);
+
+            return `
+                <tr>
+                    <td>
+                        <strong>${deposit.id}</strong>
+                    </td>
+                    <td>${formatDate(deposit.date)}</td>
+                    <td>
+                        <div class="currency-badge">
+                            <div class="currency-icon">${deposit.currency.substring(0, 3)}</div>
+                            ${deposit.currency}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="amount-display">${deposit.amount} ${deposit.currency}</div>
+                        <div class="amount-usd">≈ $${usdAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                    </td>
+                    <td>${deposit.network}</td>
+                    <td>
+                        <span class="status-badge ${deposit.status}">
+                            <i class="material-icons">${status.icon}</i>
+                            ${status.label}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="deposit-details.html?id=${deposit.id}" class="action-btn">
+                            <i class="material-icons">visibility</i>
+                            View
+                        </a>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        updatePagination();
+    }
+
+    // Format date
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const options = {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return date.toLocaleDateString('en-US', options);
+    }
+
+    // Get price in USD (mock prices for demo)
+    function getPriceInUSD(currency) {
+        const prices = {
+            BTC: 45000,
+            ETH: 2500,
+            USDT: 1,
+            BNB: 350
+        };
+        return prices[currency] || 1;
+    }
+
+    // Apply filters
+    function applyFilters() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const currencyFilter = document.getElementById('currencyFilter').value;
+
+        filteredDeposits = sampleDeposits.filter(deposit => {
+            const matchesSearch = !searchTerm ||
+                deposit.id.toLowerCase().includes(searchTerm) ||
+                deposit.amount.toString().includes(searchTerm);
+
+            const matchesStatus = statusFilter === 'all' || deposit.status === statusFilter;
+            const matchesCurrency = currencyFilter === 'all' || deposit.currency === currencyFilter;
+
+            return matchesSearch && matchesStatus && matchesCurrency;
+        });
+
+        currentPage = 1;
+        renderDeposits();
+    }
+
+    // Reset filters
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('statusFilter').value = 'all';
+        document.getElementById('currencyFilter').value = 'all';
+        filteredDeposits = [...sampleDeposits];
+        currentPage = 1;
+        renderDeposits();
+    }
+
+    // Update pagination
+    function updatePagination() {
+        const totalPages = Math.ceil(filteredDeposits.length / itemsPerPage);
+        const start = (currentPage - 1) * itemsPerPage + 1;
+        const end = Math.min(currentPage * itemsPerPage, filteredDeposits.length);
+
+        document.getElementById('showingStart').textContent = start;
+        document.getElementById('showingEnd').textContent = end;
+        document.getElementById('totalRecords').textContent = filteredDeposits.length;
+
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        document.getElementById('nextBtn').disabled = currentPage === totalPages;
+    }
+
+    // Change page
+    function changePage(page) {
+        const totalPages = Math.ceil(filteredDeposits.length / itemsPerPage);
+
+        if (page === 'prev' && currentPage > 1) {
+            currentPage--;
+        } else if (page === 'next' && currentPage < totalPages) {
+            currentPage++;
+        } else if (typeof page === 'number') {
+            currentPage = page;
+        }
+
+        renderDeposits();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Add event listeners for real-time search
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('statusFilter').addEventListener('change', applyFilters);
+    document.getElementById('currencyFilter').addEventListener('change', applyFilters);
+
+    // Initialize
+    renderDeposits();
+    document.querySelector('.current-year').textContent = new Date().getFullYear();
+</script>
+{% endblock extra_scripts %}

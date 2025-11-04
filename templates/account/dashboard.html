@@ -1,0 +1,1747 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  	<!-- Title -->
+	<title>Dashboard | Norvia.io - Advanced Copy Trading Platform</title>
+	
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Dexignlabs">
+	<meta name="robots" content="">
+	
+	<meta name="keywords" content="admin dashboard, admin template, analytics, bootstrap, bootstrap 5 admin template, finance admin, admin, modern, responsive admin dashboard, sales dashboard, sass, ui kit, web app, bootstrap5, admin panel, Crypto Trading, Cryptocurrency, Trading Platform, Financial Insights, Efficiency, Data Visualization, User-Friendly, User Interface, Investment, Financial Management, Trading Tools, Performance Metrics, Real-Time Data, Portfolio Optimization, bitcoin, share market">
+	
+	<meta name="description" content="Unlock the full potential of data through the FinLab Crypto Trading Admin Dashboard Template. Seamlessly optimize your cryptocurrency trading activities with this elegantly designed and user-friendly dashboard, meticulously crafted to elevate both your financial insights and operational efficiency.">
+	
+	<meta property="og:title" content="FinLab Crypto Trading Admin Dashboard Template | Dexignlabs">
+	<meta property="og:description" content="Unlock the full potential of data through the FinLab Crypto Trading Admin Dashboard Template. Seamlessly optimize your cryptocurrency trading activities with this elegantly designed and user-friendly dashboard, meticulously crafted to elevate both your financial insights and operational efficiency.">
+	<meta property="og:image" content="https://finlab.dexignlab.com/xhtml/social-image.png">
+	<meta name="format-detection" content="telephone=no">
+	
+	<meta name="twitter:title" content="FinLab Crypto Trading Admin Dashboard Template | Dexignlabs">
+	<meta name="twitter:description" content="Unlock the full potential of data through the FinLab Crypto Trading Admin Dashboard Template. Seamlessly optimize your cryptocurrency trading activities with this elegantly designed and user-friendly dashboard, meticulously crafted to elevate both your financial insights and operational efficiency.">
+	<meta name="twitter:image" content="https://finlab.dexignlab.com/xhtml/social-image.png">
+	<meta name="twitter:card" content="summary_large_image">
+
+	<!-- Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- FAVICONS ICON -->
+	
+	<link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+	<link rel="stylesheet" href="{% static 'account/vendor/chartist/css/chartist.min.css' %}">
+	<link href="{% static 'account/vendor/wow-master/css/libs/animate.css' %}" rel="stylesheet">
+	<link href="{% static 'account/vendor/bootstrap-select/dist/css/bootstrap-select.min.css' %}" rel="stylesheet">
+	
+	<link href="{% static 'account/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+	<!--swiper-slider-->
+	<link rel="stylesheet" href="{% static 'account/vendor/swiper/css/swiper-bundle.min.css' %}">
+	
+	<!-- Style css -->
+      <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link href="{% static 'account/css/style.css' %}" rel="stylesheet">
+
+	<!-- Custom Fixes -->
+	
+
+	<link href="{% static 'account/css/global.css' %}" rel="stylesheet">
+</head>
+<body class="page-dashboard">
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper" class=" show">
+	
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="{% static 'home' %}" class="brand-logo">
+				<svg class="logo-abbr" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="url(#blue-gradient)"/>
+					<defs>
+						<linearGradient id="blue-gradient" x1="5" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse">
+							<stop offset="0%" stop-color="#01A3FF"/>
+							<stop offset="100%" stop-color="#0284c7"/>
+						</linearGradient>
+					</defs>
+				</svg>
+				<div class="brand-title">
+					<h2 class="logo-text" style="font-size: 22px; font-weight: 700; color: #2A353A; margin: 0;">Norvia.io</h2>
+				</div> 
+
+            </a>
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+					<svg width="20" height="20" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect x="22" y="11" width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect x="11" width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect x="22" width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect x="11" y="11" width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect x="11" y="22" width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect y="11" width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect x="22" y="22" width="4" height="4" rx="2" fill="#2A353A"/>
+						<rect y="22" width="4" height="4" rx="2" fill="#2A353A"/>
+					</svg>		
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+		
+		{% include 'account/top_nav.html' %}
+        {% include 'account/side_nav.html' %}
+		
+		<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body default-height">
+            <!-- row -->
+			<div class="container-fluid">
+				<!-- Row -->
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="row">
+							<div class="col-xl-12">
+								<div class="page-titles">
+									<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+										<ol class="breadcrumb">
+										  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+										</ol>
+									  </nav>
+								</div>
+							</div>
+						</div>
+
+						<!-- Custom CSS for Copy Trading Dashboard -->
+						
+
+						<!-- Transfer Success Alert -->
+						<div id="transferSuccessAlert" class="alert alert-success transfer-success-alert" style="display: none;">
+							<i class="material-icons me-2">check_circle</i>
+							<span>Transfer successful!</span>
+						</div>
+
+						<!-- Notification Banners -->
+						<div class="row">
+							<div class="col-xl-12">
+								<!-- KYC Notification -->
+								 {% if not request.user.complete_kyc_verification %}
+								<div id="kycNotification" class="alert-banner kyc-banner" style="display: none;">
+									<div class="alert-banner-content">
+										<div class="alert-banner-icon">
+											<i class="material-icons">info</i>
+										</div>
+										<div class="alert-banner-text">
+											<strong>Complete Your KYC Verification</strong>
+											<p>Please verify your identity to unlock all features and increase your withdrawal limits.</p>
+										</div>
+										<a href="{% url 'kyc_verification' %}" class="alert-banner-action">
+											Verify Now
+										</a>
+										<button class="alert-banner-close" onclick="dismissNotification('kyc')">
+											<i class="material-icons">close</i>
+										</button>
+									</div>
+								</div>
+								{% endif %}
+
+								<!-- Admin Notification -->
+								<div id="adminNotification" class="alert-banner admin-banner" style="display: none;">
+									<div class="alert-banner-content">
+										<div class="alert-banner-icon">
+											<i class="material-icons">campaign</i>
+										</div>
+										<div class="alert-banner-text">
+											<strong id="adminNotificationTitle">Important Update</strong>
+											<p id="adminNotificationMessage">This is a sample admin notification message.</p>
+										</div>
+										<button class="alert-banner-close" onclick="dismissNotification('admin')">
+											<i class="material-icons">close</i>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Swipeable Wallet Cards -->
+						<div class="row">
+							<div class="col-xl-12">
+								<div class="wallet-swiper-container wow fadeInUp" data-wow-delay="0.3s">
+									<div class="swiper wallet-swiper">
+										<div class="swiper-wrapper">
+											<!-- Trading Wallet Slide -->
+											<div class="swiper-slide">
+												<div class="wallet-slide trading">
+													<div class="wallet-content">
+														<div class="wallet-header-row">
+															<div class="wallet-title-section">
+																<div class="wallet-name">Trading Wallet</div>
+															</div>
+															<div class="balance-toggle-group">
+																<button class="balance-toggle-btn active" id="tradingDepositBtn" onclick="showTradingBalance('deposit')">
+																	Deposited
+																</button>
+																<button class="balance-toggle-btn" id="tradingTradingBtn" onclick="showTradingBalance('trading')">
+																	Profit
+																</button>
+															</div>
+														</div>
+
+														<div class="balance-row">
+															<div class="balance-number" id="tradingBalanceDisplay">${{request.user.deposit|intcomma}}</div>
+															<button class="visibility-toggle-btn" onclick="toggleTradingBalance()">
+																<i class="material-icons" id="tradingEyeIcon">visibility_off</i>
+															</button>
+														</div>
+
+														<div class="btc-equiv" id="tradingBtcDisplay">
+															≈ <span id="tradingBtcValue">0.0832</span> BTC
+														</div>
+
+														<div class="swipe-hint">
+															<i class="material-icons">swipe</i>
+															<span>Swipe to see Holding Wallet</span>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Holding Wallet Slide -->
+											<div class="swiper-slide">
+												<div class="wallet-slide holding">
+													<div class="wallet-content">
+														<div class="wallet-header-row">
+															<div class="wallet-title-section">
+																<div class="wallet-name">Holding Wallet</div>
+															</div>
+															<div class="balance-toggle-group">
+																<button class="balance-toggle-btn active" id="holdingDepositBtn" onclick="showHoldingBalance('deposit')">
+																	Deposited
+																</button>
+																<button class="balance-toggle-btn" id="holdingTradingBtn" onclick="showHoldingBalance('trading')">
+																	Profit
+																</button>
+															</div>
+														</div>
+
+														<div class="balance-row">
+															<div class="balance-number" id="holdingBalanceDisplay">${{request.user.balance|intcomma}}</div>
+															<button class="visibility-toggle-btn" onclick="toggleHoldingBalance()">
+																<i class="material-icons" id="holdingEyeIcon">visibility_off</i>
+															</button>
+														</div>
+
+														<div class="btc-equiv" id="holdingBtcDisplay">
+															≈ <span id="holdingBtcValue">0.0279</span> BTC
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="swiper-pagination"></div>
+									</div>
+
+									<!-- Action Buttons Below Wallet (4 Column Grid - Bybit Style) -->
+									<div class="action-buttons-row" style="margin-top: 20px;">
+										<button class="action-button" onclick="window.location.href='{% url "deposit" %}'">
+											<div class="action-icon">
+												<i class="material-icons">add_circle</i>
+											</div>
+											<span>Deposit</span>
+										</button>
+										
+										<button class="action-button">
+											<div class="action-icon">
+												<i class="material-icons">remove_circle</i>
+											</div>
+											<span>Withdraw</span>
+										</button>
+										<button class="action-button" data-bs-toggle="modal" data-bs-target="#transferModal">
+											<div class="action-icon">
+												<i class="material-icons">swap_horiz</i>
+											</div>
+											<span>Transfer</span>
+										</button>
+										<button class="action-button" onclick="window.location.href='copy-traders.html'">
+											<div class="action-icon">
+												<i class="material-icons">group_add</i>
+											</div>
+											<span>Copy Traders</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Performance Overview -->
+						<div class="row">
+							<!-- P&L Card - Profit Example -->
+							<div class="col-xl-6">
+								<div class="card wow fadeInUp" data-wow-delay="0.6s">
+									<div class="card-body" style="padding: 20px;">
+										<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+											<div style="background: #dcfce7; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+												<i class="material-icons" style="color: #16a34a; font-size: 24px;">trending_up</i>
+											</div>
+											<div>
+												<div style="color: #6c757d; font-size: 13px; margin-bottom: 2px;">24h P&L (Profit)</div>
+												<div style="color: #16a34a; font-size: 22px; font-weight: 800; line-height: 1;">+$248.75</div>
+											</div>
+										</div>
+										<div style="color: #6c757d; font-size: 12px;">+4.58% from yesterday</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- P&L Card - Loss Example -->
+							<div class="col-xl-6">
+								<div class="card wow fadeInUp" data-wow-delay="0.7s">
+									<div class="card-body" style="padding: 20px;">
+										<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+											<div style="background: #fee2e2; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+												<i class="material-icons" style="color: #dc2626; font-size: 24px;">trending_down</i>
+											</div>
+											<div>
+												<div style="color: #6c757d; font-size: 13px; margin-bottom: 2px;">24h P&L (Loss)</div>
+												<div style="color: #dc2626; font-size: 22px; font-weight: 800; line-height: 1;">-$182.40</div>
+											</div>
+										</div>
+										<div style="color: #6c757d; font-size: 12px;">-3.27% from yesterday</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!--
+							Signal Strength Indicators
+
+							DEVELOPER NOTE: Both states are shown side-by-side for reference.
+							In production, show ONLY ONE based on user's plan status:
+							- LEFT (Gray Dashed): User has NO signal plan
+							- RIGHT (Green): User HAS PAID for signal plan (no upgrade button/badge shown)
+						-->
+						<div class="row">
+							<div class="col-xl-6">
+								<!-- Inactive State (No Plan) -->
+								<div class="signal-strength-compact signal-inactive">
+									<div class="signal-icon-compact">
+										<i class="material-icons">signal_cellular_off</i>
+									</div>
+									<div class="signal-info-compact">
+										<div class="signal-label-compact">Signal Strength</div>
+										<div class="signal-value-compact">No Active Plan</div>
+									</div>
+									<div class="signal-action-compact">
+										<button class="signal-btn-compact" onclick="window.location.href='planning.html'">
+											<i class="material-icons">add_circle</i>
+											<span>Get Plan</span>
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-xl-6">
+								<!-- Active State (User Paid - No Upgrade Button, No Badge) -->
+								<div class="signal-strength-compact signal-active">
+									<div class="signal-icon-compact">
+										<i class="material-icons">trending_up</i>
+									</div>
+									<div class="signal-info-compact">
+										<div class="signal-label-compact">Signal Strength Active</div>
+										<div class="signal-value-compact">+25% Boost</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Copy Trading Circle Countdown -->
+						<div class="row" id="copyTradingCircleRow">
+							<div class="col-xl-12 wow fadeInUp" data-wow-delay="0.8s">
+								<div class="card" style="background: linear-gradient(135deg, #01A3FF 0%, #0284c7 100%); border: none; overflow: hidden; position: relative;">
+									<!-- Close Button -->
+									<button onclick="dismissTradingCircle()" style="position: absolute; top: 6px; right: 6px; background: rgba(255, 255, 255, 0.2); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.3s;" onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+										<i class="material-icons" style="font-size: 16px;">close</i>
+									</button>
+									<div class="card-body" style="padding: 10px 14px;">
+										<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+											<div style="color: white; flex: 1; min-width: 150px;">
+												<div style="display: flex; align-items: center; gap: 5px;">
+													<i class="material-icons" style="font-size: 18px; color: white;">schedule</i>
+													<h3 style="font-size: 13px; font-weight: 700; margin: 0; color: white;">Trading Circle</h3>
+												</div>
+											</div>
+											<div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+												<!-- Days -->
+												<div style="text-align: center; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 6px 8px; border-radius: 6px; min-width: 42px;">
+													<div style="font-size: 16px; font-weight: 700; color: white; line-height: 1;" id="circle-days">--</div>
+													<div style="font-size: 8px; color: white; margin-top: 2px; font-weight: 600; opacity: 0.85;">DAYS</div>
+												</div>
+												<!-- Hours -->
+												<div style="text-align: center; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 6px 8px; border-radius: 6px; min-width: 42px;">
+													<div style="font-size: 16px; font-weight: 700; color: white; line-height: 1;" id="circle-hours">--</div>
+													<div style="font-size: 8px; color: white; margin-top: 2px; font-weight: 600; opacity: 0.85;">HRS</div>
+												</div>
+												<!-- Minutes -->
+												<div style="text-align: center; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 6px 8px; border-radius: 6px; min-width: 42px;">
+													<div style="font-size: 16px; font-weight: 700; color: white; line-height: 1;" id="circle-minutes">--</div>
+													<div style="font-size: 8px; color: white; margin-top: 2px; font-weight: 600; opacity: 0.85;">MIN</div>
+												</div>
+												<!-- Seconds -->
+												<div style="text-align: center; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 6px 8px; border-radius: 6px; min-width: 42px;">
+													<div style="font-size: 16px; font-weight: 700; color: white; line-height: 1;" id="circle-seconds">--</div>
+													<div style="font-size: 8px; color: white; margin-top: 2px; font-weight: 600; opacity: 0.85;">SEC</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- Decorative elements -->
+									<div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(40px);"></div>
+									<div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(30px);"></div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Market Overview Chart -->
+						<div class="row">
+							<div class="col-xl-12 wow fadeInUp" data-wow-delay="0.9s">
+								<div class="card market_chart">
+									<div class="card-header border-0 align-items-start flex-wrap pb-0">
+										<div>
+											<h2 class="card-title mb-2" style="font-size: 18px; font-weight: 700;">Market Overview</h2>
+											<div class="market-data">
+												<div class="income data">
+													<p class="mb-0">Market Cap</p>
+													<h4 id="market-cap">Loading...</h4>
+												</div>
+												<div class="price data">
+													<p class="mb-0">BTC Price</p>
+													<h4 id="btc-price">Loading...</h4>
+												</div>
+												<div class="rate data">
+													<p class="mb-0">24h Change</p>
+													<h4 id="btc-change">Loading...</h4>
+												</div>
+												<div class="volume data">
+													<p class="mb-0">24h Volume</p>
+													<h4 id="btc-volume">Loading...</h4>
+												</div>
+											</div>
+										</div>
+										<div class="d-flex align-items-center flex-wrap gap-2">
+											<!-- Date Range Selector -->
+											<div class="btn-group date-range-selector me-3" role="group">
+												<button type="button" class="btn btn-sm date-range-btn" data-days="7">7D</button>
+												<button type="button" class="btn btn-sm date-range-btn" data-days="14">14D</button>
+												<button type="button" class="btn btn-sm date-range-btn active" data-days="30">1M</button>
+												<button type="button" class="btn btn-sm date-range-btn" data-days="90">3M</button>
+												<button type="button" class="btn btn-sm date-range-btn" data-days="365">1Y</button>
+											</div>
+
+											<!-- Crypto Selector -->
+											<select class="image-select default-select dashboard-select" aria-label="Default" id="crypto-selector">
+												<option value="bitcoin" selected>Bitcoin (BTC)</option>
+												<option value="ethereum">Ethereum (ETH)</option>
+												<option value="binancecoin">Binance Coin (BNB)</option>
+												<option value="solana">Solana (SOL)</option>
+												<option value="ripple">Ripple (XRP)</option>
+											</select>
+										</div>
+									</div>
+									<div class="card-body custome-tooltip pt-0 px-3">
+										<div id="activity1"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Trades Section with Tabs -->
+						<div class="row">
+							<div class="col-xl-12">
+								<div class="card wow fadeInUp" data-wow-delay="0.9s">
+									<div class="card-header border-0 pb-0">
+										<div class="d-flex justify-content-between align-items-center w-100">
+											<h4 class="card-title mb-0" style="font-size: 18px; font-weight: 700;">My Trades</h4>
+											<a href="trade-history.php" class="view-all-link">
+												View All
+												<i class="material-icons" style="font-size: 16px;">arrow_forward</i>
+											</a>
+										</div>
+									</div>
+									<div class="card-body" style="padding: 20px 20px 10px;">
+										<!-- Tabs Navigation -->
+										<ul class="nav nav-tabs trade-tabs" role="tablist">
+											<li class="nav-item" role="presentation">
+												<button class="nav-link active" id="open-trades-tab" data-bs-toggle="tab" data-bs-target="#open-trades" type="button" role="tab">
+													<i class="material-icons">hourglass_top</i>
+													<span>Open Trades</span>
+												</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="closed-trades-tab" data-bs-toggle="tab" data-bs-target="#closed-trades" type="button" role="tab">
+													<i class="material-icons">hourglass_bottom</i>
+													<span>Closed Trades</span>
+												</button>
+											</li>
+										</ul>
+
+										<!-- Tabs Content -->
+										<div class="tab-content" style="margin-top: 20px;">
+											<!-- Open Trades Tab -->
+											<div class="tab-pane fade show active" id="open-trades" role="tabpanel">
+												<!-- Active Trade 1 -->
+												<div class="trade-card profit">
+													<div class="trade-header">
+														<div class="trade-pair">BTC/USDT</div>
+														<div class="trade-status active">Active</div>
+													</div>
+													<div class="trade-info">
+														<span>Entry: $64,250</span>
+														<span>Current: $65,120</span>
+													</div>
+													<div class="trade-info">
+														<span>Trader: @johntrader</span>
+														<span>Size: 0.05 BTC</span>
+													</div>
+													<div class="trade-pnl profit">+$43.50 (+1.35%)</div>
+												</div>
+
+												<!-- Active Trade 2 -->
+												<div class="trade-card loss">
+													<div class="trade-header">
+														<div class="trade-pair">ETH/USDT</div>
+														<div class="trade-status active">Active</div>
+													</div>
+													<div class="trade-info">
+														<span>Entry: $3,420</span>
+														<span>Current: $3,385</span>
+													</div>
+													<div class="trade-info">
+														<span>Trader: @mikeexpert</span>
+														<span>Size: 0.8 ETH</span>
+													</div>
+													<div class="trade-pnl loss">-$28.00 (-1.02%)</div>
+												</div>
+
+												<!-- Active Trade 3 -->
+												<div class="trade-card profit">
+													<div class="trade-header">
+														<div class="trade-pair">SOL/USDT</div>
+														<div class="trade-status active">Active</div>
+													</div>
+													<div class="trade-info">
+														<span>Entry: $145.20</span>
+														<span>Current: $148.50</span>
+													</div>
+													<div class="trade-info">
+														<span>Trader: @sarahpro</span>
+														<span>Size: 5 SOL</span>
+													</div>
+													<div class="trade-pnl profit">+$16.50 (+2.27%)</div>
+												</div>
+											</div>
+
+											<!-- Closed Trades Tab -->
+											<div class="tab-pane fade" id="closed-trades" role="tabpanel">
+												<!-- Closed Trade 1 -->
+												<div class="trade-card profit">
+													<div class="trade-header">
+														<div class="trade-pair">SOL/USDT</div>
+														<div class="trade-status">Closed</div>
+													</div>
+													<div class="trade-info">
+														<span>Entry: $142.30</span>
+														<span>Exit: $145.80</span>
+													</div>
+													<div class="trade-info">
+														<span>Trader: @sarahpro</span>
+														<span>2 hours ago</span>
+													</div>
+													<div class="trade-pnl profit">+$87.50 (+2.46%)</div>
+												</div>
+
+												<!-- Closed Trade 2 -->
+												<div class="trade-card profit">
+													<div class="trade-header">
+														<div class="trade-pair">ADA/USDT</div>
+														<div class="trade-status">Closed</div>
+													</div>
+													<div class="trade-info">
+														<span>Entry: $0.58</span>
+														<span>Exit: $0.61</span>
+													</div>
+													<div class="trade-info">
+														<span>Trader: @johntrader</span>
+														<span>5 hours ago</span>
+													</div>
+													<div class="trade-pnl profit">+$120.00 (+5.17%)</div>
+												</div>
+
+												<!-- Closed Trade 3 -->
+												<div class="trade-card loss">
+													<div class="trade-header">
+														<div class="trade-pair">XRP/USDT</div>
+														<div class="trade-status">Closed</div>
+													</div>
+													<div class="trade-info">
+														<span>Entry: $0.52</span>
+														<span>Exit: $0.50</span>
+													</div>
+													<div class="trade-info">
+														<span>Trader: @mikeexpert</span>
+														<span>1 day ago</span>
+													</div>
+													<div class="trade-pnl loss">-$40.00 (-3.85%)</div>
+												</div>
+
+												<!-- Closed Trade 4 -->
+												<div class="trade-card profit">
+													<div class="trade-header">
+														<div class="trade-pair">MATIC/USDT</div>
+														<div class="trade-status">Closed</div>
+													</div>
+													<div class="trade-info">
+														<span>Entry: $0.85</span>
+														<span>Exit: $0.92</span>
+													</div>
+													<div class="trade-info">
+														<span>Trader: @cryptoking</span>
+														<span>2 days ago</span>
+													</div>
+													<div class="trade-pnl profit">+$85.40 (+8.24%)</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<!-- Copy Trading Dashboard Sections -->
+						<div class="row">
+							<div class="col-xl-12 wow fadeInUp" data-wow-delay="0.7s">
+								<div class="card">
+									<div class="card-header border-0">
+										<h4 class="card-title">Copied Traders Performance</h4>
+									</div>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table table-hover">
+												<thead>
+													<tr>
+														<th>Trader</th>
+														<th>Win Rate</th>
+														<th>Profit Share</th>
+														<th>24h P&L</th>
+														<th>Total Profit</th>
+														<th>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>
+															<div class="d-flex align-items-center">
+																<img src="{% static 'account/images/avatar/1.jpg' %}" class="rounded-circle me-2" width="40" height="40" alt="">
+																<div>
+																	<h6 class="mb-0">John Trader</h6>
+																	<small class="text-muted">@johntrader</small>
+																</div>
+															</div>
+														</td>
+														<td><span class="badge badge-success">82%</span></td>
+														<td>20%</td>
+														<td class="text-success">+$45.80</td>
+														<td class="text-success">+$1,240.50</td>
+														<td>
+															<button class="btn btn-danger btn-sm">Stop Copying</button>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="d-flex align-items-center">
+																<img src="{% static 'account/images/avatar/2.jpg' %}" class="rounded-circle me-2" width="40" height="40" alt="">
+																<div>
+																	<h6 class="mb-0">Sarah Pro</h6>
+																	<small class="text-muted">@sarahpro</small>
+																</div>
+															</div>
+														</td>
+														<td><span class="badge badge-success">78%</span></td>
+														<td>15%</td>
+														<td class="text-success">+$32.20</td>
+														<td class="text-success">+$890.30</td>
+														<td>
+															<button class="btn btn-danger btn-sm">Stop Copying</button>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="d-flex align-items-center">
+																<img src="{% static 'account/images/avatar/3.jpg' %}" class="rounded-circle me-2" width="40" height="40" alt="">
+																<div>
+																	<h6 class="mb-0">Mike Expert</h6>
+																	<small class="text-muted">@mikeexpert</small>
+																</div>
+															</div>
+														</td>
+														<td><span class="badge badge-success">85%</span></td>
+														<td>25%</td>
+														<td class="text-danger">-$12.50</td>
+														<td class="text-success">+$2,105.80</td>
+														<td>
+															<button class="btn btn-danger btn-sm">Stop Copying</button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End Traders Table -->
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--**********************************
+		Content body end
+	***********************************-->
+
+	<!-- Transfer Modal -->
+	<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content transfer-modal">
+				<div class="modal-header border-0 pb-0">
+					<h5 class="modal-title fw-bold" id="transferModalLabel">Transfer</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body px-3 pb-3">
+					<form id="transferForm">
+						<!-- From Account Section -->
+						<div class="transfer-section mb-1">
+							<label class="transfer-label">From</label>
+							<div class="transfer-display-wrapper">
+								<div class="transfer-wallet-name" id="fromWalletDisplay">Trading Wallet</div>
+							</div>
+						</div>
+
+						<!-- Swap Button -->
+						<div class="text-center" style="margin: 8px 0;">
+							<button type="button" class="swap-button" onclick="swapWallets()">
+								<i class="material-icons">swap_vert</i>
+							</button>
+						</div>
+
+						<!-- To Account Section -->
+						<div class="transfer-section mb-3">
+							<label class="transfer-label">To</label>
+							<div class="transfer-display-wrapper">
+								<div class="transfer-wallet-name" id="toWalletDisplay">Holding Wallet</div>
+							</div>
+						</div>
+
+						<!-- Coin Section -->
+						<div class="transfer-section mb-2">
+							<label class="transfer-label">Coin</label>
+							<div class="coin-select-wrapper">
+								<div class="coin-display">
+									<span class="coin-symbol">$</span>
+									<span class="coin-name">USD</span>
+								</div>
+								<i class="material-icons">chevron_right</i>
+							</div>
+						</div>
+
+						<!-- Amount Section -->
+						<div class="transfer-section mb-2">
+							<label class="transfer-label">Amount</label>
+							<div class="amount-input-wrapper">
+								<input type="number" class="amount-input" id="transferAmount" placeholder="Please enter" min="0" step="0.01">
+								<button type="button" class="max-button" onclick="setMaxAmount()">Max</button>
+								<span class="currency-label">USD</span>
+							</div>
+						</div>
+
+						<!-- Available Balance -->
+						<div class="available-balance">
+							<span class="available-label">Available</span>
+							<span class="available-amount">
+								<span id="availableBalance">5,430.50</span> USD
+								<i class="material-icons available-info">help_outline</i>
+							</span>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer border-0 pt-0 px-3 pb-3">
+					<button type="button" class="btn btn-transfer w-100" onclick="processTransfer()">
+						Confirm Transfer
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--**********************************
+	Modal
+***********************************-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+			<div class="input-group mb-3 d-block">
+			<label  class="form-label d-block">Enter Name</label>
+			<input type="text" class="form-control w-100" placeholder="Username" aria-label="Username">
+			</div>
+			<div class="input-group mb-3 d-block">
+			<label class="form-label d-block">Enter Position</label>
+			<input type="text" class="form-control w-100" placeholder="Username" aria-label="Username">
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+		</div>
+	</div>
+	</div>
+</div>
+
+<!--**********************************
+	Modal
+***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+
+	<script>
+		// Transfer Modal Functions
+		let currentFromWallet = 'trading';
+		let currentToWallet = 'holding';
+
+		// Swap wallets function
+		function swapWallets() {
+			// Swap the wallet values
+			const temp = currentFromWallet;
+			currentFromWallet = currentToWallet;
+			currentToWallet = temp;
+
+			// Update display
+			updateWalletDisplay();
+		}
+
+		// Update wallet display
+		function updateWalletDisplay() {
+			const fromDisplay = document.getElementById('fromWalletDisplay');
+			const toDisplay = document.getElementById('toWalletDisplay');
+
+			fromDisplay.textContent = currentFromWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
+			toDisplay.textContent = currentToWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
+
+			// Update available balance
+			updateAvailableBalance();
+		}
+
+		// Set max amount function
+		function setMaxAmount() {
+			const maxBalance = walletData[currentFromWallet].deposit.usd;
+			document.getElementById('transferAmount').value = maxBalance.toFixed(2);
+		}
+
+		// Update available balance
+		function updateAvailableBalance() {
+			const balance = walletData[currentFromWallet].deposit.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+			document.getElementById('availableBalance').textContent = balance;
+		}
+
+		// Show success alert
+		function showTransferSuccess() {
+			const alert = document.getElementById('transferSuccessAlert');
+			alert.style.display = 'flex';
+
+			// Fade out after 3 seconds
+			setTimeout(() => {
+				alert.style.animation = 'fadeOut 0.5s ease-out';
+				setTimeout(() => {
+					alert.style.display = 'none';
+					alert.style.animation = 'slideDown 0.3s ease-out';
+				}, 500);
+			}, 3000);
+		}
+
+		function processTransfer() {
+			const amount = parseFloat(document.getElementById('transferAmount').value);
+
+			if (isNaN(amount) || amount <= 0) {
+				alert('Please enter a valid amount');
+				return;
+			}
+
+			const fromBalance = walletData[currentFromWallet].deposit.usd;
+			if (amount > fromBalance) {
+				alert('Insufficient balance');
+				return;
+			}
+
+			
+			// Close modal
+			const modal = bootstrap.Modal.getInstance(document.getElementById('transferModal'));
+			modal.hide();
+
+			// Show success alert
+			showTransferSuccess();
+
+			// Reset form
+			document.getElementById('transferAmount').value = '';
+		}
+
+		// Reset to default when modal opens
+		document.getElementById('transferModal')?.addEventListener('show.bs.modal', function() {
+			currentFromWallet = 'trading';
+			currentToWallet = 'holding';
+			updateWalletDisplay();
+			document.getElementById('transferAmount').value = '';
+		});
+
+		// Copy Trading Circle Countdown Timer
+		function initCopyTradingCircle() {
+			// Set circle end date (example: 30 days from now)
+			// In production, this should come from backend/admin settings
+			const circleEndDate = new Date();
+			circleEndDate.setDate(circleEndDate.getDate() + 30); // 30 days circle
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = circleEndDate.getTime() - now;
+
+				if (distance < 0) {
+					// Countdown finished
+					document.getElementById('circle-days').textContent = '00';
+					document.getElementById('circle-hours').textContent = '00';
+					document.getElementById('circle-minutes').textContent = '00';
+					document.getElementById('circle-seconds').textContent = '00';
+					return;
+				}
+
+				// Calculate time units
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				// Update display with leading zeros
+				document.getElementById('circle-days').textContent = String(days).padStart(2, '0');
+				document.getElementById('circle-hours').textContent = String(hours).padStart(2, '0');
+				document.getElementById('circle-minutes').textContent = String(minutes).padStart(2, '0');
+				document.getElementById('circle-seconds').textContent = String(seconds).padStart(2, '0');
+			}
+
+			// Update immediately and then every second
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		// Initialize countdown when page loads
+		document.addEventListener('DOMContentLoaded', function() {
+			initCopyTradingCircle();
+		});
+
+		// Dismiss Trading Circle
+		function dismissTradingCircle() {
+			const circleRow = document.getElementById('copyTradingCircleRow');
+			if (circleRow) {
+				circleRow.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+				circleRow.style.opacity = '0';
+				circleRow.style.transform = 'translateY(-20px)';
+				setTimeout(() => {
+					circleRow.style.display = 'none';
+				}, 300);
+
+				// Store dismissal in localStorage
+				localStorage.setItem('tradingCircleDismissed', 'true');
+			}
+		}
+
+		// Check if trading circle was dismissed
+		document.addEventListener('DOMContentLoaded', function() {
+			const isDismissed = localStorage.getItem('tradingCircleDismissed');
+			if (isDismissed === 'true') {
+				const circleRow = document.getElementById('copyTradingCircleRow');
+				if (circleRow) {
+					circleRow.style.display = 'none';
+				}
+			}
+		});
+	</script>
+
+    <!-- Required vendors -->
+    <script src="{% static 'account/vendor/global/global.min.js' %}"></script>
+	<script src="{% static 'account/vendor/chart-js/chart.bundle.min.js' %}"></script>
+	<script src="{% static 'account/vendor/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
+	<!--datatables-->
+	<script src="{% static 'account/vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
+
+	<!-- Apex Chart -->
+	<script src="{% static 'account/vendor/apexchart/apexchart.js' %}"></script>
+	<script src="{% static 'account/vendor/chart-js/chart.bundle.min.js' %}"></script>
+
+	<!-- Chart piety plugin files -->
+    <script src="{% static 'account/vendor/peity/jquery.peity.min.js' %}"></script>
+	<!--swiper-slider-->
+	<script src="{% static 'account/vendor/swiper/js/swiper-bundle.min.js' %}"></script>
+	<script src="{% static 'account/vendor/wow-master/dist/wow.min.js' %}"></script>
+	<script src="{% static 'account/js/dashboard/crypto.js' %}"></script>
+    <script src="{% static 'account/js/custom.min.js' %}"></script>
+	<script src="{% static 'account/js/dlabnav-init.js' %}"></script>
+
+	<!-- Remove floating buttons and popups added by theme -->
+	<script>
+		// Track elements we've already processed to avoid re-processing
+		const processedElements = new WeakSet();
+
+		// Function to remove floating buttons and sale popups
+		function removeFloatingButtons() {
+			// Remove sale popups and banners
+			const saleElements = document.querySelectorAll('.dlab-sale-banner, .dzSaleBanner, #dzSaleBanner, .dlab-demo-panel, [class*="sale-banner"]');
+			saleElements.forEach(el => {
+				if (!processedElements.has(el)) {
+					processedElements.add(el);
+					el.remove();
+				}
+			});
+
+			// Remove chatbox toggle button if it exists
+			const chatboxToggle = document.querySelector('.chatbox-icon-toggle, .dlab-chatbox-toggle, [data-target=".chatbox"]');
+			if (chatboxToggle && !processedElements.has(chatboxToggle)) {
+				processedElements.add(chatboxToggle);
+				chatboxToggle.remove();
+			}
+
+			// Remove any other floating buttons
+			const floatingButtons = document.querySelectorAll('.add-menu-sidebar, .sidebar-right-trigger, .fixed-content-box, .DZ-bt-buy-now, .DZ-bt-support-now');
+			floatingButtons.forEach(btn => {
+				if (!processedElements.has(btn)) {
+					processedElements.add(btn);
+					btn.remove();
+				}
+			});
+
+			// Remove any direct body children that are sale popups (more targeted approach)
+			document.querySelectorAll('body > div').forEach(el => {
+				// Skip if already processed
+				if (processedElements.has(el)) {
+					return;
+				}
+
+				// Skip swiper-related elements
+				if (el.classList.contains('swiper-notification') ||
+					el.classList.contains('swiper-pagination') ||
+					el.closest('.swiper')) {
+					return;
+				}
+
+				// Skip main wrapper and essential elements
+				if (el.id === 'main-wrapper' ||
+					el.classList.contains('header') ||
+					el.classList.contains('dlabnav') ||
+					el.classList.contains('content-body') ||
+					el.classList.contains('footer')) {
+					return;
+				}
+
+				const style = window.getComputedStyle(el);
+
+				// Check if it's a sale/promotional popup by text content
+				if (el.textContent && (
+					el.textContent.includes('DIWALI') ||
+					el.textContent.includes('Diwali') ||
+					el.textContent.includes('DHAMAKA') ||
+					el.textContent.includes('GRAB SALE')
+				)) {
+					processedElements.add(el);
+					el.remove();
+					return;
+				}
+
+				// Remove fixed position elements with very high z-index (popups/overlays)
+				// but skip Swiper notification elements
+				if (style.position === 'fixed' && !el.classList.contains('swiper-notification')) {
+					const zIndex = parseInt(style.zIndex);
+					// Only remove if z-index is extremely high (typical for promotional popups)
+					if (zIndex > 9000) {
+						processedElements.add(el);
+						el.remove();
+					}
+				}
+			});
+		}
+
+		// Run immediately
+		removeFloatingButtons();
+
+		// Run after DOM is fully loaded
+		document.addEventListener('DOMContentLoaded', function() {
+			removeFloatingButtons();
+		});
+
+		// Run after short delays to catch dynamically added elements
+		setTimeout(removeFloatingButtons, 100);
+		setTimeout(removeFloatingButtons, 500);
+		setTimeout(removeFloatingButtons, 1000);
+		setTimeout(removeFloatingButtons, 2000);
+
+		// Watch for new elements being added with throttling
+		let observerTimeout;
+		const observer = new MutationObserver(function(mutations) {
+			// Throttle the observer to avoid excessive calls
+			clearTimeout(observerTimeout);
+			observerTimeout = setTimeout(() => {
+				mutations.forEach(function(mutation) {
+					if (mutation.addedNodes.length) {
+						mutation.addedNodes.forEach(node => {
+							// Only process element nodes
+							if (node.nodeType === 1) {
+								// Check if it's a sale/promo element
+								if (node.classList && (
+									node.classList.contains('dlab-sale-banner') ||
+									node.classList.contains('dzSaleBanner') ||
+									node.classList.contains('dlab-demo-panel') ||
+									node.id === 'dzSaleBanner'
+								)) {
+									node.remove();
+								}
+								// Check text content for promotional popup
+								else if (node.textContent && (
+									node.textContent.includes('DIWALI') ||
+									node.textContent.includes('DHAMAKA') ||
+									node.textContent.includes('GRAB SALE')
+								)) {
+									const style = window.getComputedStyle(node);
+									if (style.position === 'fixed') {
+										node.remove();
+									}
+								}
+							}
+						});
+					}
+				});
+			}, 100); // Throttle to 100ms
+		});
+
+		// Start observing
+		if (document.body) {
+			observer.observe(document.body, {
+				childList: true,
+				subtree: false // Only watch direct children of body
+			});
+		}
+	</script>
+
+	<!-- Notification Banner Management -->
+	<script>
+		// Dismiss notification and save to localStorage
+		function dismissNotification(type) {
+			const notification = document.getElementById(type + 'Notification');
+			if (notification) {
+				notification.style.animation = 'fadeOut 0.3s ease-out';
+				setTimeout(() => {
+					notification.style.display = 'none';
+					// Save dismissal to localStorage
+					localStorage.setItem('notification_' + type + '_dismissed', 'true');
+				}, 300);
+			}
+		}
+
+		// Check if user should see KYC notification
+		function checkKYCStatus() {
+			// Check if notification was dismissed
+			const dismissed = localStorage.getItem('notification_kyc_dismissed');
+			if (dismissed === 'true') {
+				return;
+			}
+
+			// Simulate checking KYC status (in real app, this would be from backend)
+			// For demo purposes, show notification for new users
+			const isKYCComplete = localStorage.getItem('kyc_complete') === 'true';
+
+			if (!isKYCComplete) {
+				const kycNotification = document.getElementById('kycNotification');
+				if (kycNotification) {
+					kycNotification.style.display = 'block';
+				}
+			}
+		}
+
+		// Show admin notification (called from admin panel or backend)
+		function showAdminNotification(title, message, icon = 'campaign', color = 'orange') {
+			const adminNotification = document.getElementById('adminNotification');
+			const titleEl = document.getElementById('adminNotificationTitle');
+			const messageEl = document.getElementById('adminNotificationMessage');
+			const iconEl = adminNotification.querySelector('.alert-banner-icon i');
+			const iconContainer = adminNotification.querySelector('.alert-banner-icon');
+
+			if (adminNotification && titleEl && messageEl) {
+				titleEl.textContent = title;
+				messageEl.textContent = message;
+
+				// Update icon
+				if (iconEl) {
+					iconEl.textContent = icon;
+				}
+
+				// Update color scheme
+				const colorSchemes = {
+					'red': {
+						background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+						border: '#ef4444',
+						iconBg: 'rgba(239, 68, 68, 0.15)',
+						iconColor: '#ef4444'
+					},
+					'blue': {
+						background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+						border: '#3b82f6',
+						iconBg: 'rgba(59, 130, 246, 0.15)',
+						iconColor: '#3b82f6'
+					},
+					'green': {
+						background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
+						border: '#10b981',
+						iconBg: 'rgba(16, 185, 129, 0.15)',
+						iconColor: '#10b981'
+					},
+					'yellow': {
+						background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+						border: '#f59e0b',
+						iconBg: 'rgba(245, 158, 11, 0.15)',
+						iconColor: '#f59e0b'
+					},
+					'purple': {
+						background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
+						border: '#8b5cf6',
+						iconBg: 'rgba(139, 92, 246, 0.15)',
+						iconColor: '#8b5cf6'
+					},
+					'orange': {
+						background: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)',
+						border: '#ff9800',
+						iconBg: 'rgba(255, 152, 0, 0.15)',
+						iconColor: '#ff9800'
+					},
+					'gray': {
+						background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+						border: '#6b7280',
+						iconBg: 'rgba(107, 114, 128, 0.15)',
+						iconColor: '#6b7280'
+					}
+				};
+
+				const scheme = colorSchemes[color] || colorSchemes['orange'];
+				adminNotification.style.background = scheme.background;
+				adminNotification.style.borderLeft = `4px solid ${scheme.border}`;
+				if (iconContainer) {
+					iconContainer.style.background = scheme.iconBg;
+				}
+				if (iconEl) {
+					iconEl.style.color = scheme.iconColor;
+				}
+
+				adminNotification.style.display = 'block';
+
+				// Save to localStorage so it persists
+				localStorage.setItem('admin_notification_title', title);
+				localStorage.setItem('admin_notification_message', message);
+				localStorage.setItem('admin_notification_icon', icon);
+				localStorage.setItem('admin_notification_color', color);
+				localStorage.removeItem('notification_admin_dismissed');
+			}
+		}
+
+		// Check for existing admin notification
+		function checkAdminNotification() {
+			const dismissed = localStorage.getItem('notification_admin_dismissed');
+			if (dismissed === 'true') {
+				return;
+			}
+
+			const title = localStorage.getItem('admin_notification_title');
+			const message = localStorage.getItem('admin_notification_message');
+			const icon = localStorage.getItem('admin_notification_icon') || 'campaign';
+			const color = localStorage.getItem('admin_notification_color') || 'orange';
+
+			if (title && message) {
+				showAdminNotification(title, message, icon, color);
+			}
+		}
+
+		// Initialize notifications on page load
+		document.addEventListener('DOMContentLoaded', function() {
+			checkKYCStatus();
+			checkAdminNotification();
+		});
+
+		// Example: Simulate admin sending a notification (for testing)
+		// Uncomment the line below to test admin notification
+		// setTimeout(() => showAdminNotification('Platform Maintenance', 'Scheduled maintenance will occur on Sunday, 2:00 AM - 4:00 AM UTC. Please plan accordingly.'), 2000);
+	</script>
+
+	<!-- Theme Toggle Script -->
+	<script>
+		function toggleTheme() {
+			const body = document.body;
+			const mainWrapper = document.getElementById('main-wrapper');
+			const lightIcon = document.getElementById('theme-icon-light');
+			const darkIcon = document.getElementById('theme-icon-dark');
+
+			// Toggle between light and dark
+			if (body.getAttribute('data-theme-version') === 'dark') {
+				// Switch to light
+				body.setAttribute('data-theme-version', 'light');
+				mainWrapper.setAttribute('data-theme-version', 'light');
+				lightIcon.style.display = 'block';
+				darkIcon.style.display = 'none';
+				localStorage.setItem('theme', 'light');
+			} else {
+				// Switch to dark
+				body.setAttribute('data-theme-version', 'dark');
+				mainWrapper.setAttribute('data-theme-version', 'dark');
+				lightIcon.style.display = 'none';
+				darkIcon.style.display = 'block';
+				localStorage.setItem('theme', 'dark');
+			}
+		}
+
+		// Load saved theme on page load
+		document.addEventListener('DOMContentLoaded', function() {
+			const savedTheme = localStorage.getItem('theme') || 'light';
+			const body = document.body;
+			const mainWrapper = document.getElementById('main-wrapper');
+			const lightIcon = document.getElementById('theme-icon-light');
+			const darkIcon = document.getElementById('theme-icon-dark');
+
+			body.setAttribute('data-theme-version', savedTheme);
+			mainWrapper.setAttribute('data-theme-version', savedTheme);
+
+			if (savedTheme === 'dark') {
+				lightIcon.style.display = 'none';
+				darkIcon.style.display = 'block';
+			} else {
+				lightIcon.style.display = 'block';
+				darkIcon.style.display = 'none';
+			}
+		});
+	</script>
+
+
+	<!-- Signal Strength Management -->
+	<script>
+		// NOTE: Both signal states are displayed side-by-side for developer reference
+		// In production, you should hide one based on user's actual plan status
+		//
+		// Example implementation for production:
+		//
+		// const userSignalPlan = getUserSignalPlanFromBackend(); // 'none', 'bronze', 'silver', or 'gold'
+		//
+		// if (userSignalPlan === 'none') {
+		//     // Show inactive card, hide active card
+		//     document.querySelector('.signal-inactive').style.display = 'flex';
+		//     document.querySelector('.signal-active').style.display = 'none';
+		// } else {
+		//     // Show active card with appropriate boost level, hide inactive card
+		//     document.querySelector('.signal-inactive').style.display = 'none';
+		//     document.querySelector('.signal-active').style.display = 'flex';
+		//
+		//     const boostLevels = {
+		//         'bronze': '+6% Boost',
+		//         'silver': '+15% Boost',
+		//         'gold': '+25% Boost'
+		//     };
+		//     document.querySelector('.signal-active .signal-value-compact').textContent = boostLevels[userSignalPlan];
+		// }
+	</script>
+
+	<!-- Initialize Swiper and Wallet JavaScript -->
+	<script>
+		// Wallet data structure with deposit and trading balances
+		// Deposit = Total amount deposited by user
+		// Trading = Total profit/earnings from trading
+		const walletData = {
+			trading: {
+				deposit: { usd: 5430.50, btc: 0.0832 },  // Total deposited
+				trading: { usd: 1248.75, btc: 0.0192 }   // Trading profit/earnings
+			},
+			holding: {
+				deposit: { usd: 1820.30, btc: 0.0279 },  // Total deposited
+				trading: { usd: 340.80, btc: 0.0052 }    // Trading profit/earnings
+			}
+		};
+
+		let tradingBalanceType = 'deposit';
+		let holdingBalanceType = 'deposit';
+		let tradingBalanceVisible = true;
+		let holdingBalanceVisible = true;
+
+		// Trading Wallet Functions
+		function showTradingBalance(type) {
+			tradingBalanceType = type;
+			document.getElementById('tradingDepositBtn').classList.toggle('active', type === 'deposit');
+			document.getElementById('tradingTradingBtn').classList.toggle('active', type === 'trading');
+			updateTradingDisplay();
+		}
+
+		function toggleTradingBalance() {
+			tradingBalanceVisible = !tradingBalanceVisible;
+			document.getElementById('tradingEyeIcon').textContent = tradingBalanceVisible ? 'visibility_off' : 'visibility';
+			updateTradingDisplay();
+		}
+
+		function updateTradingDisplay() {
+			const balanceEl = document.getElementById('tradingBalanceDisplay');
+			const btcEl = document.getElementById('tradingBtcValue');
+			const balance = walletData.trading[tradingBalanceType];
+
+			if (tradingBalanceVisible) {
+				balanceEl.textContent = '$' + balance.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+				btcEl.textContent = balance.btc.toFixed(4);
+			} else {
+				balanceEl.textContent = '••••••';
+				btcEl.textContent = '••••••';
+			}
+		}
+
+		// Holding Wallet Functions
+		function showHoldingBalance(type) {
+			holdingBalanceType = type;
+			document.getElementById('holdingDepositBtn').classList.toggle('active', type === 'deposit');
+			document.getElementById('holdingTradingBtn').classList.toggle('active', type === 'trading');
+			updateHoldingDisplay();
+		}
+
+		function toggleHoldingBalance() {
+			holdingBalanceVisible = !holdingBalanceVisible;
+			document.getElementById('holdingEyeIcon').textContent = holdingBalanceVisible ? 'visibility_off' : 'visibility';
+			updateHoldingDisplay();
+		}
+
+		function updateHoldingDisplay() {
+			const balanceEl = document.getElementById('holdingBalanceDisplay');
+			const btcEl = document.getElementById('holdingBtcValue');
+			const balance = walletData.holding[holdingBalanceType];
+
+			if (holdingBalanceVisible) {
+				balanceEl.textContent = '$' + balance.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+				btcEl.textContent = balance.btc.toFixed(4);
+			} else {
+				balanceEl.textContent = '••••••';
+				btcEl.textContent = '••••••';
+			}
+		}
+
+		// Real-Time Market Data Functions
+		let currentCrypto = 'bitcoin';
+		let currentDays = 30;
+		let marketChart = null;
+
+		async function fetchMarketData(cryptoId) {
+			try {
+				// Show loading state
+				document.getElementById('market-cap').textContent = 'Loading...';
+				document.getElementById('btc-price').textContent = 'Loading...';
+				document.getElementById('btc-change').textContent = 'Loading...';
+				document.getElementById('btc-volume').textContent = 'Loading...';
+
+				const response = await fetch(`https://api.coingecko.com/api/v3/coins/${cryptoId}?localization=false&tickers=false&community_data=false&developer_data=false`, {
+					method: 'GET',
+					mode: 'cors',
+					headers: {
+						'Accept': 'application/json'
+					}
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+
+				const data = await response.json();
+
+				// Validate that we have the required data
+				if (!data.market_data || !data.market_data.market_cap || !data.market_data.current_price) {
+					throw new Error('Invalid data structure received from API');
+				}
+
+				// Update Market Cap
+				const marketCap = data.market_data.market_cap.usd;
+				document.getElementById('market-cap').textContent = '$' + (marketCap / 1e9).toFixed(2) + 'B';
+
+				// Update Price
+				const price = data.market_data.current_price.usd;
+				document.getElementById('btc-price').textContent = '$' + price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+				// Update 24h Change
+				const change24h = data.market_data.price_change_percentage_24h;
+				const changeEl = document.getElementById('btc-change');
+				const changeSign = change24h >= 0 ? '+' : '';
+				changeEl.innerHTML = `${changeSign}${change24h.toFixed(2)}%`;
+				changeEl.style.color = change24h >= 0 ? '#16a34a' : '#ef4444';
+
+				// Update 24h Volume
+				const volume = data.market_data.total_volume.usd;
+				document.getElementById('btc-volume').textContent = '$' + (volume / 1e9).toFixed(2) + 'B';
+
+				// Update labels based on selected crypto
+				const symbol = data.symbol.toUpperCase();
+				document.getElementById('btc-price').previousElementSibling.textContent = `${symbol} Price`;
+
+				// Fetch and update chart
+				await updateMarketChart(cryptoId, data.name, currentDays);
+			} catch (error) {
+				console.error('Error fetching market data:', error);
+				console.error('Error details:', {
+					message: error.message,
+					cryptoId: cryptoId,
+					timestamp: new Date().toISOString()
+				});
+
+				// Show specific error messages
+				const errorMsg = error.message.includes('HTTP error') ? 'API Error' :
+				                 error.message.includes('Failed to fetch') ? 'Connection Error' :
+				                 'Error loading';
+
+				document.getElementById('market-cap').textContent = errorMsg;
+				document.getElementById('btc-price').textContent = errorMsg;
+				document.getElementById('btc-change').textContent = errorMsg;
+				document.getElementById('btc-volume').textContent = errorMsg;
+			}
+		}
+
+		async function updateMarketChart(cryptoId, cryptoName, days = 30) {
+			try {
+				// Fetch price data for selected period
+				const response = await fetch(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=${days}`, {
+					method: 'GET',
+					mode: 'cors',
+					headers: {
+						'Accept': 'application/json'
+					}
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+
+				const data = await response.json();
+
+				// Validate data
+				if (!data.prices || !Array.isArray(data.prices)) {
+					throw new Error('Invalid chart data received');
+				}
+
+				// Format data for ApexCharts [timestamp, price]
+				const chartData = data.prices.map(item => [item[0], item[1].toFixed(2)]);
+
+				if (marketChart) {
+					// Update existing chart with new data and options
+					marketChart.updateOptions({
+						xaxis: {
+							type: 'datetime',
+							labels: {
+								style: {
+									colors: '#6c757d',
+									fontSize: '12px'
+								},
+								datetimeUTC: false,
+								format: days <= 7 ? 'dd MMM' : days <= 30 ? 'dd MMM' : days <= 90 ? 'MMM yyyy' : 'MMM yyyy'
+							}
+						}
+					});
+					marketChart.updateSeries([{
+						name: cryptoName,
+						data: chartData
+					}]);
+				} else {
+					// Create new chart
+					const options = {
+						series: [{
+							name: cryptoName,
+							data: chartData
+						}],
+						chart: {
+							type: 'area',
+							height: 350,
+							toolbar: {
+								show: false
+							},
+							zoom: {
+								enabled: false
+							}
+						},
+						colors: ['#01A3FF'],
+						dataLabels: {
+							enabled: false
+						},
+						stroke: {
+							width: 2,
+							curve: 'smooth'
+						},
+						fill: {
+							type: 'gradient',
+							gradient: {
+								shadeIntensity: 1,
+								opacityFrom: 0.4,
+								opacityTo: 0.1,
+								stops: [0, 100]
+							}
+						},
+						xaxis: {
+							type: 'datetime',
+							labels: {
+								style: {
+									colors: '#6c757d',
+									fontSize: '12px'
+								},
+								datetimeUTC: false,
+								format: days <= 7 ? 'dd MMM' : days <= 30 ? 'dd MMM' : days <= 90 ? 'MMM yyyy' : 'MMM yyyy'
+							}
+						},
+						yaxis: {
+							labels: {
+								style: {
+									colors: '#6c757d',
+									fontSize: '12px'
+								},
+								formatter: function(value) {
+									return '$' + value.toLocaleString();
+								}
+							}
+						},
+						tooltip: {
+							x: {
+								format: 'dd MMM yyyy'
+							},
+							y: {
+								formatter: function(value) {
+									return '$' + value.toLocaleString();
+								}
+							}
+						},
+						grid: {
+							borderColor: '#e5e7eb'
+						}
+					};
+
+					marketChart = new ApexCharts(document.querySelector("#activity1"), options);
+					marketChart.render();
+				}
+			} catch (error) {
+				console.error('Error updating chart:', error);
+			}
+		}
+
+		// Update market data every 60 seconds
+		function startMarketDataUpdates() {
+			fetchMarketData(currentCrypto);
+			setInterval(() => fetchMarketData(currentCrypto), 60000); // Update every 60 seconds
+		}
+
+		// Handle crypto selector and date range changes
+		document.addEventListener('DOMContentLoaded', function() {
+			// Crypto selector event
+			const cryptoSelector = document.getElementById('crypto-selector');
+			if (cryptoSelector) {
+				cryptoSelector.addEventListener('change', function() {
+					currentCrypto = this.value;
+					fetchMarketData(currentCrypto);
+				});
+			}
+
+			// Date range buttons event
+			const dateRangeButtons = document.querySelectorAll('.date-range-btn');
+			dateRangeButtons.forEach(button => {
+				button.addEventListener('click', function() {
+					// Remove active class from all buttons
+					dateRangeButtons.forEach(btn => btn.classList.remove('active'));
+
+					// Add active class to clicked button
+					this.classList.add('active');
+
+					// Update current days and refresh chart
+					currentDays = parseInt(this.getAttribute('data-days'));
+					updateMarketChart(currentCrypto, getCryptoName(currentCrypto), currentDays);
+				});
+			});
+
+			// Start fetching market data
+			startMarketDataUpdates();
+		});
+
+		// Helper function to get crypto display name
+		function getCryptoName(cryptoId) {
+			const names = {
+				'bitcoin': 'Bitcoin',
+				'ethereum': 'Ethereum',
+				'binancecoin': 'Binance Coin',
+				'solana': 'Solana',
+				'ripple': 'Ripple'
+			};
+			return names[cryptoId] || cryptoId;
+		}
+
+		// Initialize Swiper after DOM is loaded
+		document.addEventListener('DOMContentLoaded', function() {
+			// Initialize Swiper for wallet cards
+			const walletSwiper = new Swiper('.wallet-swiper', {
+				slidesPerView: 1,
+				spaceBetween: 0,
+				speed: 400,
+				effect: 'slide',
+				grabCursor: true,
+				touchRatio: 1,
+				touchAngle: 45,
+				threshold: 5,
+				resistanceRatio: 0.85,
+				pagination: {
+					el: '.swiper-pagination',
+					clickable: true,
+					dynamicBullets: false,
+				},
+				on: {
+					init: function () {
+						console.log('Wallet swiper initialized');
+					},
+					slideChange: function () {
+						console.log('Wallet changed to:', this.activeIndex === 0 ? 'Trading' : 'Holding');
+						// Hide swipe hint after first swipe
+						const swiperEl = document.querySelector('.wallet-swiper');
+						if (swiperEl) {
+							swiperEl.classList.add('swiped');
+						}
+					},
+					touchStart: function() {
+						console.log('Touch started on wallet swiper');
+					},
+					touchMove: function() {
+						// Hide hint when user starts swiping
+						const swiperEl = document.querySelector('.wallet-swiper');
+						if (swiperEl) {
+							swiperEl.classList.add('swiped');
+						}
+					}
+				},
+			});
+		});
+	</script>
+
+</body>
+</html>
