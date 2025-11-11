@@ -67,6 +67,9 @@
             </div>
         </div>
 
+        <form method="POST" action="">
+            <input type="hidden" name="action" value="update_verification_settings">
+
         <!-- KYC Verification Settings -->
         <div class="settings-section">
             <div class="section-header">
@@ -85,7 +88,7 @@
                     <p>Require users to verify their identity</p>
                 </div>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="kycEnabled" checked>
+                    <input type="checkbox" name="kyc_enabled" id="kycEnabled" checked>
                     <span class="toggle-slider"></span>
                 </label>
             </div>
@@ -95,7 +98,7 @@
                     <h4>Requirement Level</h4>
                     <p>When users must complete KYC verification</p>
                 </div>
-                <select class="setting-select" style="max-width: 300px;">
+                <select name="kyc_requirement_level" class="setting-select" style="max-width: 300px;">
                     <option value="optional">Optional</option>
                     <option value="before_deposit" selected>Before First Deposit</option>
                     <option value="before_withdrawal">Before First Withdrawal</option>
@@ -111,11 +114,11 @@
                 <div class="setting-input-group">
                     <div>
                         <label class="form-label">Max Deposit</label>
-                        <input type="number" class="setting-input" value="1000" placeholder="USD">
+                        <input type="number" name="kyc_max_deposit" class="setting-input" value="1000" placeholder="USD">
                     </div>
                     <div>
                         <label class="form-label">Max Withdrawal</label>
-                        <input type="number" class="setting-input" value="500" placeholder="USD">
+                        <input type="number" name="kyc_max_withdrawal" class="setting-input" value="500" placeholder="USD">
                     </div>
                 </div>
             </div>
@@ -127,19 +130,19 @@
                 </div>
                 <div class="documents-grid">
                     <div class="document-checkbox">
-                        <input type="checkbox" id="doc1" checked>
+                        <input type="checkbox" name="doc_government_id" id="doc1" checked>
                         <label for="doc1">Government ID</label>
                     </div>
                     <div class="document-checkbox">
-                        <input type="checkbox" id="doc2" checked>
+                        <input type="checkbox" name="doc_passport" id="doc2" checked>
                         <label for="doc2">Passport</label>
                     </div>
                     <div class="document-checkbox">
-                        <input type="checkbox" id="doc3">
+                        <input type="checkbox" name="doc_drivers_license" id="doc3">
                         <label for="doc3">Driver's License</label>
                     </div>
                     <div class="document-checkbox">
-                        <input type="checkbox" id="doc4" checked>
+                        <input type="checkbox" name="doc_selfie_id" id="doc4" checked>
                         <label for="doc4">Selfie with ID</label>
                     </div>
                 </div>
@@ -150,7 +153,7 @@
                     <h4>Retry Limit</h4>
                     <p>Maximum failed verification attempts before review</p>
                 </div>
-                <input type="number" class="setting-input" value="3" style="max-width: 150px;">
+                <input type="number" name="kyc_auto_reject_days" class="setting-input" value="3" style="max-width: 150px;">
             </div>
         </div>
 
@@ -172,7 +175,7 @@
                     <p>Require users to verify their residential address</p>
                 </div>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="addressEnabled" checked>
+                    <input type="checkbox" name="address_enabled" id="addressEnabled" checked>
                     <span class="toggle-slider"></span>
                 </label>
             </div>
@@ -182,7 +185,7 @@
                     <h4>Requirement Level</h4>
                     <p>When users must complete address verification</p>
                 </div>
-                <select class="setting-select" style="max-width: 300px;">
+                <select name="address_requirement_level" class="setting-select" style="max-width: 300px;">
                     <option value="optional">Optional</option>
                     <option value="after_kyc" selected>After KYC Verification</option>
                     <option value="before_withdrawal">Before Withdrawals Over $5,000</option>
@@ -197,19 +200,19 @@
                 </div>
                 <div class="documents-grid">
                     <div class="document-checkbox">
-                        <input type="checkbox" id="addr1" checked>
+                        <input type="checkbox" name="addr_proof_residence" id="addr1" checked>
                         <label for="addr1">Utility Bill</label>
                     </div>
                     <div class="document-checkbox">
-                        <input type="checkbox" id="addr2" checked>
+                        <input type="checkbox" name="addr_utility_bill" id="addr2" checked>
                         <label for="addr2">Bank Statement</label>
                     </div>
                     <div class="document-checkbox">
-                        <input type="checkbox" id="addr3" checked>
+                        <input type="checkbox" name="addr_bank_statement" id="addr3" checked>
                         <label for="addr3">Tax Document</label>
                     </div>
                     <div class="document-checkbox">
-                        <input type="checkbox" id="addr4">
+                        <input type="checkbox" name="addr_lease_agreement" id="addr4">
                         <label for="addr4">Lease Agreement</label>
                     </div>
                 </div>
@@ -220,7 +223,7 @@
                     <h4>Document Age Limit</h4>
                     <p>Maximum age of documents accepted (in months)</p>
                 </div>
-                <input type="number" class="setting-input" value="3" style="max-width: 150px;">
+                <input type="number" name="kyc_auto_reject_days" class="setting-input" value="3" style="max-width: 150px;">
             </div>
         </div>
 
@@ -242,7 +245,7 @@
                     <p>Require users to verify their phone number</p>
                 </div>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="phoneEnabled" checked>
+                    <input type="checkbox" name="phone_enabled" id="phoneEnabled" checked>
                     <span class="toggle-slider"></span>
                 </label>
             </div>
@@ -252,7 +255,7 @@
                     <h4>OTP Expiry Time</h4>
                     <p>Time before OTP code expires</p>
                 </div>
-                <select class="setting-select" style="max-width: 200px;">
+                <select name="phone_otp_expiry" class="setting-select" style="max-width: 200px;">
                     <option value="2">2 minutes</option>
                     <option value="5" selected>5 minutes</option>
                     <option value="10">10 minutes</option>
@@ -265,7 +268,7 @@
                     <h4>Resend Limit</h4>
                     <p>Maximum OTP resend attempts per hour</p>
                 </div>
-                <input type="number" class="setting-input" value="3" style="max-width: 150px;">
+                <input type="number" name="kyc_auto_reject_days" class="setting-input" value="3" style="max-width: 150px;">
             </div>
 
             <div class="setting-item">
@@ -273,7 +276,7 @@
                     <h4>Cooldown Period</h4>
                     <p>Wait time between OTP resend attempts</p>
                 </div>
-                <select class="setting-select" style="max-width: 200px;">
+                <select name="phone_otp_cooldown" class="setting-select" style="max-width: 200px;">
                     <option value="30">30 seconds</option>
                     <option value="60" selected>1 minute</option>
                     <option value="120">2 minutes</option>
@@ -310,7 +313,7 @@
                     <h4>Verification Link Expiry</h4>
                     <p>Time before verification link expires</p>
                 </div>
-                <select class="setting-select" style="max-width: 200px;">
+                <select name="email_link_expiry" class="setting-select" style="max-width: 200px;">
                     <option value="1">1 hour</option>
                     <option value="6">6 hours</option>
                     <option value="24" selected>24 hours</option>
@@ -323,111 +326,23 @@
                     <h4>Resend Limit</h4>
                     <p>Maximum verification email resend attempts</p>
                 </div>
-                <input type="number" class="setting-input" value="5" style="max-width: 150px;">
+                <input type="number" name="email_verification_expiry" class="setting-input" value="5" style="max-width: 150px;">
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn-reset" onclick="resetSettings()">
+            <button type="reset" class="btn-reset">
                 Reset to Defaults
             </button>
-            <button class="btn-save" onclick="saveSettings()">
+            <button type="submit" class="btn-save">
                 <i class="material-icons">save</i>
                 Save Settings
             </button>
         </div>
 
+        </form>
+
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_scripts %}
-<script>
-    function saveSettings() {
-        // Collect all settings
-        const settings = {
-            kyc: {
-                enabled: document.getElementById('kycEnabled').checked,
-                // Add other KYC settings
-            },
-            address: {
-                enabled: document.getElementById('addressEnabled').checked,
-                // Add other address settings
-            },
-            phone: {
-                enabled: document.getElementById('phoneEnabled').checked,
-                // Add other phone settings
-            },
-            email: {
-                enabled: document.getElementById('emailEnabled').checked,
-                // Add other email settings
-            }
-        };
-
-        // Show success message
-        alert('Settings saved successfully!');
-        console.log('Saved settings:', settings);
-    }
-
-    function resetSettings() {
-        if (confirm('Are you sure you want to reset all settings to defaults?')) {
-            // Reset all form fields to default values
-            location.reload();
-        }
-    }
-
-    // Mobile Sidebar Toggle
-    (function() {
-        let overlay = document.querySelector('.sidebar-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-        }
-
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.dlabnav');
-
-        if (hamburger && sidebar) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('is-active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', function() {
-                hamburger.classList.remove('is-active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            sidebar.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 768) {
-                        setTimeout(function() {
-                            hamburger.classList.remove('is-active');
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }, 300);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    hamburger.classList.remove('is-active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    })();
-
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

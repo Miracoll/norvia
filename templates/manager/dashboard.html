@@ -231,62 +231,11 @@
 
     </div>
 </div>
-{% endblock content %}
-{% block extra_scripts %}
+{% endblock %}
+{% block extra_script %}
 <script>
-    // Mobile Sidebar Toggle
-    (function() {
-        let overlay = document.querySelector('.sidebar-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-        }
 
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.dlabnav');
-
-        if (hamburger && sidebar) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('is-active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', function() {
-                hamburger.classList.remove('is-active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            sidebar.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 768) {
-                        setTimeout(function() {
-                            hamburger.classList.remove('is-active');
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }, 300);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    hamburger.classList.remove('is-active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    })();
-
-
+	
     // Update current time
     function updateTime() {
         const now = new Date();
@@ -301,4 +250,4 @@
     setInterval(updateTime, 60000);
 
 </script>
-{% endblock extra_scripts %}
+{% endblock %}

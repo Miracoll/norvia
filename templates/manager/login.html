@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- Title -->
+	<title>Admin Login | Norvia.io Admin Panel</title>
+
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Favicon icon -->
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'manager/images/favicon.svg' %}">
+
+	<!-- Material Icons -->
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+	<!-- Custom Styles -->
+	
+	<link href="{% static 'manager/css/admin-global.css' %}" rel="stylesheet">
+</head>
+<body class="page-admin-login">
+
+	<div class="auth-container">
+		<!-- Admin Badge -->
+		<div class="admin-badge">
+			<div class="admin-badge-icon">
+				<i class="material-icons">admin_panel_settings</i>
+			</div>
+			<div class="admin-badge-text">Admin Panel</div>
+			<div class="admin-badge-subtitle">Norvia.io Trading Platform</div>
+		</div>
+
+		<!-- Auth Card -->
+		<div class="auth-card">
+			<div class="auth-card-body">
+				<!-- Header -->
+				<div class="auth-header">
+					<h1 class="auth-title">Administrator Login</h1>
+					<p class="auth-subtitle">Access the admin control panel</p>
+				</div>
+
+				<!-- Security Notice -->
+				<div class="security-notice">
+					<i class="material-icons">shield</i>
+					<div class="security-notice-text">
+						<strong>Secure Access:</strong> All admin actions are logged and monitored for security.
+					</div>
+				</div>
+
+				<!-- Login Form -->
+				<form id="adminLoginForm" method="post">
+                    {% csrf_token %}
+					<!-- Email -->
+					<div class="form-group">
+						<label class="form-label">Admin Email</label>
+						<div class="form-input-wrapper">
+							<input type="text" class="form-input" placeholder="Enter admin email" required name="username">
+							<i class="material-icons form-icon">email</i>
+						</div>
+					</div>
+
+					<!-- Password -->
+					<div class="form-group">
+						<label class="form-label">Password</label>
+						<div class="form-input-wrapper">
+							<input type="password" id="adminPassword" class="form-input" placeholder="Enter password" required name="password">
+							<i class="material-icons form-icon">lock</i>
+							<i class="material-icons toggle-password" onclick="togglePassword()">visibility_off</i>
+						</div>
+					</div>
+
+					<!-- Remember Me -->
+					<div class="form-footer">
+						<div class="checkbox-wrapper">
+							<input type="checkbox" id="rememberMe">
+							<label for="rememberMe">Remember me</label>
+						</div>
+					</div>
+
+					<!-- Submit Button -->
+					<button type="submit" class="btn-submit">
+						<span>Sign In to Admin Panel</span>
+						<i class="material-icons">arrow_forward</i>
+					</button>
+				</form>
+
+				<!-- Back to User Site -->
+				<div class="back-to-user">
+					<a href="{% url 'interface_home' %}">
+						<i class="material-icons">arrow_back</i>
+						<span>Back to User Site</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Toggle password visibility
+		function togglePassword() {
+			const passwordInput = document.getElementById('adminPassword');
+			const toggleIcon = document.querySelector('.toggle-password');
+
+			if (passwordInput.type === 'password') {
+				passwordInput.type = 'text';
+				toggleIcon.textContent = 'visibility';
+			} else {
+				passwordInput.type = 'password';
+				toggleIcon.textContent = 'visibility_off';
+			}
+		}
+	</script>
+
+</body>
+</html>

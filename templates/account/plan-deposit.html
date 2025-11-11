@@ -1,0 +1,175 @@
+{%extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Plan Deposit{% endblock %}
+
+{% block body_class %}page-plandeposit{% endblock %}
+
+{% block content %}
+<div class="content-body default-height">
+	<div class="container-fluid">
+		<div class="row">
+					<div class="col-xl-12">
+						<div class="row">
+							<div class="col-xl-12">
+								<div class="page-titles">
+									<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+										<ol class="breadcrumb">
+											<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+											<li class="breadcrumb-item"><a href="{% url 'planning' %}">Plans</a></li>
+											<li class="breadcrumb-item active" aria-current="page">Purchase Plan</li>
+										</ol>
+									</nav>
+								</div>
+							</div>
+						</div>
+
+						<!-- Plan Information Banner -->
+						<div class="plan-info-banner">
+							<span class="plan-badge" id="planCategory">Signal Plan</span>
+							<div class="plan-info-header">
+								<h2 class="plan-name"><span id="planTier">Gold</span> Plan</h2>
+								<div class="plan-price-display">$<span id="planPrice">4,000.00</span></div>
+							</div>
+							<div class="plan-features-summary" id="planFeatures">
+								<div class="plan-feature-item">
+									<i class="material-icons">check_circle</i>
+									<span>+25% Signal Strength</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- Payment Form Card -->
+						<div class="card">
+							<div class="card-body">
+								<div class="row justify-content-center">
+									<div class="col-xl-8 col-lg-10">
+										<h4 class="card-title mb-4" style="font-size: 22px; font-weight: 700;">Select Payment Method</h4>
+
+										<!-- Payment Method Selection -->
+										<div class="payment-methods mb-5">
+											<label class="form-label fw-bold mb-3">Payment Method</label>
+											<div class="row g-3">
+												<div class="col-md-6">
+													<div class="payment-method-card active" data-method="crypto" onclick="switchPaymentMethod('crypto')">
+														<i class="material-icons">currency_bitcoin</i>
+														<span>Cryptocurrency</span>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="payment-method-card" data-method="gateway" onclick="switchPaymentMethod('gateway')">
+														<i class="material-icons">payment</i>
+														<span>Payment Gateway</span>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<!-- Payment Form -->
+										<form id="planPaymentForm">
+											<!-- Crypto Section (shown by default) -->
+											<div id="cryptoSection">
+												<!-- Currency Selection -->
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Select Currency</label>
+													<select id="currencySelect" class="deposit-select">
+														<option value="btc">Bitcoin (BTC)</option>
+														<option value="eth">Ethereum (ETH)</option>
+														<option value="usdt" selected>Tether (USDT)</option>
+														<option value="bnb">Binance Coin (BNB)</option>
+													</select>
+												</div>
+
+												<!-- Network Selection -->
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Select Network</label>
+													<select id="networkSelect" class="deposit-select">
+														<option value="erc20">ERC20 (Ethereum)</option>
+														<option value="trc20" selected>TRC20 (Tron)</option>
+														<option value="bep20">BEP20 (BSC)</option>
+													</select>
+													<small class="text-muted d-block mt-2">
+														<i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+														Ensure you send funds on the correct network
+													</small>
+												</div>
+											</div>
+
+											<!-- Payment Gateway Section (hidden by default) -->
+											<div id="gatewaySection" style="display: none;">
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Select Payment Method</label>
+													<select id="gatewaySelect" class="deposit-select">
+														<option value="" disabled selected>Choose a payment method</option>
+														<option value="paypal">PayPal</option>
+														<option value="zelle">Zelle</option>
+														<option value="cashapp">Cash App</option>
+														<option value="venmo">Venmo</option>
+														<option value="bank">Bank Transfer</option>
+													</select>
+													<small class="text-muted d-block mt-2">
+														<i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+														Select your preferred payment gateway
+													</small>
+												</div>
+											</div>
+
+											<!-- Important Information -->
+											<div class="alert alert-info mt-4 mb-4" style="border-radius: 12px; border-left: 4px solid var(--primary);">
+												<h6 class="alert-heading">
+													<i class="material-icons me-2" style="vertical-align: middle;">info</i>
+													Payment for Plan Purchase
+												</h6>
+												<p class="mb-0" style="font-size: 14px;">
+													This payment is for purchasing your selected plan. Once payment is confirmed, your plan will be activated within 24 hours.
+												</p>
+											</div>
+
+											<!-- Continue Button -->
+											<button type="submit" class="btn btn-primary btn-lg w-100" style="height: 58px; font-size: 16px; font-weight: 600; border-radius: 12px;">
+												<i class="material-icons me-2" style="vertical-align: middle; font-size: 20px;">arrow_forward</i>
+												Continue to Payment
+											</button>
+										</form>
+
+									</div>
+								</div>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+	// Switch between payment methods
+	function switchPaymentMethod(method) {
+		// Update active state
+		document.querySelectorAll('.payment-method-card').forEach(card => card.classList.remove('active'));
+		document.querySelector(`[data-method="${method}"]`).classList.add('active');
+
+		// Show/hide sections
+		if (method === 'crypto') {
+			document.getElementById('cryptoSection').style.display = 'block';
+			document.getElementById('gatewaySection').style.display = 'none';
+		} else {
+			document.getElementById('cryptoSection').style.display = 'none';
+			document.getElementById('gatewaySection').style.display = 'block';
+		}
+	}
+
+	// TODO: Django backend will handle:
+	// - Process plan purchase payment
+	// - Verify selected payment method
+	// - Store plan details (tier, price, features)
+	// - Handle crypto payment flow
+	// - Handle gateway payment flow
+	// - Activate plan after payment confirmation
+	// - Send confirmation email
+	// - Update user's active plan status
+</script>
+{% endblock %}
+

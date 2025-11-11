@@ -1,662 +1,561 @@
-{% extends 'account/base.html' %}
+{% extends "account/base.html" %}
 {% load static %}
+
+{% block title %}Stock Market{% endblock %}
+
+{% block body_class %}page-stockmarket{% endblock %}
+
+{% block page_scripts %}
+<script>
+// Live Chart - Stock data
+		const stockData = [
+			{ symbol: 'AAPL', name: 'Apple Inc.', price: 178.45, change: 2.34, marketCap: '2.8T', volume: '58.2M' },
+			{ symbol: 'MSFT', name: 'Microsoft Corporation', price: 398.12, change: 1.85, marketCap: '2.95T', volume: '24.5M' },
+			{ symbol: 'GOOGL', name: 'Alphabet Inc.', price: 141.23, change: -0.45, marketCap: '1.77T', volume: '22.1M' },
+			{ symbol: 'AMZN', name: 'Amazon.com Inc.', price: 153.67, change: 3.12, marketCap: '1.59T', volume: '45.8M' },
+			{ symbol: 'NVDA', name: 'NVIDIA Corporation', price: 495.34, change: 5.67, marketCap: '1.22T', volume: '35.6M' },
+			{ symbol: 'TSLA', name: 'Tesla Inc.', price: 245.89, change: -1.23, marketCap: '780.5B', volume: '102.3M' },
+			{ symbol: 'META', name: 'Meta Platforms Inc.', price: 378.45, change: 2.78, marketCap: '970.2B', volume: '18.4M' },
+			{ symbol: 'BRK.B', name: 'Berkshire Hathaway Inc.', price: 392.56, change: 0.89, marketCap: '856.7B', volume: '3.2M' },
+			{ symbol: 'JPM', name: 'JPMorgan Chase & Co.', price: 189.23, change: 1.45, marketCap: '544.3B', volume: '9.8M' },
+			{ symbol: 'V', name: 'Visa Inc.', price: 267.89, change: 1.12, marketCap: '549.2B', volume: '6.5M' },
+			{ symbol: 'WMT', name: 'Walmart Inc.', price: 169.78, change: 0.67, marketCap: '455.8B', volume: '7.3M' },
+			{ symbol: 'DIS', name: 'The Walt Disney Company', price: 93.45, change: -0.89, marketCap: '170.4B', volume: '12.1M' },
+			{ symbol: 'NFLX', name: 'Netflix Inc.', price: 485.67, change: 3.45, marketCap: '210.5B', volume: '5.8M' },
+			{ symbol: 'PYPL', name: 'PayPal Holdings Inc.', price: 68.34, change: -2.12, marketCap: '74.2B', volume: '15.4M' },
+			{ symbol: 'INTC', name: 'Intel Corporation', price: 43.56, change: 0.45, marketCap: '180.3B', volume: '38.9M' },
+			{ symbol: 'AMD', name: 'Advanced Micro Devices Inc.', price: 158.23, change: 4.12, marketCap: '255.8B', volume: '42.5M' },
+			{ symbol: 'ORCL', name: 'Oracle Corporation', price: 112.89, change: 1.34, marketCap: '310.6B', volume: '8.7M' },
+			{ symbol: 'CSCO', name: 'Cisco Systems Inc.', price: 52.67, change: 0.78, marketCap: '215.4B', volume: '19.2M' },
+			{ symbol: 'BA', name: 'The Boeing Company', price: 198.45, change: -1.56, marketCap: '118.9B', volume: '7.4M' },
+			{ symbol: 'GE', name: 'General Electric Company', price: 156.78, change: 2.23, marketCap: '172.3B', volume: '5.9M' }
+		];
+
+		let currentStock = null;
+		let currentPrice = 0;
+		let priceChart = null;
+		let currentTimeframe = 0.003472; // Default to 5 minutes
+
+		// Populate Stock Dropdown
+		function populateDropdown() {
+			const dropdown = document.getElementById('stockDropdown');
+			dropdown.innerHTML = stockData.map(stock =>
+				`<option value="${stock.symbol}">${stock.name} (${stock.symbol}) - $${stock.price.toLocaleString()}</option>`
+			).join('');
+
+			dropdown.addEventListener('change', function() {
+				const selectedStock = stockData.find(s => s.symbol === this.value);
+				if (selectedStock) {
+					document.getElementById('selectedLogo').textContent = selectedStock.symbol.substring(0, 4);
+					loadStockData(this.value);
+				}
+			});
+
+			// Set first stock as selected
+			if (stockData.length > 0) {
+				document.getElementById('selectedLogo').textContent = stockData[0].symbol.substring(0, 4);
+				loadStockData(stockData[0].symbol);
+			}
+		}
+
+		function loadStockData(symbol) {
+			const stock = stockData.find(s => s.symbol === symbol);
+			if (!stock) return;
+
+			currentStock = stock;
+			currentPrice = stock.price;
+
+			document.getElementById('currentPrice').textContent = '$' + currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+			document.getElementById('marketCap').textContent = '$' + stock.marketCap;
+			document.getElementById('volume24h').textContent = stock.volume;
+
+			const change24h = stock.change;
+			const change24hElement = document.getElementById('change24h');
+			change24hElement.textContent = (change24h >= 0 ? '+' : '') + change24h.toFixed(2) + '%';
+			change24hElement.style.color = change24h >= 0 ? '#10b981' : '#ef4444';
+
+			loadChart(symbol, currentTimeframe);
+		}
+
+		function loadChart(symbol, days) {
+			try {
+				document.getElementById('chartLoading').style.display = 'block';
+
+				// Generate simulated price data
+				const dataPoints = Math.floor(days * 1440); // Convert days to minutes
+				const prices = [];
+				const basePrice = currentPrice;
+				const volatility = basePrice * 0.01;
+
+				for (let i = 0; i < dataPoints; i++) {
+					const randomChange = (Math.random() - 0.5) * volatility;
+					const price = basePrice + randomChange + (Math.sin(i / 50) * volatility / 3);
+					const time = new Date();
+					time.setMinutes(time.getMinutes() - (dataPoints - i));
+					prices.push({ x: time, y: price });
+				}
+
+				if (priceChart) {
+					priceChart.destroy();
+				}
+
+				const ctx = document.getElementById('priceChart').getContext('2d');
+				priceChart = new Chart(ctx, {
+					type: 'line',
+					data: {
+						datasets: [{
+							label: 'Price',
+							data: prices,
+							borderColor: '#01A3FF',
+							backgroundColor: 'rgba(102, 126, 234, 0.1)',
+							borderWidth: 2,
+							fill: true,
+							tension: 0.4,
+							pointRadius: 0,
+							pointHoverRadius: 6,
+							pointHoverBackgroundColor: '#01A3FF',
+							pointHoverBorderColor: 'white',
+							pointHoverBorderWidth: 2
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						interaction: {
+							mode: 'index',
+							intersect: false
+						},
+						plugins: {
+							legend: {
+								display: false
+							},
+							tooltip: {
+								backgroundColor: 'rgba(0, 0, 0, 0.8)',
+								padding: 12,
+								titleFont: {
+									size: 14
+								},
+								bodyFont: {
+									size: 13
+								},
+								callbacks: {
+									label: function(context) {
+										return 'Price: $' + context.parsed.y.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+									}
+								}
+							}
+						},
+						scales: {
+							x: {
+								type: 'time',
+								time: {
+									unit: days < 0.01 ? 'minute' : 'hour',
+									displayFormats: {
+										minute: 'HH:mm',
+										hour: 'HH:mm'
+									}
+								},
+								grid: {
+									display: false
+								},
+								ticks: {
+									font: {
+										size: 11
+									},
+									color: '#6b7280'
+								}
+							},
+							y: {
+								grid: {
+									color: '#f3f4f6'
+								},
+								ticks: {
+									font: {
+										size: 11
+									},
+									color: '#6b7280',
+									callback: function(value) {
+										return '$' + value.toLocaleString();
+									}
+								}
+							}
+						}
+					}
+				});
+
+				document.getElementById('chartLoading').style.display = 'none';
+			} catch (error) {
+				console.error('Error loading chart:', error);
+				document.getElementById('chartLoading').style.display = 'none';
+			}
+		}
+
+		function changeTimeframe(days) {
+			currentTimeframe = days;
+			document.querySelectorAll('.timeframe-btn').forEach(btn => btn.classList.remove('active'));
+			event.target.classList.add('active');
+
+			if (currentStock) {
+				loadChart(currentStock.symbol, days);
+			}
+		}
+
+		// UI-only: Toggle active class for button selections (Django handles actual values)
+		document.addEventListener('DOMContentLoaded', function() {
+			// Mode selection (Spot/Leverage) - Visual feedback only
+			document.addEventListener('click', function(e) {
+				if (e.target.classList.contains('mode-btn')) {
+					const form = e.target.closest('.trading-form');
+					form.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+					e.target.classList.add('active');
+
+					// Show/hide leverage options for visual feedback
+					const leverageOptions = form.querySelector('.leverage-options');
+					if (e.target.getAttribute('data-mode') === 'leverage') {
+						leverageOptions.classList.add('show');
+					} else {
+						leverageOptions.classList.remove('show');
+					}
+				}
+			});
+
+			// Leverage selection - Visual feedback only
+			document.addEventListener('click', function(e) {
+				if (e.target.classList.contains('leverage-btn')) {
+					const form = e.target.closest('.trading-form');
+					form.querySelectorAll('.leverage-btn').forEach(btn => btn.classList.remove('active'));
+					e.target.classList.add('active');
+				}
+			});
+
+			// Duration selection - Visual feedback only
+			document.addEventListener('click', function(e) {
+				if (e.target.classList.contains('duration-btn')) {
+					const form = e.target.closest('.trading-form');
+					form.querySelectorAll('.duration-btn').forEach(btn => btn.classList.remove('active'));
+					e.target.classList.add('active');
+				}
+			});
+		});
+
+		// Initialize
+		populateDropdown();
+
+		// Update footer year
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="content-body">
-    <div class="container-fluid">
-        <!-- Breadcrumb -->
-        <div class="page-titles">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="dashboard.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Market</a></li>
-                <li class="breadcrumb-item active">Stocks</li>
-            </ol>
-        </div>
-
-        <!-- Chart Panel - Full Width -->
-        <div class="chart-panel">
-            <div class="chart-header">
-                <div class="stock-selector-wrapper">
-                    <div class="stock-selector">
-                        <div id="selectedLogo" class="selected-stock-logo">AAPL</div>
-                        <select id="stockDropdown" class="stock-dropdown">
-                            <option value="">Loading stocks...</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="timeframe-selector">
-                    <button class="timeframe-btn active" onclick="changeTimeframe(0.003472)">5m</button>
-                    <button class="timeframe-btn" onclick="changeTimeframe(0.010417)">15m</button>
-                    <button class="timeframe-btn" onclick="changeTimeframe(0.020833)">30m</button>
-                    <button class="timeframe-btn" onclick="changeTimeframe(0.041667)">1h</button>
-                    <button class="timeframe-btn" onclick="changeTimeframe(0.166667)">4h</button>
-                </div>
-            </div>
-
-            <div class="price-stats">
-                <div class="stat-item">
-                    <div class="stat-label">Current Price</div>
-                    <div class="stat-value" id="currentPrice">$0.00</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">24h Change</div>
-                    <div class="stat-value" id="change24h">0.00%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Market Cap</div>
-                    <div class="stat-value" id="marketCap">$0.00</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">24h Volume</div>
-                    <div class="stat-value" id="volume24h">$0.00</div>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <div class="chart-wrapper">
-                    <canvas id="priceChart"></canvas>
-                </div>
-                <div class="loading" id="chartLoading" style="display: none;">Loading chart...</div>
-            </div>
-        </div>
-
-        <!-- Trading Section -->
-        <div class="trading-section">
-            <div class="trading-header">
-                <h3>Live Trading</h3>
-            </div>
-
-            <div class="copy-advisory">
-                <i class="material-icons">lightbulb</i>
-                <div class="copy-advisory-text">
-                    <strong>Pro Tip!</strong>
-                    Consider copying expert traders instead of manual trading.
-                </div>
-                <a href="copy-traders.html" class="copy-advisory-link">Browse Experts</a>
-            </div>
-
-            <div class="trading-tabs" style="margin-top: 20px;">
-                <button class="tab-btn buy active" onclick="switchTab('buy')">
-                    <i class="material-icons">trending_up</i>
-                    BUY
-                </button>
-                <button class="tab-btn sell" onclick="switchTab('sell')">
-                    <i class="material-icons">trending_down</i>
-                    SELL
-                </button>
-            </div>
-
-            <!-- Buy Form -->
-            <div class="trading-form" id="buyForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Trading Mode</label>
-                        <div class="leverage-mode">
-                            <button class="mode-btn active" data-mode="spot">Spot Trading</button>
-                            <button class="mode-btn" data-mode="leverage">Leverage</button>
-                        </div>
-                        <div class="leverage-options" id="buyLeverageOptions">
-                            <button class="leverage-btn active" data-leverage="10">10X</button>
-                            <button class="leverage-btn" data-leverage="25">25X</button>
-                            <button class="leverage-btn" data-leverage="50">50X</button>
-                            <button class="leverage-btn" data-leverage="100">100X</button>
-                            <button class="leverage-btn" data-leverage="200">200X</button>
-                            <button class="leverage-btn" data-leverage="500">500X</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Duration (Minutes)</label>
-                        <div class="duration-buttons">
-                            <button class="duration-btn active" data-seconds="60">1</button>
-                            <button class="duration-btn" data-seconds="180">3</button>
-                            <button class="duration-btn" data-seconds="300">5</button>
-                            <button class="duration-btn" data-seconds="900">15</button>
-                            <button class="duration-btn" data-seconds="1800">30</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Investment Amount (USD)</label>
-                        <input type="number" class="form-input" id="buyAmount" placeholder="Minimum $10" min="10" step="1">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">&nbsp;</label>
-                        <button class="trade-btn buy" onclick="executeTrade('buy')">
-                            <i class="material-icons">rocket_launch</i>
-                            Open Buy Position
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sell Form (Hidden by default) -->
-            <div class="trading-form" id="sellForm" style="display: none;">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Trading Mode</label>
-                        <div class="leverage-mode">
-                            <button class="mode-btn active" data-mode="spot">Spot Trading</button>
-                            <button class="mode-btn" data-mode="leverage">Leverage</button>
-                        </div>
-                        <div class="leverage-options" id="sellLeverageOptions">
-                            <button class="leverage-btn active" data-leverage="10">10X</button>
-                            <button class="leverage-btn" data-leverage="25">25X</button>
-                            <button class="leverage-btn" data-leverage="50">50X</button>
-                            <button class="leverage-btn" data-leverage="100">100X</button>
-                            <button class="leverage-btn" data-leverage="200">200X</button>
-                            <button class="leverage-btn" data-leverage="500">500X</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Duration (Minutes)</label>
-                        <div class="duration-buttons">
-                            <button class="duration-btn active" data-seconds="60">1</button>
-                            <button class="duration-btn" data-seconds="180">3</button>
-                            <button class="duration-btn" data-seconds="300">5</button>
-                            <button class="duration-btn" data-seconds="900">15</button>
-                            <button class="duration-btn" data-seconds="1800">30</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Investment Amount (USD)</label>
-                        <input type="number" class="form-input" id="sellAmount" placeholder="Minimum $10" min="10" step="1">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">&nbsp;</label>
-                        <button class="trade-btn sell" onclick="executeTrade('sell')">
-                            <i class="material-icons">rocket_launch</i>
-                            Open Sell Position
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Active Trades Section -->
-        <div class="trades-section">
-            <div class="trades-header">
-                <h3>My Trades</h3>
-            </div>
-
-            <div class="trade-tabs">
-                <button class="trade-tab active" onclick="switchTradeTab('open')">Open Trades</button>
-                <button class="trade-tab" onclick="switchTradeTab('closed')">Closed Trades</button>
-            </div>
-
-            <div class="trades-list" id="openTrades">
-                <div class="empty-trades">
-                    <i class="material-icons">inbox</i>
-                    <p>No open trades yet. Start trading above!</p>
-                </div>
-            </div>
-
-            <div class="trades-list" id="closedTrades" style="display: none;">
-                <div class="empty-trades">
-                    <i class="material-icons">history</i>
-                    <p>No closed trades yet.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock content %}
-{% block extra_scripts %}
-<script>
-    const stockData = [
-        { symbol: 'AAPL', name: 'Apple Inc.', price: 178.45, change: 2.34, marketCap: '2.8T', volume: '58.2M' },
-        { symbol: 'MSFT', name: 'Microsoft Corporation', price: 398.12, change: 1.85, marketCap: '2.95T', volume: '24.5M' },
-        { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 141.23, change: -0.45, marketCap: '1.77T', volume: '22.1M' },
-        { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 153.67, change: 3.12, marketCap: '1.59T', volume: '45.8M' },
-        { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 495.34, change: 5.67, marketCap: '1.22T', volume: '35.6M' },
-        { symbol: 'TSLA', name: 'Tesla Inc.', price: 245.89, change: -1.23, marketCap: '780.5B', volume: '102.3M' },
-        { symbol: 'META', name: 'Meta Platforms Inc.', price: 378.45, change: 2.78, marketCap: '970.2B', volume: '18.4M' },
-        { symbol: 'BRK.B', name: 'Berkshire Hathaway Inc.', price: 392.56, change: 0.89, marketCap: '856.7B', volume: '3.2M' },
-        { symbol: 'JPM', name: 'JPMorgan Chase & Co.', price: 189.23, change: 1.45, marketCap: '544.3B', volume: '9.8M' },
-        { symbol: 'V', name: 'Visa Inc.', price: 267.89, change: 1.12, marketCap: '549.2B', volume: '6.5M' },
-        { symbol: 'WMT', name: 'Walmart Inc.', price: 169.78, change: 0.67, marketCap: '455.8B', volume: '7.3M' },
-        { symbol: 'DIS', name: 'The Walt Disney Company', price: 93.45, change: -0.89, marketCap: '170.4B', volume: '12.1M' },
-        { symbol: 'NFLX', name: 'Netflix Inc.', price: 485.67, change: 3.45, marketCap: '210.5B', volume: '5.8M' },
-        { symbol: 'PYPL', name: 'PayPal Holdings Inc.', price: 68.34, change: -2.12, marketCap: '74.2B', volume: '15.4M' },
-        { symbol: 'INTC', name: 'Intel Corporation', price: 43.56, change: 0.45, marketCap: '180.3B', volume: '38.9M' },
-        { symbol: 'AMD', name: 'Advanced Micro Devices Inc.', price: 158.23, change: 4.12, marketCap: '255.8B', volume: '42.5M' },
-        { symbol: 'ORCL', name: 'Oracle Corporation', price: 112.89, change: 1.34, marketCap: '310.6B', volume: '8.7M' },
-        { symbol: 'CSCO', name: 'Cisco Systems Inc.', price: 52.67, change: 0.78, marketCap: '215.4B', volume: '19.2M' },
-        { symbol: 'BA', name: 'The Boeing Company', price: 198.45, change: -1.56, marketCap: '118.9B', volume: '7.4M' },
-        { symbol: 'GE', name: 'General Electric Company', price: 156.78, change: 2.23, marketCap: '172.3B', volume: '5.9M' }
-    ];
-
-    let currentStock = null;
-    let currentPrice = 0;
-    let priceChart = null;
-    let currentTimeframe = 0.003472; // Default to 5 minutes
-    let activeTrades = [];
-    let closedTrades = [];
-    let tradeIdCounter = 1;
-
-    // Trading state
-    let selectedDuration = 60;
-    let selectedLeverage = 1;
-    let tradingMode = 'spot';
-    let currentTab = 'buy';
-
-    // Populate Stock Dropdown
-    function populateDropdown() {
-        const dropdown = document.getElementById('stockDropdown');
-        dropdown.innerHTML = stockData.map(stock =>
-            `<option value="${stock.symbol}">${stock.name} (${stock.symbol}) - $${stock.price.toLocaleString()}</option>`
-        ).join('');
-
-        dropdown.addEventListener('change', function() {
-            const selectedStock = stockData.find(s => s.symbol === this.value);
-            if (selectedStock) {
-                document.getElementById('selectedLogo').textContent = selectedStock.symbol.substring(0, 4);
-                loadStockData(this.value);
-            }
-        });
-
-        // Set first stock as selected
-        if (stockData.length > 0) {
-            document.getElementById('selectedLogo').textContent = stockData[0].symbol.substring(0, 4);
-            loadStockData(stockData[0].symbol);
-        }
-    }
-
-    function loadStockData(symbol) {
-        const stock = stockData.find(s => s.symbol === symbol);
-        if (!stock) return;
-
-        currentStock = stock;
-        currentPrice = stock.price;
-
-        document.getElementById('currentPrice').textContent = '$' + currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        document.getElementById('marketCap').textContent = '$' + stock.marketCap;
-        document.getElementById('volume24h').textContent = stock.volume;
-
-        const change24h = stock.change;
-        const change24hElement = document.getElementById('change24h');
-        change24hElement.textContent = (change24h >= 0 ? '+' : '') + change24h.toFixed(2) + '%';
-        change24hElement.style.color = change24h >= 0 ? '#10b981' : '#ef4444';
-
-        loadChart(symbol, currentTimeframe);
-    }
-
-    function loadChart(symbol, days) {
-        try {
-            document.getElementById('chartLoading').style.display = 'block';
-
-            // Generate simulated price data
-            const dataPoints = Math.floor(days * 1440); // Convert days to minutes
-            const prices = [];
-            const basePrice = currentPrice;
-            const volatility = basePrice * 0.01;
-
-            for (let i = 0; i < dataPoints; i++) {
-                const randomChange = (Math.random() - 0.5) * volatility;
-                const price = basePrice + randomChange + (Math.sin(i / 50) * volatility / 3);
-                const time = new Date();
-                time.setMinutes(time.getMinutes() - (dataPoints - i));
-                prices.push({ x: time, y: price });
-            }
-
-            if (priceChart) {
-                priceChart.destroy();
-            }
-
-            const ctx = document.getElementById('priceChart').getContext('2d');
-            priceChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        label: 'Price',
-                        data: prices,
-                        borderColor: '#01A3FF',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 6,
-                        pointHoverBackgroundColor: '#01A3FF',
-                        pointHoverBorderColor: 'white',
-                        pointHoverBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            padding: 12,
-                            titleFont: {
-                                size: 14
-                            },
-                            bodyFont: {
-                                size: 13
-                            },
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Price: $' + context.parsed.y.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: days < 0.01 ? 'minute' : 'hour',
-                                displayFormats: {
-                                    minute: 'HH:mm',
-                                    hour: 'HH:mm'
-                                }
-                            },
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    size: 11
-                                },
-                                color: '#6b7280'
-                            }
-                        },
-                        y: {
-                            grid: {
-                                color: '#f3f4f6'
-                            },
-                            ticks: {
-                                font: {
-                                    size: 11
-                                },
-                                color: '#6b7280',
-                                callback: function(value) {
-                                    return '$' + value.toLocaleString();
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            document.getElementById('chartLoading').style.display = 'none';
-        } catch (error) {
-            console.error('Error loading chart:', error);
-            document.getElementById('chartLoading').style.display = 'none';
-        }
-    }
-
-    function changeTimeframe(days) {
-        currentTimeframe = days;
-        document.querySelectorAll('.timeframe-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        if (currentStock) {
-            loadChart(currentStock.symbol, days);
-        }
-    }
-
-    // Trading Panel Logic
-    function switchTab(tab) {
-        currentTab = tab;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.tab-btn.${tab}`).classList.add('active');
-
-        document.getElementById('buyForm').style.display = tab === 'buy' ? 'flex' : 'none';
-        document.getElementById('sellForm').style.display = tab === 'sell' ? 'flex' : 'none';
-    }
-
-    // Duration selection
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('duration-btn')) {
-            const form = e.target.closest('.trading-form');
-            form.querySelectorAll('.duration-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            selectedDuration = parseInt(e.target.getAttribute('data-seconds'));
-        }
-    });
-
-    // Mode selection (Spot/Leverage)
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('mode-btn')) {
-            const form = e.target.closest('.trading-form');
-            form.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-
-            tradingMode = e.target.getAttribute('data-mode');
-            const leverageOptions = form.querySelector('.leverage-options');
-
-            if (tradingMode === 'leverage') {
-                leverageOptions.classList.add('show');
-                selectedLeverage = 10;
-            } else {
-                leverageOptions.classList.remove('show');
-                selectedLeverage = 1;
-            }
-        }
-    });
-
-    // Leverage selection
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('leverage-btn') && !e.target.disabled) {
-            const form = e.target.closest('.trading-form');
-            form.querySelectorAll('.leverage-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            selectedLeverage = parseInt(e.target.getAttribute('data-leverage'));
-        }
-    });
-
-    // Execute Trade
-    function executeTrade(type) {
-        if (!currentStock) {
-            alert('Please select a stock first');
-            return;
-        }
-
-        const amountInput = document.getElementById(type + 'Amount');
-        const amount = parseFloat(amountInput.value);
-
-        if (!amount || amount < 10) {
-            alert('Minimum investment is $10');
-            return;
-        }
-
-        const minutes = selectedDuration / 60;
-        const trade = {
-            id: tradeIdCounter++,
-            type: type.toUpperCase(),
-            asset: currentStock.name,
-            symbol: currentStock.symbol,
-            logo: currentStock.symbol.substring(0, 2),
-            entryPrice: currentPrice,
-            amount: amount,
-            leverage: selectedLeverage,
-            mode: tradingMode,
-            duration: selectedDuration,
-            openedAt: Date.now(),
-            closesAt: Date.now() + (selectedDuration * 1000),
-            status: 'open'
-        };
-
-        activeTrades.push(trade);
-        displayActiveTrades();
-
-        // Auto-close trade after duration
-        setTimeout(() => {
-            closeTrade(trade.id);
-        }, selectedDuration * 1000);
-
-        alert(`${type.toUpperCase()} position opened!\n\nAsset: ${trade.asset}\nEntry Price: $${trade.entryPrice.toLocaleString()}\nAmount: $${trade.amount}\nDuration: ${minutes} minute${minutes > 1 ? 's' : ''}\nMode: ${tradingMode === 'spot' ? 'Spot' : selectedLeverage + 'X Leverage'}`);
-
-        // Reset form
-        amountInput.value = '';
-    }
-
-    function closeTrade(tradeId) {
-        const tradeIndex = activeTrades.findIndex(t => t.id === tradeId);
-        if (tradeIndex === -1) return;
-
-        const trade = activeTrades[tradeIndex];
-
-        // Simulate price change (random for demo)
-        const priceChangePercent = (Math.random() - 0.5) * 10; // -5% to +5%
-        const closePrice = trade.entryPrice * (1 + priceChangePercent / 100);
-
-        // Calculate P&L
-        let pnlPercent = ((closePrice - trade.entryPrice) / trade.entryPrice) * 100;
-        if (trade.type === 'SELL') pnlPercent = -pnlPercent; // Inverse for short positions
-        pnlPercent *= trade.leverage; // Apply leverage
-
-        const pnl = trade.amount * (pnlPercent / 100);
-
-        trade.closePrice = closePrice;
-        trade.pnl = pnl;
-        trade.pnlPercent = pnlPercent;
-        trade.status = 'closed';
-        trade.closedAt = Date.now();
-
-        // Move to closed trades
-        closedTrades.unshift(trade);
-        activeTrades.splice(tradeIndex, 1);
-
-        displayActiveTrades();
-        displayClosedTrades();
-
-        alert(`Trade Closed!\n\nAsset: ${trade.asset}\nEntry: $${trade.entryPrice.toLocaleString()}\nClose: $${trade.closePrice.toLocaleString()}\nP&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPercent >= 0 ? '+' : ''}${pnlPercent.toFixed(2)}%)`);
-    }
-
-    function displayActiveTrades() {
-        const container = document.getElementById('openTrades');
-
-        if (activeTrades.length === 0) {
-            container.innerHTML = '<div class="empty-trades"><i class="material-icons">inbox</i><p>No open trades yet. Start trading above!</p></div>';
-            return;
-        }
-
-        container.innerHTML = activeTrades.map(trade => {
-            const now = Date.now();
-            const timeLeft = Math.max(0, Math.floor((trade.closesAt - now) / 1000));
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-
-            // Simulate current P&L (random fluctuation for demo)
-            const currentPriceChange = (Math.random() - 0.5) * 5;
-            let currentPnlPercent = currentPriceChange;
-            if (trade.type === 'SELL') currentPnlPercent = -currentPnlPercent;
-            currentPnlPercent *= trade.leverage;
-            const currentPnl = trade.amount * (currentPnlPercent / 100);
-
-            return `
-                <div class="trade-item">
-                    <div class="trade-type ${trade.type.toLowerCase()}">${trade.type}</div>
-                    <div class="trade-asset">
-                        <div class="trade-asset-logo">${trade.logo}</div>
-                        <div class="trade-asset-info">
-                            <div class="trade-asset-name">${trade.asset}</div>
-                            <div class="trade-asset-symbol">${trade.symbol}</div>
-                        </div>
-                    </div>
-                    <div class="trade-detail">
-                        <div class="trade-detail-label">Entry Price</div>
-                        <div class="trade-detail-value">$${trade.entryPrice.toLocaleString()}</div>
-                    </div>
-                    <div class="trade-detail">
-                        <div class="trade-detail-label">Amount</div>
-                        <div class="trade-detail-value">$${trade.amount.toFixed(2)}</div>
-                    </div>
-                    <div class="trade-detail">
-                        <div class="trade-detail-label">Mode</div>
-                        <div class="trade-detail-value">${trade.mode === 'spot' ? 'Spot' : trade.leverage + 'X'}</div>
-                    </div>
-                    <div class="trade-detail">
-                        <div class="trade-detail-label">Duration</div>
-                        <div class="trade-detail-value">${trade.duration / 60}m</div>
-                    </div>
-                    <div class="trade-pnl ${currentPnl >= 0 ? 'positive' : 'negative'}">
-                        ${currentPnl >= 0 ? '+' : ''}$${currentPnl.toFixed(2)}
-                    </div>
-                    <div class="trade-timer">${minutes}:${seconds.toString().padStart(2, '0')}</div>
-                </div>
-            `;
-        }).join('');
-
-        // Update every second
-        setTimeout(displayActiveTrades, 1000);
-    }
-
-    function displayClosedTrades() {
-        const container = document.getElementById('closedTrades');
-
-        if (closedTrades.length === 0) {
-            container.innerHTML = '<div class="empty-trades"><i class="material-icons">history</i><p>No closed trades yet.</p></div>';
-            return;
-        }
-
-        container.innerHTML = closedTrades.map(trade => `
-            <div class="trade-item">
-                <div class="trade-type ${trade.type.toLowerCase()}">${trade.type}</div>
-                <div class="trade-asset">
-                    <div class="trade-asset-logo">${trade.logo}</div>
-                    <div class="trade-asset-info">
-                        <div class="trade-asset-name">${trade.asset}</div>
-                        <div class="trade-asset-symbol">${trade.symbol}</div>
-                    </div>
-                </div>
-                <div class="trade-detail">
-                    <div class="trade-detail-label">Entry Price</div>
-                    <div class="trade-detail-value">$${trade.entryPrice.toLocaleString()}</div>
-                </div>
-                <div class="trade-detail">
-                    <div class="trade-detail-label">Close Price</div>
-                    <div class="trade-detail-value">$${trade.closePrice.toLocaleString()}</div>
-                </div>
-                <div class="trade-detail">
-                    <div class="trade-detail-label">Amount</div>
-                    <div class="trade-detail-value">$${trade.amount.toFixed(2)}</div>
-                </div>
-                <div class="trade-detail">
-                    <div class="trade-detail-label">Mode</div>
-                    <div class="trade-detail-value">${trade.mode === 'spot' ? 'Spot' : trade.leverage + 'X'}</div>
-                </div>
-                <div class="trade-pnl ${trade.pnl >= 0 ? 'positive' : 'negative'}">
-                    ${trade.pnl >= 0 ? '+' : ''}$${trade.pnl.toFixed(2)}<br>
-                    <small style="font-size: 11px;">(${trade.pnlPercent >= 0 ? '+' : ''}${trade.pnlPercent.toFixed(2)}%)</small>
-                </div>
-                <div class="trade-detail">
-                    <div class="trade-detail-label">Closed</div>
-                    <div class="trade-detail-value">${new Date(trade.closedAt).toLocaleTimeString()}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function switchTradeTab(tab) {
-        document.querySelectorAll('.trade-tab').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        document.getElementById('openTrades').style.display = tab === 'open' ? 'grid' : 'none';
-        document.getElementById('closedTrades').style.display = tab === 'closed' ? 'grid' : 'none';
-    }
-
-    // Initialize
-    populateDropdown();
-
-    document.querySelector('.current-year').textContent = new Date().getFullYear();
-</script>
-{% endblock extra_scripts %}
+			<div class="container-fluid">
+				<!-- Breadcrumb -->
+				<div class="page-titles">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Market</a></li>
+						<li class="breadcrumb-item active">Stocks</li>
+					</ol>
+				</div>
+
+				<!-- Chart Panel - Full Width -->
+				<div class="chart-panel">
+					<div class="chart-header">
+						<div class="stock-selector-wrapper">
+							<div class="stock-selector">
+								<div id="selectedLogo" class="selected-stock-logo">AAPL</div>
+								<select id="stockDropdown" class="stock-dropdown">
+									<option value="">Loading stocks...</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="timeframe-selector">
+							<button class="timeframe-btn active" onclick="changeTimeframe(0.003472)">5m</button>
+							<button class="timeframe-btn" onclick="changeTimeframe(0.010417)">15m</button>
+							<button class="timeframe-btn" onclick="changeTimeframe(0.020833)">30m</button>
+							<button class="timeframe-btn" onclick="changeTimeframe(0.041667)">1h</button>
+							<button class="timeframe-btn" onclick="changeTimeframe(0.166667)">4h</button>
+						</div>
+					</div>
+
+					<div class="price-stats">
+						<div class="stat-item">
+							<div class="stat-label">Current Price</div>
+							<div class="stat-value" id="currentPrice">$0.00</div>
+						</div>
+						<div class="stat-item">
+							<div class="stat-label">24h Change</div>
+							<div class="stat-value" id="change24h">0.00%</div>
+						</div>
+						<div class="stat-item">
+							<div class="stat-label">Market Cap</div>
+							<div class="stat-value" id="marketCap">$0.00</div>
+						</div>
+						<div class="stat-item">
+							<div class="stat-label">24h Volume</div>
+							<div class="stat-value" id="volume24h">$0.00</div>
+						</div>
+					</div>
+
+					<div class="chart-container">
+						<div class="chart-wrapper">
+							<canvas id="priceChart"></canvas>
+						</div>
+						<div class="loading" id="chartLoading" style="display: none;">Loading chart...</div>
+					</div>
+				</div>
+
+				<!-- Trading Section -->
+				<div class="trading-section">
+					<div class="trading-header">
+						<h3>Live Trading</h3>
+					</div>
+
+					<div class="copy-advisory">
+						<i class="material-icons">lightbulb</i>
+						<div class="copy-advisory-text">
+							<strong>Pro Tip!</strong>
+							Consider copying expert traders instead of manual trading.
+						</div>
+						<a href="{% url 'copy_trader' %}" class="copy-advisory-link">Browse Experts</a>
+					</div>
+
+					<ul class="nav trading-tabs" role="tablist" style="margin-top: 20px; display: flex; justify-content: space-between;">
+						<li class="nav-item" role="presentation" style="flex: 1;">
+							<button class="nav-link tab-btn buy active" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buyForm" type="button" role="tab" style="width: 100%;">
+								<i class="material-icons">trending_up</i>
+								BUY
+							</button>
+						</li>
+						<li class="nav-item" role="presentation" style="flex: 1;">
+							<button class="nav-link tab-btn sell" id="sell-tab" data-bs-toggle="tab" data-bs-target="#sellForm" type="button" role="tab" style="width: 100%;">
+								<i class="material-icons">trending_down</i>
+								SELL
+							</button>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<!-- Buy Form -->
+						<div class="trading-form tab-pane fade show active" id="buyForm" role="tabpanel">
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label">Trading Mode</label>
+								<div class="leverage-mode">
+									<button class="mode-btn active" data-mode="spot">Spot Trading</button>
+									<button class="mode-btn" data-mode="leverage">Leverage</button>
+								</div>
+								<div class="leverage-options" id="buyLeverageOptions">
+									<button class="leverage-btn active" data-leverage="10">10X</button>
+									<button class="leverage-btn" data-leverage="25">25X</button>
+									<button class="leverage-btn" data-leverage="50">50X</button>
+									<button class="leverage-btn" data-leverage="100">100X</button>
+									<button class="leverage-btn" data-leverage="200">200X</button>
+									<button class="leverage-btn" data-leverage="500">500X</button>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label">Duration (Minutes)</label>
+								<div class="duration-buttons">
+									<button class="duration-btn active" data-seconds="60">1</button>
+									<button class="duration-btn" data-seconds="180">3</button>
+									<button class="duration-btn" data-seconds="300">5</button>
+									<button class="duration-btn" data-seconds="900">15</button>
+									<button class="duration-btn" data-seconds="1800">30</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label">Investment Amount (USD)</label>
+								<input type="number" class="form-input" id="buyAmount" placeholder="Minimum $10" min="10" step="1">
+							</div>
+
+							<div class="form-group">
+								<label class="form-label">&nbsp;</label>
+								<button class="trade-btn buy" onclick="executeTrade('buy')">
+									<i class="material-icons">rocket_launch</i>
+									Open Buy Position
+								</button>
+							</div>
+						</div>
+					</div>
+
+						<!-- Sell Form -->
+						<div class="trading-form tab-pane fade" id="sellForm" role="tabpanel">
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label">Trading Mode</label>
+								<div class="leverage-mode">
+									<button class="mode-btn active" data-mode="spot">Spot Trading</button>
+									<button class="mode-btn" data-mode="leverage">Leverage</button>
+								</div>
+								<div class="leverage-options" id="sellLeverageOptions">
+									<button class="leverage-btn active" data-leverage="10">10X</button>
+									<button class="leverage-btn" data-leverage="25">25X</button>
+									<button class="leverage-btn" data-leverage="50">50X</button>
+									<button class="leverage-btn" data-leverage="100">100X</button>
+									<button class="leverage-btn" data-leverage="200">200X</button>
+									<button class="leverage-btn" data-leverage="500">500X</button>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label">Duration (Minutes)</label>
+								<div class="duration-buttons">
+									<button class="duration-btn active" data-seconds="60">1</button>
+									<button class="duration-btn" data-seconds="180">3</button>
+									<button class="duration-btn" data-seconds="300">5</button>
+									<button class="duration-btn" data-seconds="900">15</button>
+									<button class="duration-btn" data-seconds="1800">30</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label">Investment Amount (USD)</label>
+								<input type="number" class="form-input" id="sellAmount" placeholder="Minimum $10" min="10" step="1">
+							</div>
+
+							<div class="form-group">
+								<label class="form-label">&nbsp;</label>
+								<button class="trade-btn sell" onclick="executeTrade('sell')">
+									<i class="material-icons">rocket_launch</i>
+									Open Sell Position
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Active Trades Section -->
+				<div class="trades-section">
+					<div class="trades-header">
+						<h3>My Trades</h3>
+					</div>
+
+					<ul class="nav nav-tabs trade-tabs" role="tablist">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link trade-tab active" id="open-tab" data-bs-toggle="tab" data-bs-target="#openTrades" type="button" role="tab">Open Trades</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link trade-tab" id="closed-tab" data-bs-toggle="tab" data-bs-target="#closedTrades" type="button" role="tab">Closed Trades</button>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="trades-list tab-pane fade show active" id="openTrades" role="tabpanel">
+							<!-- Django: {% for trade in open_trades %} -->
+
+							<!-- Open Trade 1 - Profit -->
+							<div class="trade-card profit">
+								<div class="trade-header">
+									<div class="trade-pair">AAPL</div>
+									<div class="trade-status active">Active</div>
+								</div>
+								<div class="trade-info">
+									<span>Entry: $178.45</span>
+									<span>Current: $180.25</span>
+								</div>
+								<div class="trade-info">
+									<span>Type: Long (Spot)</span>
+									<span>Size: 10 shares</span>
+								</div>
+								<div class="trade-pnl profit">+$18.00 (+1.01%)</div>
+							</div>
+
+							<!-- Open Trade 2 - Loss -->
+							<div class="trade-card loss">
+								<div class="trade-header">
+									<div class="trade-pair">TSLA</div>
+									<div class="trade-status active">Active</div>
+								</div>
+								<div class="trade-info">
+									<span>Entry: $245.89</span>
+									<span>Current: $242.15</span>
+								</div>
+								<div class="trade-info">
+									<span>Type: Long (10X)</span>
+									<span>Size: 5 shares</span>
+								</div>
+								<div class="trade-pnl loss">-$18.70 (-1.52%)</div>
+							</div>
+
+							<!-- Django: {% empty %} -->
+							<!-- <div class="empty-trades">
+								<i class="material-icons">inbox</i>
+								<p>No open trades yet. Start trading above!</p>
+							</div> -->
+							<!-- Django: {% endfor %} -->
+						</div>
+
+						<div class="trades-list tab-pane fade" id="closedTrades" role="tabpanel">
+							<!-- Django: {% for trade in closed_trades %} -->
+
+							<!-- Closed Trade 1 - Profit -->
+							<div class="trade-card profit">
+								<div class="trade-header">
+									<div class="trade-pair">NVDA</div>
+									<div class="trade-status">Closed</div>
+								</div>
+								<div class="trade-info">
+									<span>Entry: $495.34</span>
+									<span>Exit: $512.80</span>
+								</div>
+								<div class="trade-info">
+									<span>Type: Long (25X)</span>
+									<span>Closed: 3 hours ago</span>
+								</div>
+								<div class="trade-pnl profit">+$174.60 (+3.52%)</div>
+							</div>
+
+							<!-- Closed Trade 2 - Profit -->
+							<div class="trade-card profit">
+								<div class="trade-header">
+									<div class="trade-pair">MSFT</div>
+									<div class="trade-status">Closed</div>
+								</div>
+								<div class="trade-info">
+									<span>Entry: $398.12</span>
+									<span>Exit: $405.45</span>
+								</div>
+								<div class="trade-info">
+									<span>Type: Long (Spot)</span>
+									<span>Closed: 1 day ago</span>
+								</div>
+								<div class="trade-pnl profit">+$73.30 (+1.84%)</div>
+							</div>
+
+							<!-- Closed Trade 3 - Loss -->
+							<div class="trade-card loss">
+								<div class="trade-header">
+									<div class="trade-pair">META</div>
+									<div class="trade-status">Closed</div>
+								</div>
+								<div class="trade-info">
+									<span>Entry: $378.45</span>
+									<span>Exit: $372.20</span>
+								</div>
+								<div class="trade-info">
+									<span>Type: Short (Spot)</span>
+									<span>Closed: 2 days ago</span>
+								</div>
+								<div class="trade-pnl loss">-$31.25 (-1.65%)</div>
+							</div>
+
+							<!-- Django: {% empty %} -->
+							<!-- <div class="empty-trades">
+								<i class="material-icons">history</i>
+								<p>No closed trades yet.</p>
+							</div> -->
+							<!-- Django: {% endfor %} -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock %}

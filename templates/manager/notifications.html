@@ -1,0 +1,180 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+    <div class="container-fluid">
+
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Send Notifications</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Form -->
+        <form method="POST" action="">
+            <input type="hidden" name="action" value="send_notification">
+
+            <div class="notification-container">
+
+                <!-- Section 1: Select Recipients -->
+                <div class="notification-card">
+                    <h3 class="section-title">
+                        <i class="material-icons">people</i>
+                        Select Recipients
+                    </h3>
+                    <p class="section-description">Choose who should receive this notification.</p>
+
+                    <div class="recipient-options">
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient_type" value="all" checked />
+                            <div class="recipient-content">
+                                <span class="recipient-label">All Users <span class="recipient-count">1,234</span></span>
+                                <span class="recipient-description">Send to every user on the platform</span>
+                            </div>
+                        </label>
+
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient_type" value="kyc_completed" />
+                            <div class="recipient-content">
+                                <span class="recipient-label">KYC Completed <span class="recipient-count">856</span></span>
+                                <span class="recipient-description">Users with verified KYC</span>
+                            </div>
+                        </label>
+
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient_type" value="kyc_pending" />
+                            <div class="recipient-content">
+                                <span class="recipient-label">KYC Pending <span class="recipient-count">378</span></span>
+                                <span class="recipient-description">Users who haven't completed KYC</span>
+                            </div>
+                        </label>
+
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient_type" value="active_traders" />
+                            <div class="recipient-content">
+                                <span class="recipient-label">Active Traders <span class="recipient-count">542</span></span>
+                                <span class="recipient-description">Users with open trades</span>
+                            </div>
+                        </label>
+
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient_type" value="specific_user" />
+                            <div class="recipient-content">
+                                <span class="recipient-label">Specific User</span>
+                                <span class="recipient-description">Enter user ID or email below</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Specific User Input -->
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label class="form-label">Specific User ID or Email (Optional)</label>
+                        <input type="text" class="form-input" name="specific_user_identifier" placeholder="e.g., USR-10245 or user@example.com" />
+                        <div class="form-help">Only used if "Specific User" is selected above</div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Notification Content -->
+                <div class="notification-card">
+                    <h3 class="section-title">
+                        <i class="material-icons">edit_note</i>
+                        Notification Content
+                    </h3>
+                    <p class="section-description">Compose your notification message.</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Notification Title <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="notification_title" placeholder="e.g., Important Platform Update" required maxlength="60" />
+                        <div class="form-help">Keep it short and clear (max 60 characters)</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Notification Message <span class="required">*</span></label>
+                        <textarea class="form-textarea" name="notification_message" placeholder="Enter your message here..." required style="min-height: 120px;"></textarea>
+                        <div class="form-help">Provide clear and actionable information for users</div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Notification Icon <span class="required">*</span></label>
+                            <select class="form-select" name="notification_icon" required>
+                                <option value="campaign">Announcement</option>
+                                <option value="warning">Warning</option>
+                                <option value="info">Information</option>
+                                <option value="check_circle">Success</option>
+                                <option value="error">Error</option>
+                                <option value="notifications">Bell</option>
+                                <option value="verified">Verified</option>
+                                <option value="security">Security</option>
+                                <option value="update">Update</option>
+                                <option value="celebration">Celebration</option>
+                                <option value="stars">Stars</option>
+                                <option value="monetization_on">Money</option>
+                            </select>
+                            <div class="form-help">Choose an icon that matches your message</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Notification Color <span class="required">*</span></label>
+                            <select class="form-select" name="notification_color" required>
+                                <option value="red">Red (Urgent)</option>
+                                <option value="blue">Blue (Information)</option>
+                                <option value="green">Green (Success)</option>
+                                <option value="yellow">Yellow (Warning)</option>
+                                <option value="purple">Purple (Announcement)</option>
+                                <option value="orange">Orange (Alert)</option>
+                                <option value="gray">Gray (Neutral)</option>
+                            </select>
+                            <div class="form-help">Select a color that conveys the right tone</div>
+                        </div>
+                    </div>
+
+                    <!-- Static Preview Box -->
+                    <div class="preview-box">
+                        <div class="preview-title">
+                            <i class="material-icons">visibility</i>
+                            Preview (Sample)
+                        </div>
+                        <div class="preview-notification">
+                            <div class="preview-notification-header">
+                                <div class="preview-icon">
+                                    <i class="material-icons">campaign</i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div class="preview-notification-title">Important Platform Update</div>
+                                </div>
+                            </div>
+                            <p class="preview-notification-message">Your notification message will appear here with the selected icon and color styling.</p>
+                        </div>
+                        <div style="margin-top: 12px; padding: 12px; background: #fffbeb; border: 1px solid #fbbf24; border-radius: 8px; font-size: 12px; color: #92400e;">
+                            <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+                            <strong>Note:</strong> This is a static preview. Your actual notification will use the values you enter above.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="admin-dashboard.html" class="btn-cancel">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-send">
+                        <i class="material-icons" style="font-size: 18px;">send</i>
+                        Send Notification
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

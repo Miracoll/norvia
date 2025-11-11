@@ -10,7 +10,7 @@
                 <div class="page-titles">
                     <nav style="--bs-breadcrumb-divider: '>';">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Withdrawals</li>
                         </ol>
                     </nav>
@@ -20,28 +20,38 @@
 
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">Withdrawals (289 Total)</h1>
+            <h1 class="page-title">
+                Withdrawals ({{ total_withdrawals_count }} Total)
+            </h1>
         </div>
-
+        
         <!-- Stats Mini Cards -->
         <div class="stats-row">
             <div class="stat-mini">
                 <div class="stat-mini-label">Total Withdrawals (Today)</div>
-                <div class="stat-mini-value" style="color: #ef4444;">$18,340</div>
+                <div class="stat-mini-value" style="color: #ef4444;">
+                    ${{ total_withdrawals_today|floatformat:2 }}
+                </div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Pending Approval</div>
-                <div class="stat-mini-value" style="color: #f59e0b;">15</div>
+                <div class="stat-mini-value" style="color: #f59e0b;">
+                    {{ pending_approval }}
+                </div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Completed (Today)</div>
-                <div class="stat-mini-value" style="color: #10b981;">18</div>
+                <div class="stat-mini-value" style="color: #10b981;">
+                    {{ completed_today }}
+                </div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Rejected (Today)</div>
-                <div class="stat-mini-value" style="color: #ef4444;">3</div>
+                <div class="stat-mini-value" style="color: #ef4444;">
+                    {{ rejected_today }}
+                </div>
             </div>
-        </div>
+        </div>        
 
         <!-- Filters -->
         <div class="filters-card">
@@ -77,7 +87,6 @@
                 <table class="withdrawals-table">
                     <thead>
                         <tr>
-                            <th>Transaction ID</th>
                             <th>User</th>
                             <th>Amount</th>
                             <th>Method</th>
@@ -88,124 +97,57 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for withdraw in withdraws %}
                         <tr>
-                            <td><strong>#WTH-20134</strong></td>
                             <td>
                                 <div class="user-cell">
-                                    <div class="user-avatar">EW</div>
+                                    <div class="user-avatar">{{withdraw.user.first_name|slice:1}}{{withdraw.user.last_name|slice:1}}</div>
                                     <div>
-                                        <div class="user-name">Emma Wilson</div>
-                                        <div class="user-id">#USR-10242</div>
+                                        <div class="user-name">{{withdraw.user.first_name|capfirst}} {{withdraw.user.last_name|capfirst}}</div>
+                                        <div class="user-id">#USR-{{withdraw.user.id}}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td><strong style="color: #ef4444;">$3,500.00</strong></td>
-                            <td>Bank Transfer</td>
-                            <td>Bank of America ***4532</td>
-                            <td><span class="status-badge pending">Pending</span></td>
-                            <td>1 hour ago</td>
+                            <td><strong style="color: #ef4444;">${{withdraw.amount}}</strong></td>
+                            <td>
+                                {% if withdraw.currency %}
+                                {{withdraw.currency}}
+                                {% else %}
+                                {{withdraw.gateway}}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if withdraw.currency %}
+                                {{withdraw.wallet_address}}
+                                {% else %}
+                                {{withdraw.email}}
+                                {% endif %}
+                            </td>
+                            <td><span class="status-badge {% if withdraw.status == 'success' %}completed{% elif withdraw.status == 'pending' %}pending{% else %}rejected{% endif %}">{{withdraw.status}}</span></td>
+                            <td>{{ withdraw.date|timesince }} ago</td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-approve" onclick="approveWithdrawal('20134', 'Emma Wilson', 3500)">
-                                        <i class="material-icons" style="font-size: 16px;">check</i>
-                                        Approve
-                                    </button>
-                                    <button class="btn-reject" onclick="rejectWithdrawal('20134', 'Emma Wilson')">
-                                        <i class="material-icons" style="font-size: 16px;">close</i>
-                                        Reject
-                                    </button>
+                                    <form method="POST" action="" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="{{withdraw.ref}}">
+                                        <button type="submit" class="btn-approve" name="approve">
+                                            <i class="material-icons" style="font-size: 16px;">check</i>
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="{{withdraw.ref}}">
+                                        <button type="submit" class="btn-reject" name="reject">
+                                            <i class="material-icons" style="font-size: 16px;">close</i>
+                                            Reject
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td><strong>#WTH-20133</strong></td>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar">RJ</div>
-                                    <div>
-                                        <div class="user-name">Robert Johnson</div>
-                                        <div class="user-id">#USR-10241</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><strong style="color: #ef4444;">$5,200.00</strong></td>
-                            <td>BTC</td>
-                            <td>bc1q...7x8z</td>
-                            <td><span class="status-badge processing">Processing</span></td>
-                            <td>3 hours ago</td>
-                            <td>
-                                <button class="btn-view">View Details</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#WTH-20132</strong></td>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar">SA</div>
-                                    <div>
-                                        <div class="user-name">Sarah Anderson</div>
-                                        <div class="user-id">#USR-10244</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><strong style="color: #ef4444;">$1,200.00</strong></td>
-                            <td>PayPal</td>
-                            <td>sarah.a@example.com</td>
-                            <td><span class="status-badge completed">Completed</span></td>
-                            <td>5 hours ago</td>
-                            <td>
-                                <button class="btn-view">View Details</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#WTH-20131</strong></td>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar">JD</div>
-                                    <div>
-                                        <div class="user-name">John Doe</div>
-                                        <div class="user-id">#USR-10245</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><strong style="color: #ef4444;">$2,800.00</strong></td>
-                            <td>USDT (TRC20)</td>
-                            <td>TR7N...4KdD</td>
-                            <td><span class="status-badge pending">Pending</span></td>
-                            <td>1 day ago</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-approve" onclick="approveWithdrawal('20131', 'John Doe', 2800)">
-                                        <i class="material-icons" style="font-size: 16px;">check</i>
-                                        Approve
-                                    </button>
-                                    <button class="btn-reject" onclick="rejectWithdrawal('20131', 'John Doe')">
-                                        <i class="material-icons" style="font-size: 16px;">close</i>
-                                        Reject
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#WTH-20130</strong></td>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar">MB</div>
-                                    <div>
-                                        <div class="user-name">Michael Brown</div>
-                                        <div class="user-id">#USR-10243</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><strong style="color: #ef4444;">$850.00</strong></td>
-                            <td>Cash App</td>
-                            <td>$michaelb</td>
-                            <td><span class="status-badge rejected">Rejected</span></td>
-                            <td>2 days ago</td>
-                            <td>
-                                <button class="btn-view">View Details</button>
-                            </td>
-                        </tr>
+                        {% endfor %}
+                        
                     </tbody>
                 </table>
             </div>
@@ -213,76 +155,4 @@
 
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_scripts %}
-<script>
-    function approveWithdrawal(id, user, amount) {
-        if (confirm(`Approve withdrawal #WTH-${id} for ${user}?\nAmount: $${amount.toLocaleString()}\n\nThis will process the payment immediately.`)) {
-            alert(`Withdrawal approved! $${amount.toLocaleString()} will be sent to ${user}. (Demo)`);
-            location.reload();
-        }
-    }
-
-    function rejectWithdrawal(id, user) {
-        const reason = prompt(`Reject withdrawal #WTH-${id} for ${user}?\n\nEnter rejection reason:`);
-        if (reason) {
-            alert(`Withdrawal rejected. Funds returned to ${user}'s wallet. Email sent. (Demo)`);
-            location.reload();
-        }
-    }
-
-    // Mobile Sidebar Toggle
-    (function() {
-        let overlay = document.querySelector('.sidebar-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-        }
-
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.dlabnav');
-
-        if (hamburger && sidebar) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('is-active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', function() {
-                hamburger.classList.remove('is-active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            sidebar.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 768) {
-                        setTimeout(function() {
-                            hamburger.classList.remove('is-active');
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }, 300);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    hamburger.classList.remove('is-active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    })();
-
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

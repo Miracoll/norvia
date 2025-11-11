@@ -26,13 +26,15 @@
                         <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0;">Trade Details</h4>
                     </div>
                     <div class="card-body" style="padding: 30px;">
-                        <form id="takeTradeForm">
+                        <form method="POST" action="">
+                            <input type="hidden" name="action" value="execute_trade">
+
                             <!-- User Selection -->
                             <div style="margin-bottom: 24px;">
                                 <label style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 10px; font-size: 14px;">
                                     Select User <span style="color: #ef4444;">*</span>
                                 </label>
-                                <select id="selectedUser" class="form-control" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;" onchange="updateUserPreview()">
+                                <select name="user_id" class="form-control" required style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
                                     <option value="">Choose user...</option>
                                     <option value="USR-12345">John Smith (@johnsmith) - USR-12345</option>
                                     <option value="USR-23456">Sarah Johnson (@sarahj) - USR-23456</option>
@@ -48,15 +50,19 @@
                                     Market Type <span style="color: #ef4444;">*</span>
                                 </label>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                    <label id="crypto-card" class="radio-card" style="position: relative; padding: 18px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; background: white; display: flex; flex-direction: column; align-items: center; gap: 6px;" onclick="selectMarketType('crypto')">
-                                        <input type="radio" name="marketType" value="crypto" style="display: none;">
-                                        <i class="material-icons" style="font-size: 28px; color: #64748b;">currency_bitcoin</i>
-                                        <span style="font-size: 14px; color: #1e293b;">Crypto</span>
+                                    <label class="radio-card-wrapper">
+                                        <input type="radio" name="market_type" value="crypto" required class="radio-input">
+                                        <div class="radio-card-display">
+                                            <i class="material-icons" style="font-size: 28px; color: #64748b;">currency_bitcoin</i>
+                                            <span style="font-size: 14px; color: #1e293b;">Crypto</span>
+                                        </div>
                                     </label>
-                                    <label id="stocks-card" class="radio-card" style="position: relative; padding: 18px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; background: white; display: flex; flex-direction: column; align-items: center; gap: 6px;" onclick="selectMarketType('stocks')">
-                                        <input type="radio" name="marketType" value="stocks" style="display: none;">
-                                        <i class="material-icons" style="font-size: 28px; color: #64748b;">show_chart</i>
-                                        <span style="font-size: 14px; color: #1e293b;">Stocks</span>
+                                    <label class="radio-card-wrapper">
+                                        <input type="radio" name="market_type" value="stocks" required class="radio-input">
+                                        <div class="radio-card-display">
+                                            <i class="material-icons" style="font-size: 28px; color: #64748b;">show_chart</i>
+                                            <span style="font-size: 14px; color: #1e293b;">Stocks</span>
+                                        </div>
                                     </label>
                                 </div>
                             </div>
@@ -66,8 +72,22 @@
                                 <label style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 10px; font-size: 14px;">
                                     Select Asset <span style="color: #ef4444;">*</span>
                                 </label>
-                                <select id="tradeAsset" class="form-control" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
-                                    <option value="">Choose market type first</option>
+                                <select name="asset" class="form-control" required style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    <option value="">Select asset...</option>
+                                    <optgroup label="Crypto">
+                                        <option value="BTC/USD">Bitcoin (BTC)</option>
+                                        <option value="ETH/USD">Ethereum (ETH)</option>
+                                        <option value="BNB/USD">Binance Coin (BNB)</option>
+                                        <option value="SOL/USD">Solana (SOL)</option>
+                                        <option value="XRP/USD">Ripple (XRP)</option>
+                                    </optgroup>
+                                    <optgroup label="Stocks">
+                                        <option value="AAPL">Apple Inc. (AAPL)</option>
+                                        <option value="GOOGL">Google (GOOGL)</option>
+                                        <option value="MSFT">Microsoft (MSFT)</option>
+                                        <option value="TSLA">Tesla (TSLA)</option>
+                                        <option value="AMZN">Amazon (AMZN)</option>
+                                    </optgroup>
                                 </select>
                             </div>
 
@@ -77,15 +97,19 @@
                                     Direction <span style="color: #ef4444;">*</span>
                                 </label>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                    <label id="buy-card" class="radio-card" style="position: relative; padding: 18px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; background: white; display: flex; flex-direction: column; align-items: center; gap: 6px;" onclick="selectDirection('buy')">
-                                        <input type="radio" name="direction" value="buy" style="display: none;">
-                                        <i class="material-icons" style="font-size: 28px; color: #64748b;">arrow_upward</i>
-                                        <span style="font-size: 14px; color: #1e293b;">Buy</span>
+                                    <label class="radio-card-wrapper">
+                                        <input type="radio" name="direction" value="buy" required class="radio-input">
+                                        <div class="radio-card-display radio-buy">
+                                            <i class="material-icons" style="font-size: 28px; color: #64748b;">arrow_upward</i>
+                                            <span style="font-size: 14px; color: #1e293b;">Buy</span>
+                                        </div>
                                     </label>
-                                    <label id="sell-card" class="radio-card" style="position: relative; padding: 18px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; background: white; display: flex; flex-direction: column; align-items: center; gap: 6px;" onclick="selectDirection('sell')">
-                                        <input type="radio" name="direction" value="sell" style="display: none;">
-                                        <i class="material-icons" style="font-size: 28px; color: #64748b;">arrow_downward</i>
-                                        <span style="font-size: 14px; color: #1e293b;">Sell</span>
+                                    <label class="radio-card-wrapper">
+                                        <input type="radio" name="direction" value="sell" required class="radio-input">
+                                        <div class="radio-card-display radio-sell">
+                                            <i class="material-icons" style="font-size: 28px; color: #64748b;">arrow_downward</i>
+                                            <span style="font-size: 14px; color: #1e293b;">Sell</span>
+                                        </div>
                                     </label>
                                 </div>
                             </div>
@@ -97,7 +121,7 @@
                                 </label>
                                 <div style="position: relative;">
                                     <i class="material-icons" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 20px;">attach_money</i>
-                                    <input type="number" id="tradeAmount" class="form-control" placeholder="Enter amount in USD" step="0.01" min="0" oninput="calculateOutcome()" style="width: 100%; height: 48px; padding: 10px 16px 10px 44px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    <input type="number" name="amount" class="form-control" placeholder="Enter amount in USD" step="0.01" min="0" required style="width: 100%; height: 48px; padding: 10px 16px 10px 44px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
                                 </div>
                             </div>
 
@@ -106,7 +130,7 @@
                                 <label style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 10px; font-size: 14px;">
                                     Close After <span style="color: #ef4444;">*</span>
                                 </label>
-                                <select id="tradeDuration" class="form-control" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                <select name="duration" class="form-control" required style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
                                     <option value="1">1 Minute</option>
                                     <option value="5">5 Minutes</option>
                                     <option value="15">15 Minutes</option>
@@ -123,20 +147,24 @@
                                     Outcome <span style="color: #ef4444;">*</span>
                                 </label>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                    <label id="profit-card" class="radio-card" style="position: relative; padding: 18px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; background: white; display: flex; flex-direction: column; align-items: center; gap: 6px;" onclick="selectOutcome('profit')">
-                                        <input type="radio" name="outcome" value="profit" style="display: none;">
-                                        <i class="material-icons" style="font-size: 28px; color: #64748b;">trending_up</i>
-                                        <span style="font-size: 14px; color: #1e293b;">Profit</span>
+                                    <label class="radio-card-wrapper">
+                                        <input type="radio" name="outcome" value="profit" required class="radio-input">
+                                        <div class="radio-card-display radio-profit">
+                                            <i class="material-icons" style="font-size: 28px; color: #64748b;">trending_up</i>
+                                            <span style="font-size: 14px; color: #1e293b;">Profit</span>
+                                        </div>
                                     </label>
-                                    <label id="loss-card" class="radio-card" style="position: relative; padding: 18px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; background: white; display: flex; flex-direction: column; align-items: center; gap: 6px;" onclick="selectOutcome('loss')">
-                                        <input type="radio" name="outcome" value="loss" style="display: none;">
-                                        <i class="material-icons" style="font-size: 28px; color: #64748b;">trending_down</i>
-                                        <span style="font-size: 14px; color: #1e293b;">Loss</span>
+                                    <label class="radio-card-wrapper">
+                                        <input type="radio" name="outcome" value="loss" required class="radio-input">
+                                        <div class="radio-card-display radio-loss">
+                                            <i class="material-icons" style="font-size: 28px; color: #64748b;">trending_down</i>
+                                            <span style="font-size: 14px; color: #1e293b;">Loss</span>
+                                        </div>
                                     </label>
                                 </div>
                                 <div style="position: relative; margin-top: 12px;">
                                     <i class="material-icons" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 20px;">payments</i>
-                                    <input type="number" id="outcomeAmount" class="form-control" placeholder="Enter profit/loss amount in USD" step="0.01" min="0" oninput="calculateOutcome()" style="width: 100%; height: 48px; padding: 10px 16px 10px 44px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                    <input type="number" name="outcome_amount" class="form-control" placeholder="Enter profit/loss amount in USD" step="0.01" min="0" required style="width: 100%; height: 48px; padding: 10px 16px 10px 44px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
                                 </div>
                             </div>
 
@@ -145,7 +173,7 @@
                                 <label style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 10px; font-size: 14px;">
                                     Copied Trader <span style="color: #ef4444;">*</span>
                                 </label>
-                                <select id="tradeTrader" class="form-control" style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
+                                <select name="trader_id" class="form-control" required style="width: 100%; height: 48px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; background: white;">
                                     <option value="">Select trader...</option>
                                     <option value="johndoe">John Doe (@johndoe)</option>
                                     <option value="sarahkim">Sarah Kim (@sarahkim)</option>
@@ -155,38 +183,13 @@
                                 <small style="display: block; color: #64748b; font-size: 12px; margin-top: 6px; font-style: italic;">This trade will appear as being copied from this trader</small>
                             </div>
 
-                            <!-- Summary Preview -->
-                            <div style="background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); border-radius: 12px; padding: 24px; border: 2px solid #e2e8f0; margin-bottom: 24px;">
-                                <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    <i class="material-icons" style="font-size: 20px;">receipt</i>
-                                    <span>Trade Summary</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                    <span style="color: #64748b; font-size: 14px; font-weight: 500;">User:</span>
-                                    <span id="previewUser" style="color: #1e293b; font-size: 14px; font-weight: 700;">Not selected</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                    <span style="color: #64748b; font-size: 14px; font-weight: 500;">Investment:</span>
-                                    <span id="previewAmount" style="color: #1e293b; font-size: 14px; font-weight: 700;">$0.00</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                    <span style="color: #64748b; font-size: 14px; font-weight: 500;">Profit/Loss:</span>
-                                    <span id="previewProfit" style="color: #64748b; font-size: 14px; font-weight: 700;">$0.00</span>
-                                </div>
-                                <div style="height: 2px; background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%); margin: 16px 0;"></div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="color: #1e293b; font-size: 15px; font-weight: 700;">Final Return:</span>
-                                    <span id="previewReturn" style="font-size: 18px; font-weight: 800; color: #ef4444;">$0.00</span>
-                                </div>
-                            </div>
-
                             <!-- Action Buttons -->
                             <div style="display: flex; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 2px solid #f1f5f9;">
-                                <button type="button" style="flex: 1; background: white; color: #64748b; border: 2px solid #e2e8f0; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onclick="resetForm()">
+                                <button type="reset" style="flex: 1; background: white; color: #64748b; border: 2px solid #e2e8f0; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
                                     <i class="material-icons" style="font-size: 20px;">refresh</i>
                                     Reset Form
                                 </button>
-                                <button type="button" style="flex: 2; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);" onclick="executeTrade()">
+                                <button type="submit" style="flex: 2; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
                                     <i class="material-icons" style="font-size: 20px;">check_circle</i>
                                     Execute Trade
                                 </button>
@@ -198,168 +201,4 @@
         </div>
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_scripts %}
-<script>
-    // User Selection Handler
-    function updateUserPreview() {
-        const userId = document.getElementById('selectedUser').value;
-        const userName = document.getElementById('selectedUser').options[document.getElementById('selectedUser').selectedIndex].text;
-        document.getElementById('previewUser').textContent = userId ? userName : 'Not selected';
-    }
-
-    // Market Type Selection
-    function selectMarketType(type) {
-        // Reset all cards
-        document.getElementById('crypto-card').style.borderColor = '#e2e8f0';
-        document.getElementById('crypto-card').style.background = 'white';
-        document.getElementById('stocks-card').style.borderColor = '#e2e8f0';
-        document.getElementById('stocks-card').style.background = 'white';
-
-        // Highlight selected
-        if (type === 'crypto') {
-            document.getElementById('crypto-card').style.borderColor = '#ef4444';
-            document.getElementById('crypto-card').style.background = '#fef2f2';
-            document.querySelector('#crypto-card input').checked = true;
-        } else {
-            document.getElementById('stocks-card').style.borderColor = '#ef4444';
-            document.getElementById('stocks-card').style.background = '#fef2f2';
-            document.querySelector('#stocks-card input').checked = true;
-        }
-
-        // Update asset dropdown
-        const assetSelect = document.getElementById('tradeAsset');
-        if (type === 'crypto') {
-            assetSelect.innerHTML = `
-                <option value="">Select Crypto</option>
-                <option value="BTC/USD">Bitcoin (BTC)</option>
-                <option value="ETH/USD">Ethereum (ETH)</option>
-                <option value="BNB/USD">Binance Coin (BNB)</option>
-                <option value="SOL/USD">Solana (SOL)</option>
-                <option value="XRP/USD">Ripple (XRP)</option>
-            `;
-        } else {
-            assetSelect.innerHTML = `
-                <option value="">Select Stock</option>
-                <option value="AAPL">Apple Inc. (AAPL)</option>
-                <option value="GOOGL">Google (GOOGL)</option>
-                <option value="MSFT">Microsoft (MSFT)</option>
-                <option value="TSLA">Tesla (TSLA)</option>
-                <option value="AMZN">Amazon (AMZN)</option>
-            `;
-        }
-    }
-
-    // Direction Selection
-    function selectDirection(direction) {
-        document.getElementById('buy-card').style.borderColor = '#e2e8f0';
-        document.getElementById('buy-card').style.background = 'white';
-        document.getElementById('sell-card').style.borderColor = '#e2e8f0';
-        document.getElementById('sell-card').style.background = 'white';
-
-        if (direction === 'buy') {
-            document.getElementById('buy-card').style.borderColor = '#10b981';
-            document.getElementById('buy-card').style.background = '#f0fdf4';
-            document.querySelector('#buy-card input').checked = true;
-        } else {
-            document.getElementById('sell-card').style.borderColor = '#ef4444';
-            document.getElementById('sell-card').style.background = '#fef2f2';
-            document.querySelector('#sell-card input').checked = true;
-        }
-    }
-
-    // Outcome Selection
-    function selectOutcome(outcome) {
-        document.getElementById('profit-card').style.borderColor = '#e2e8f0';
-        document.getElementById('profit-card').style.background = 'white';
-        document.getElementById('loss-card').style.borderColor = '#e2e8f0';
-        document.getElementById('loss-card').style.background = 'white';
-
-        if (outcome === 'profit') {
-            document.getElementById('profit-card').style.borderColor = '#10b981';
-            document.getElementById('profit-card').style.background = '#f0fdf4';
-            document.querySelector('#profit-card input').checked = true;
-        } else {
-            document.getElementById('loss-card').style.borderColor = '#ef4444';
-            document.getElementById('loss-card').style.background = '#fef2f2';
-            document.querySelector('#loss-card input').checked = true;
-        }
-        calculateOutcome();
-    }
-
-    // Calculate Trade Outcome
-    function calculateOutcome() {
-        const amount = parseFloat(document.getElementById('tradeAmount').value) || 0;
-        const outcomeAmount = parseFloat(document.getElementById('outcomeAmount').value) || 0;
-        const outcomeType = document.querySelector('[name="outcome"]:checked')?.value;
-
-        if (amount > 0 && outcomeAmount > 0 && outcomeType) {
-            const finalReturn = outcomeType === 'profit' ? amount + outcomeAmount : amount - outcomeAmount;
-
-            document.getElementById('previewAmount').textContent = '$' + amount.toFixed(2);
-            document.getElementById('previewProfit').textContent = (outcomeType === 'profit' ? '+' : '-') + '$' + outcomeAmount.toFixed(2);
-            document.getElementById('previewProfit').style.color = outcomeType === 'profit' ? '#10b981' : '#ef4444';
-            document.getElementById('previewReturn').textContent = '$' + finalReturn.toFixed(2);
-            document.getElementById('previewReturn').style.color = outcomeType === 'profit' ? '#10b981' : '#ef4444';
-        } else {
-            document.getElementById('previewAmount').textContent = '$0.00';
-            document.getElementById('previewReturn').textContent = '$0.00';
-            document.getElementById('previewProfit').textContent = '$0.00';
-            document.getElementById('previewReturn').style.color = '#ef4444';
-            document.getElementById('previewProfit').style.color = '#64748b';
-        }
-    }
-
-    // Execute Trade
-    function executeTrade() {
-        const userId = document.getElementById('selectedUser').value;
-        const marketType = document.querySelector('[name="marketType"]:checked')?.value;
-        const asset = document.getElementById('tradeAsset').value;
-        const direction = document.querySelector('[name="direction"]:checked')?.value;
-        const amount = document.getElementById('tradeAmount').value;
-        const duration = document.getElementById('tradeDuration').value;
-        const outcome = document.querySelector('[name="outcome"]:checked')?.value;
-        const outcomeAmount = document.getElementById('outcomeAmount').value;
-        const trader = document.getElementById('tradeTrader').value;
-
-        if (!userId || !marketType || !asset || !direction || !amount || !outcome || !outcomeAmount || !trader) {
-            alert('Please fill in all required fields!');
-            return;
-        }
-
-        const userSelect = document.getElementById('selectedUser');
-        const userName = userSelect.options[userSelect.selectedIndex].text;
-
-        if (confirm('Execute this trade?\n\nUser: ' + userName + '\nAsset: ' + asset + '\nDirection: ' + direction.toUpperCase() + '\nAmount: $' + amount + '\nOutcome: ' + outcome.toUpperCase() + ' of $' + outcomeAmount)) {
-            alert('Trade executed successfully for ' + userName + '!\n\nThe trade will appear in the user\'s account and will close automatically after ' + duration + ' minute(s).');
-            resetForm();
-        }
-    }
-
-    // Reset Form
-    function resetForm() {
-        document.getElementById('takeTradeForm').reset();
-        document.getElementById('tradeAsset').innerHTML = '<option value="">Choose market type first</option>';
-
-        // Reset all radio cards
-        document.getElementById('crypto-card').style.borderColor = '#e2e8f0';
-        document.getElementById('crypto-card').style.background = 'white';
-        document.getElementById('stocks-card').style.borderColor = '#e2e8f0';
-        document.getElementById('stocks-card').style.background = 'white';
-        document.getElementById('buy-card').style.borderColor = '#e2e8f0';
-        document.getElementById('buy-card').style.background = 'white';
-        document.getElementById('sell-card').style.borderColor = '#e2e8f0';
-        document.getElementById('sell-card').style.background = 'white';
-        document.getElementById('profit-card').style.borderColor = '#e2e8f0';
-        document.getElementById('profit-card').style.background = 'white';
-        document.getElementById('loss-card').style.borderColor = '#e2e8f0';
-        document.getElementById('loss-card').style.background = 'white';
-
-        document.getElementById('previewUser').textContent = 'Not selected';
-        document.getElementById('previewAmount').textContent = '$0.00';
-        document.getElementById('previewReturn').textContent = '$0.00';
-        document.getElementById('previewProfit').textContent = '$0.00';
-    }
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

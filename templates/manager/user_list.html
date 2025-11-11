@@ -2,258 +2,109 @@
 {% load static %}
 {% block content %}
 <div class="content-body">
-    <div class="container-fluid">
+	<div class="container-fluid">
 
-        <!-- Breadcrumb -->
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="page-titles">
-                    <nav style="--bs-breadcrumb-divider: '>';">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Users</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
+		<!-- Breadcrumb -->
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="page-titles">
+					<nav style="--bs-breadcrumb-divider: '>';">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item active">Users</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
 
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">All Users (1,248)</h1>
-            <button class="btn-add-user" onclick="alert('Add User Modal - Coming Soon')">
-                <i class="material-icons">add</i>
-                <span>Add New User</span>
-            </button>
-        </div>
+		<!-- Page Header -->
+		<div class="page-header">
+			<h1 class="page-title">All Users ({{users.count}})</h1>
+		</div>
 
-        <!-- Filters -->
-        <div class="filters-card">
-            <div class="filters-row">
-                <input type="text" class="filter-input" placeholder="Search by name or email...">
-                <select class="filter-select">
-                    <option>All Status</option>
-                    <option>Active</option>
-                    <option>Suspended</option>
-                    <option>Pending</option>
-                </select>
-                <select class="filter-select">
-                    <option>All KYC Status</option>
-                    <option>Verified</option>
-                    <option>Unverified</option>
-                    <option>Pending</option>
-                </select>
-                <select class="filter-select">
-                    <option>Registration Date</option>
-                    <option>Last 7 days</option>
-                    <option>Last 30 days</option>
-                    <option>Last 90 days</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" onclick="alert('Filter applied!')">Apply Filters</button>
-        </div>
+		<!-- Filters -->
+		<div class="filters-card">
+			<div class="filters-row">
+				<input type="text" class="filter-input" placeholder="Search by name or email...">
+				<select class="filter-select">
+					<option>All Status</option>
+					<option>Active</option>
+					<option>Suspended</option>
+					<option>Pending</option>
+				</select>
+				<select class="filter-select">
+					<option>All KYC Status</option>
+					<option>Verified</option>
+					<option>Unverified</option>
+					<option>Pending</option>
+				</select>
+				<select class="filter-select">
+					<option>Registration Date</option>
+					<option>Last 7 days</option>
+					<option>Last 30 days</option>
+					<option>Last 90 days</option>
+				</select>
+			</div>
+			<button class="btn btn-primary" type="submit">Apply Filters</button>
+		</div>
 
-        <!-- Users Table -->
-        <div class="users-table-card">
-            <div class="table-responsive">
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Status</th>
-                            <th>KYC</th>
-                            <th>Last Active</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">JD</div>
-                                    <div class="user-details">
-                                        <div class="user-name">John Doe</div>
-                                        <div class="user-email">john.doe@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="status-badge active">Active</span></td>
-                            <td><span class="kyc-badge verified">Verified</span></td>
-                            <td>2 hours ago</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-action view" title="View Details" onclick="window.location.href='user-details.html?id=10245'">
-                                        <i class="material-icons">visibility</i>
-                                    </button>
-                                    <button class="btn-action suspend" title="Suspend User" onclick="confirmAction('suspend', 'John Doe')">
-                                        <i class="material-icons">block</i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">SA</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Sarah Anderson</div>
-                                        <div class="user-email">sarah.a@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="status-badge active">Active</span></td>
-                            <td><span class="kyc-badge pending">Pending</span></td>
-                            <td>1 day ago</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-action view" title="View Details">
-                                        <i class="material-icons">visibility</i>
-                                    </button>
-                                    <button class="btn-action suspend" title="Suspend User">
-                                        <i class="material-icons">block</i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">MB</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Michael Brown</div>
-                                        <div class="user-email">michael.b@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="status-badge suspended">Suspended</span></td>
-                            <td><span class="kyc-badge unverified">Unverified</span></td>
-                            <td>5 days ago</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-action view" title="View Details">
-                                        <i class="material-icons">visibility</i>
-                                    </button>
-                                    <button class="btn-action suspend" title="Unsuspend User" style="background: #d1fae5; color: #065f46;">
-                                        <i class="material-icons">check_circle</i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">EW</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Emma Wilson</div>
-                                        <div class="user-email">emma.w@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="status-badge active">Active</span></td>
-                            <td><span class="kyc-badge verified">Verified</span></td>
-                            <td>3 hours ago</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-action view" title="View Details">
-                                        <i class="material-icons">visibility</i>
-                                    </button>
-                                    <button class="btn-action suspend" title="Suspend User">
-                                        <i class="material-icons">block</i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">RJ</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Robert Johnson</div>
-                                        <div class="user-email">robert.j@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="status-badge active">Active</span></td>
-                            <td><span class="kyc-badge verified">Verified</span></td>
-                            <td>1 hour ago</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-action view" title="View Details">
-                                        <i class="material-icons">visibility</i>
-                                    </button>
-                                    <button class="btn-action suspend" title="Suspend User">
-                                        <i class="material-icons">block</i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+		<!-- Users Table -->
+		<div class="users-table-card">
+			<div class="table-responsive">
+				<table class="users-table">
+					<thead>
+						<tr>
+							<th>User</th>
+							<th>Status</th>
+							<th>KYC</th>
+							<th>Last Login</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in users %}
+						<tr>
+							<td>
+								<div class="user-info">
+									<div class="user-avatar">{{user.first_name|slice:1|upper}}{{user.last_name|slice:1|upper}}</div>
+									<div class="user-details">
+										<div class="user-name">{{user.first_name|capfirst}} {{user.last_name|capfirst}}</div>
+										<div class="user-email">{{user.email}}</div>
+									</div>
+								</div>
+							</td>
+							<td><span class="status-badge {% if user.ban %} suspended {% else %} active {% endif %}">{% if user.ban %}Suspended{% else %}Active{% endif %}</span></td>
+							<td><span class="kyc-badge {{user.kyc_status}}">{{user.kyc_status|capfirst}}</span></td>
+							<td>
+								{% if user.last_login %}
+									{{ user.last_login|timesince }} ago
+								{% else %}
+									Never
+								{% endif %}
+							</td>
+							<td>
+								<div class="action-buttons">
+									<a href="{% url 'admin_user_detail' user.username %}" class="btn-action view" title="View Details">
+										<i class="material-icons">visibility</i>
+									</a>
+									<form method="POST" action="" style="display: inline;">
+										{% csrf_token %}
+										<input type="hidden" name="username" value="{{user.username}}">
+										<button type="submit" class="btn-action suspend" title="Suspend User">
+											<i class="material-icons">block</i>
+										</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
 
-    </div>
+	</div>
 </div>
-{% endblock content %}
-{% block extra_scripts %}
-<script>
-    function confirmAction(action, userName) {
-        if (confirm(`Are you sure you want to ${action} ${userName}?`)) {
-            alert(`User ${action} successful! (Demo)`);
-        }
-    }
-
-    // Mobile Sidebar Toggle
-    (function() {
-        let overlay = document.querySelector('.sidebar-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-        }
-
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.dlabnav');
-
-        if (hamburger && sidebar) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('is-active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', function() {
-                hamburger.classList.remove('is-active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            sidebar.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 768) {
-                        setTimeout(function() {
-                            hamburger.classList.remove('is-active');
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }, 300);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    hamburger.classList.remove('is-active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    })();
-
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

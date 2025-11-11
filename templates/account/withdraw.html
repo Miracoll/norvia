@@ -1,334 +1,213 @@
-{% extends 'account/base.html' %}
+{% extends "account/base.html" %}
 {% load static %}
+
+{% block title %}Withdraw{% endblock %}
+
+{% block body_class %}page-withdraw{% endblock %}
+
 {% block content %}
-<div class="content-body default-height">
-    <!-- row -->
-    <div class="container-fluid">
-        <!-- Row -->
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="page-titles">
-                            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                  <li class="breadcrumb-item"><a href="dashboard_new.html">Dashboard</a></li>
-                                  <li class="breadcrumb-item active" aria-current="page">Withdraw</li>
-                                </ol>
-                              </nav>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row justify-content-center">
-                            <!-- Center Column - Withdraw Form -->
-                            <div class="col-xl-8 col-lg-10">
-                                <h4 class="card-title mb-4" style="font-size: 22px; font-weight: 700;">Withdraw Funds</h4>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
 
-                                <!-- Available Balance -->
-                                <div class="balance-card">
-                                    <div class="balance-label">Available Balance</div>
-                                    <div class="balance-amount" id="availableBalance">$5,420.50</div>
-                                    <button class="balance-max-btn" onclick="setMaxAmount()">
-                                        <i class="material-icons" style="font-size: 14px; vertical-align: middle;">arrow_upward</i>
-                                        Withdraw Max
-                                    </button>
-                                </div>
+		<!--**********************************
+			Content body start
+		***********************************-->
+		<div class="content-body default-height">
+			<!-- row -->
+			<div class="container-fluid">
+				<!-- Row -->
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="row">
+							<div class="col-xl-12">
+								<div class="page-titles">
+									<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+										<ol class="breadcrumb">
+										  <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+										  <li class="breadcrumb-item active" aria-current="page">Withdraw</li>
+										</ol>
+									  </nav>
+								</div>
+							</div>
+						</div>
 
-                                <!-- Payment Method Selection -->
-                                <div class="payment-methods mb-5">
-                                    <label class="form-label fw-bold mb-3">Select Withdrawal Method</label>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="payment-method-card active" data-method="crypto" onclick="switchPaymentMethod('crypto')">
-                                                <i class="material-icons">currency_bitcoin</i>
-                                                <span>Cryptocurrency</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="payment-method-card" data-method="gateway" onclick="switchPaymentMethod('gateway')">
-                                                <i class="material-icons">payment</i>
-                                                <span>Payment Gateway</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+						<div class="card">
+							<div class="card-body">
+								<div class="row justify-content-center">
+									<!-- Center Column - Withdraw Form -->
+									<div class="col-xl-8 col-lg-10">
+										<h4 class="card-title mb-4" style="font-size: 22px; font-weight: 700;">Withdraw Funds</h4>
 
-                                <!-- Withdraw Form -->
-                                <form id="withdrawForm">
-                                    <!-- Withdraw From Wallet Selection -->
-                                    <div class="form-group mb-4">
-                                        <label class="form-label fw-bold">Withdraw From</label>
-                                        <select id="walletSelect" class="withdraw-select">
-                                            <option value="trading" selected>Trading Wallet</option>
-                                            <option value="holding">Holding Wallet</option>
-                                        </select>
-                                        <small class="text-muted d-block mt-2">
-                                            <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
-                                            Select which wallet to withdraw funds from
-                                        </small>
-                                    </div>
+										<!-- Available Balance -->
+										<div class="balance-card">
+											<div class="balance-label">Available Balance</div>
+											<div class="balance-amount" id="availableBalance">${{request.user.balance}}</div>
+											<button class="balance-max-btn" onclick="setMaxAmount()">
+												<i class="material-icons" style="font-size: 14px; vertical-align: middle;">arrow_upward</i>
+												Withdraw Max
+											</button>
+										</div>
 
-                                    <!-- Crypto Section (shown by default) -->
-                                    <div id="cryptoSection">
-                                        <!-- Currency Selection -->
-                                        <div class="form-group mb-4">
-                                            <label class="form-label fw-bold">Select Currency</label>
-                                            <select id="currencySelect" class="withdraw-select" onchange="updateCurrencyLabel()">
-                                                <option value="btc">Bitcoin (BTC)</option>
-                                                <option value="eth">Ethereum (ETH)</option>
-                                                <option value="usdt" selected>Tether (USDT)</option>
-                                                <option value="bnb">Binance Coin (BNB)</option>
-                                                <option value="sol">Solana (SOL)</option>
-                                            </select>
-                                        </div>
+										<!-- Payment Method Selection -->
+										<div class="payment-methods mb-5">
+											<label class="form-label fw-bold mb-3">Select Withdrawal Method</label>
+											<ul class="nav nav-pills row g-3" role="tablist">
+												<li class="nav-item col-md-6" role="presentation">
+													<button class="payment-method-card active w-100" id="crypto-tab" data-bs-toggle="pill" data-bs-target="#cryptoSection" type="button" role="tab">
+														<i class="material-icons">currency_bitcoin</i>
+														<span>Cryptocurrency</span>
+													</button>
+												</li>
+												<li class="nav-item col-md-6" role="presentation">
+													<button class="payment-method-card w-100" id="gateway-tab" data-bs-toggle="pill" data-bs-target="#gatewaySection" type="button" role="tab">
+														<i class="material-icons">payment</i>
+														<span>Payment Gateway</span>
+													</button>
+												</li>
+											</ul>
+										</div>
 
-                                        <!-- Network Selection -->
-                                        <div class="form-group mb-4">
-                                            <label class="form-label fw-bold">Select Network</label>
-                                            <select id="networkSelect" class="withdraw-select">
-                                                <option value="erc20">ERC20 (Ethereum)</option>
-                                                <option value="trc20" selected>TRC20 (Tron)</option>
-                                                <option value="bep20">BEP20 (BSC)</option>
-                                            </select>
-                                            <small class="text-muted d-block mt-2">
-                                                <i class="material-icons" style="font-size: 14px; vertical-align: middle;">warning</i>
-                                                Make sure the withdrawal address supports this network
-                                            </small>
-                                        </div>
+										<!-- Withdraw Form -->
+										<form id="withdrawForm" method="post">
+											{% csrf_token %}
+											<!-- Withdraw From Wallet Selection -->
+											<div class="form-group mb-4">
+												<label class="form-label fw-bold">Withdraw From</label>
+												<select id="walletSelect" class="withdraw-select" name="withdraw_from">
+													<option value="trading" selected>Trading Wallet</option>
+													<option value="holding">Holding Wallet</option>
+												</select>
+												<small class="text-muted d-block mt-2">
+													<i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+													Select which wallet to withdraw funds from
+												</small>
+											</div>
 
-                                        <!-- Withdrawal Address -->
-                                        <div class="form-group mb-4">
-                                            <label class="form-label fw-bold">Withdrawal Address</label>
-                                            <input type="text" id="withdrawAddress" class="withdraw-input" placeholder="Enter your wallet address">
-                                            <small class="text-muted d-block mt-2">
-                                                <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
-                                                Double-check your address. Transactions cannot be reversed.
-                                            </small>
-                                        </div>
-                                    </div>
+											<div class="tab-content">
+												<!-- Crypto Section -->
+												<div class="tab-pane fade show active" id="cryptoSection" role="tabpanel">
+												<!-- Currency Selection -->
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Select Currency</label>
+													<select id="currencySelect" class="withdraw-select" onchange="updateCurrencyLabel()" name="currency">
+														<option value="btc">Bitcoin (BTC)</option>
+														<option value="eth">Ethereum (ETH)</option>
+														<option value="usdt" selected>Tether (USDT)</option>
+														<option value="bnb">Binance Coin (BNB)</option>
+														<option value="sol">Solana (SOL)</option>
+													</select>
+												</div>
 
-                                    <!-- Payment Gateway Section (hidden by default) -->
-                                    <div id="gatewaySection" style="display: none;">
-                                        <!-- Payment Gateway Selection -->
-                                        <div class="form-group mb-4">
-                                            <label class="form-label fw-bold">Select Payment Method</label>
-                                            <select id="gatewaySelect" class="withdraw-select">
-                                                <option value="" disabled selected>Choose a payment method</option>
-                                                <option value="paypal">PayPal</option>
-                                                <option value="zelle">Zelle</option>
-                                                <option value="cashapp">Cash App</option>
-                                                <option value="venmo">Venmo</option>
-                                                <option value="bank">Bank Transfer</option>
-                                            </select>
-                                        </div>
+												<!-- Network Selection -->
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Select Network</label>
+													<select id="networkSelect" class="withdraw-select" name="network">
+														<option value="erc20">ERC20 (Ethereum)</option>
+														<option value="trc20" selected>TRC20 (Tron)</option>
+														<option value="bep20">BEP20 (BSC)</option>
+													</select>
+													<small class="text-muted d-block mt-2">
+														<i class="material-icons" style="font-size: 14px; vertical-align: middle;">warning</i>
+														Make sure the withdrawal address supports this network
+													</small>
+												</div>
 
-                                        <!-- Payment Account Details -->
-                                        <div class="form-group mb-4">
-                                            <label class="form-label fw-bold">Account Email/Phone</label>
-                                            <input type="text" id="gatewayAccount" class="withdraw-input" placeholder="Enter your account email or phone">
-                                            <small class="text-muted d-block mt-2">
-                                                <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
-                                                Enter the email or phone number associated with your payment account
-                                            </small>
-                                        </div>
-                                    </div>
+												<!-- Withdrawal Address -->
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Withdrawal Address</label>
+													<input type="text" id="withdrawAddress" class="withdraw-input" placeholder="Enter your wallet address" name="address">
+													<small class="text-muted d-block mt-2">
+														<i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+														Double-check your address. Transactions cannot be reversed.
+													</small>
+												</div>
+												</div>
 
-                                    <!-- Amount Input -->
-                                    <div class="form-group mb-4">
-                                        <label class="form-label fw-bold">Amount (USD)</label>
-                                        <div class="amount-input-wrapper">
-                                            <span class="input-prefix">$</span>
-                                            <input type="number" id="withdrawAmount" placeholder="Enter amount" min="20" step="0.01">
-                                            <span class="input-suffix" id="currencyLabel">USDT</span>
-                                        </div>
-                                        <small class="text-muted d-block mt-2">Minimum withdrawal: $20.00</small>
-                                    </div>
+												<!-- Gateway Section -->
+												<div class="tab-pane fade" id="gatewaySection" role="tabpanel">
+												<!-- Payment Gateway Selection -->
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Select Payment Method</label>
+													<select id="gatewaySelect" class="withdraw-select" name="gateway">
+														<option value="" disabled selected>Choose a payment method</option>
+														<option value="paypal">PayPal</option>
+														<option value="zelle">Zelle</option>
+														<option value="cashapp">Cash App</option>
+														<option value="venmo">Venmo</option>
+														<option value="bank">Bank Transfer</option>
+													</select>
+												</div>
 
-                                    <!-- Fee Display -->
-                                    <div class="mb-5">
-                                        <div class="fee-breakdown">
-                                            <div class="fee-row">
-                                                <span>Withdrawal Amount:</span>
-                                                <span id="displayAmount">$0.00</span>
-                                            </div>
-                                            <div class="fee-row">
-                                                <span>Network Fee:</span>
-                                                <span id="displayFee">$0.00</span>
-                                            </div>
-                                            <div class="fee-row total">
-                                                <span><strong>You Will Receive:</strong></span>
-                                                <span><strong id="displayTotal">$0.00</strong></span>
-                                            </div>
-                                        </div>
-                                    </div>
+												<!-- Payment Account Details -->
+												<div class="form-group mb-4">
+													<label class="form-label fw-bold">Account Email/Phone</label>
+													<input type="text" id="gatewayAccount" class="withdraw-input" placeholder="Enter your account email or phone" name="email">
+													<small class="text-muted d-block mt-2">
+														<i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+														Enter the email or phone number associated with your payment account
+													</small>
+												</div>
+												</div>
 
-                                    <!-- Submit Button -->
-                                    <button type="submit" class="btn btn-primary btn-lg w-100" style="height: 58px; font-size: 16px; font-weight: 600; border-radius: 12px;">
-                                        <i class="material-icons me-2" style="vertical-align: middle; font-size: 20px;">send</i>
-                                        Request Withdrawal
-                                    </button>
-                                </form>
+											<!-- Amount Input -->
+											<div class="form-group mb-4">
+												<label class="form-label fw-bold">Amount (USD)</label>
+												<div class="amount-input-wrapper">
+													<span class="input-prefix">$</span>
+													<input type="number" id="withdrawAmount" placeholder="Enter amount" min="20" step="0.01" name="amount">
+													<span class="input-suffix" id="currencyLabel">USDT</span>
+												</div>
+												<small class="text-muted d-block mt-2">Minimum withdrawal: $20.00</small>
+											</div>
 
-                                <!-- Important Information -->
-                                <div class="alert alert-warning mt-4" style="border-radius: 12px; border-left: none;">
-                                    <h6 class="alert-heading"><i class="material-icons me-2" style="vertical-align: middle;">warning</i>Important Information</h6>
-                                    <ul class="mb-0 ps-3" style="font-size: 14px;">
-                                        <li>Minimum withdrawal: $20.00 USD</li>
-                                        <li>Double-check your wallet address before submitting</li>
-                                        <li>Withdrawals are processed within 24-48 hours</li>
-                                        <li>Network fees will be deducted from your withdrawal amount</li>
-                                        <li>Ensure your account is verified (KYC) to avoid delays</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock content %}
+											<!-- Fee Display -->
+											<div class="mb-5">
+												<div class="fee-breakdown">
+													<div class="fee-row">
+														<span>Withdrawal Amount:</span>
+														<span id="displayAmount">$0.00</span>
+													</div>
+													<div class="fee-row">
+														<span>Network Fee:</span>
+														<span id="displayFee">$0.00</span>
+													</div>
+													<div class="fee-row total">
+														<span><strong>You Will Receive:</strong></span>
+														<span><strong id="displayTotal">$0.00</strong></span>
+													</div>
+												</div>
+											</div>
 
-{% block extra_scripts %}
-<script>
-    // Network options for each currency
-    const currencyNetworks = {
-        'btc': [
-            { value: 'bitcoin', label: 'Bitcoin Network' }
-        ],
-        'eth': [
-            { value: 'erc20', label: 'ERC20 (Ethereum)' }
-        ],
-        'usdt': [
-            { value: 'erc20', label: 'ERC20 (Ethereum)' },
-            { value: 'trc20', label: 'TRC20 (Tron)' },
-            { value: 'bep20', label: 'BEP20 (BSC)' }
-        ],
-        'bnb': [
-            { value: 'bep20', label: 'BEP20 (BSC)' },
-            { value: 'bep2', label: 'BEP2 (Binance Chain)' }
-        ],
-        'sol': [
-            { value: 'solana', label: 'Solana Network' }
-        ]
-    };
+											<!-- Submit Button -->
+											<button type="submit" class="btn btn-primary btn-lg w-100" style="height: 58px; font-size: 16px; font-weight: 600; border-radius: 12px;">
+												<i class="material-icons me-2" style="vertical-align: middle; font-size: 20px;">send</i>
+												Request Withdrawal
+											</button>
+											</div>
+										</form>
 
-    // Available balance (this will come from backend in production)
-    const availableBalance = 5420.50;
-
-    // Set max amount
-    function setMaxAmount() {
-        document.getElementById('withdrawAmount').value = availableBalance.toFixed(2);
-        // Trigger input event to update fee calculation
-        document.getElementById('withdrawAmount').dispatchEvent(new Event('input'));
-    }
-
-    // Switch between payment methods
-    function switchPaymentMethod(method) {
-        // Update active state
-        document.querySelectorAll('.payment-method-card').forEach(card => card.classList.remove('active'));
-        document.querySelector(`[data-method="${method}"]`).classList.add('active');
-
-        // Show/hide sections
-        if (method === 'crypto') {
-            document.getElementById('cryptoSection').style.display = 'block';
-            document.getElementById('gatewaySection').style.display = 'none';
-        } else {
-            document.getElementById('cryptoSection').style.display = 'none';
-            document.getElementById('gatewaySection').style.display = 'block';
-        }
-    }
-
-    // Update currency label and network options
-    function updateCurrencyLabel() {
-        const select = document.getElementById('currencySelect');
-        const selectedOption = select.options[select.selectedIndex];
-        const currency = selectedOption.text.match(/\(([^)]+)\)/)[1]; // Extract BTC, ETH, etc.
-        const currencyValue = select.value;
-
-        // Update the currency label
-        document.getElementById('currencyLabel').textContent = currency;
-
-        // Update network dropdown based on selected currency
-        const networkSelect = document.getElementById('networkSelect');
-        const networks = currencyNetworks[currencyValue] || [];
-
-        // Clear current options
-        networkSelect.innerHTML = '';
-
-        // Add new options
-        networks.forEach((network, index) => {
-            const option = document.createElement('option');
-            option.value = network.value;
-            option.textContent = network.label;
-            if (index === 0) option.selected = true; // Select first option by default
-            networkSelect.appendChild(option);
-        });
-    }
-
-    // Update amount display (no fee calculation - admin will set fees)
-    document.getElementById('withdrawAmount').addEventListener('input', function() {
-        const amount = parseFloat(this.value) || 0;
-
-        document.getElementById('displayAmount').textContent = '$' + amount.toFixed(2);
-        // Network fee will be set by admin based on selected payment method/network
-        document.getElementById('displayFee').textContent = '$0.00';
-        document.getElementById('displayTotal').textContent = '$' + amount.toFixed(2);
-    });
-
-    // Form submission
-    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const amount = parseFloat(document.getElementById('withdrawAmount').value) || 0;
-
-        // Validation
-        if (amount < 20) {
-            alert('Please enter an amount of at least $20.00');
-            return;
-        }
-
-        if (amount > availableBalance) {
-            alert('Insufficient balance. Your available balance is $' + availableBalance.toFixed(2));
-            return;
-        }
-
-        // Check if crypto or gateway method is selected
-        const isCrypto = document.getElementById('cryptoSection').style.display !== 'none';
-
-        if (isCrypto) {
-            const address = document.getElementById('withdrawAddress').value.trim();
-            if (!address) {
-                alert('Please enter a withdrawal address');
-                return;
-            }
-        } else {
-            const gateway = document.getElementById('gatewaySelect').value;
-            const account = document.getElementById('gatewayAccount').value.trim();
-
-            if (!gateway) {
-                alert('Please select a payment method');
-                return;
-            }
-            if (!account) {
-                alert('Please enter your account email or phone number');
-                return;
-            }
-        }
-
-        // Redirect to withdraw confirmation/processing page
-        // In production, Django will handle the form submission and redirect
-        alert('Withdrawal request submitted successfully!');
-        // window.location.href = 'withdraw-pending.html';
-    });
-
-    // Initialize networks for default currency on page load
-    window.addEventListener('DOMContentLoaded', function() {
-        updateCurrencyLabel();
-    });
-</script>
-{% endblock extra_scripts %}
+										<!-- Important Information -->
+										<div class="alert alert-warning mt-4" style="border-radius: 12px; border-left: none;">
+											<h6 class="alert-heading"><i class="material-icons me-2" style="vertical-align: middle;">warning</i>Important Information</h6>
+											<ul class="mb-0 ps-3" style="font-size: 14px;">
+												<li>Minimum withdrawal: $20.00 USD</li>
+												<li>Double-check your wallet address before submitting</li>
+												<li>Withdrawals are processed within 24-48 hours</li>
+												<li>Network fees will be deducted from your withdrawal amount</li>
+												<li>Ensure your account is verified (KYC) to avoid delays</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--**********************************
+			Content body end
+		***********************************-->
+{% endblock %}

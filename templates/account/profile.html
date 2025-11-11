@@ -1,560 +1,541 @@
-{% extends 'account/base.html' %}
+{% extends "account/base.html" %}
 {% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body_class %}page-profile{% endblock %}
+
 {% block content %}
 <div class="content-body default-height">
-    <!-- row -->
-    <div class="container-fluid">
-        <!-- Page Title -->
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="page-titles">
-                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
+	<!-- row -->
+	<div class="container-fluid">
+		<!-- Page Title -->
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="page-titles">
+					<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Profile</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
 
-        <!-- Profile Header -->
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="profile-header-card">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6">
-                            <div class="d-flex align-items-center">
-                                <div class="profile-avatar-wrapper">
-                                    <img src="images/avatar/1.jpg" alt="Profile" class="profile-avatar">
-                                    <div class="profile-avatar-badge">
-                                        <i class="material-icons">verified</i>
-                                    </div>
-                                </div>
-                                <div class="ms-4">
-                                    <h1 class="profile-name">John Anderson</h1>
-                                    <p class="profile-username">@johnanderson</p>
-                                    <div class="account-type-badge">
-                                        <i class="material-icons">workspace_premium</i>
-                                        <span>Premium Account</span>
-                                    </div>
-                                    <p class="profile-member-since mt-2">
-                                        <i class="material-icons"
-                                            style="font-size: 16px; vertical-align: middle;">event</i>
-                                        Member since January 2024
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 text-end">
-                            <button class="btn-edit-profile" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                                <i class="material-icons">edit</i>
-                                <span>Edit Profile</span>
-                            </button>
-                        </div>
-                    </div>
+		<!-- Profile Header -->
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="profile-header-card">
+					<div class="row align-items-center">
+						<div class="col-lg-6">
+							<div class="d-flex align-items-center">
+								<div class="profile-avatar-wrapper">
+									<img src="{{request.user.image.url}}" alt="Profile" class="profile-avatar">
+									{% if request.user.use_badge %}
+									<div class="profile-avatar-badge">
+										<i class="material-icons">verified</i>
+									</div>
+									{% endif %}
+								</div>
+								<div class="ms-4">
+									<h1 class="profile-name">{{request.user.first_name|capfirst}}
+										{{request.user.last_name|capfirst}}</h1>
+									<p class="profile-username">@{{request.user.username}}</p>
+									{% if request.user.is_premium_account %}
+									<div class="account-type-badge">
+										<i class="material-icons">workspace_premium</i>
+										<span>Premium Account</span>
+									</div>
+									{% endif %}
+									<p class="profile-member-since mt-2">
+										<i class="material-icons"
+											style="font-size: 16px; vertical-align: middle;">event</i>
+										Member since {{request.user.date_joined|date:"F Y"}}
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6 text-end">
+							<button class="btn-edit-profile" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+								<i class="material-icons">edit</i>
+								<span>Edit Profile</span>
+							</button>
+						</div>
+					</div>
 
-                    <div class="profile-stats mt-4">
-                        <div class="profile-stat-item">
-                            <span class="profile-stat-value">5</span>
-                            <span class="profile-stat-label">Traders Copied</span>
-                        </div>
-                        <div class="profile-stat-item">
-                            <span class="profile-stat-value">148</span>
-                            <span class="profile-stat-label">Total Trades</span>
-                        </div>
-                        <div class="profile-stat-item">
-                            <span class="profile-stat-value">87%</span>
-                            <span class="profile-stat-label">Success Rate</span>
-                        </div>
-                        <div class="profile-stat-item">
-                            <span class="profile-stat-value">6 months</span>
-                            <span class="profile-stat-label">Trading Experience</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+					<div class="profile-stats mt-4">
+						<div class="profile-stat-item">
+							<span class="profile-stat-value">{{request.user.traders_copied}}</span>
+							<span class="profile-stat-label">Traders Copied</span>
+						</div>
+						<div class="profile-stat-item">
+							<span class="profile-stat-value">{{request.user.total_trades}}</span>
+							<span class="profile-stat-label">Total Trades</span>
+						</div>
+						<div class="profile-stat-item">
+							<span class="profile-stat-value">{{request.user.success_rate}}%</span>
+							<span class="profile-stat-label">Success Rate</span>
+						</div>
+						<div class="profile-stat-item">
+							<span class="profile-stat-value">{{request.user.trading_experience}} months</span>
+							<span class="profile-stat-label">Trading Experience</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <!-- Profile Content -->
-        <div class="row">
-            <!-- Left Column - Personal Information -->
-            <div class="col-xl-8">
-                <!-- Personal Information -->
-                <div class="info-card">
-                    <h4 class="info-card-title">
-                        <i class="material-icons">person</i>
-                        Personal Information
-                    </h4>
-                    <div class="info-row">
-                        <span class="info-label">Full Name</span>
-                        <span class="info-value">John Anderson</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Email Address</span>
-                        <span class="info-value">john.anderson@email.com</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Phone Number</span>
-                        <span class="info-value">+1 (555) 123-4567</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Country</span>
-                        <span class="info-value">United States</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Residential Address</span>
-                        <span class="info-value">123 Main Street, New York, NY 10001</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Date of Birth</span>
-                        <span class="info-value">January 15, 1990</span>
-                    </div>
-                    <div class="text-center mt-3">
-                        <button class="btn-action" onclick="openUpdateAddressModal()">
-                            <i class="material-icons">home</i>
-                            <span>Update Address</span>
-                        </button>
-                    </div>
-                </div>
+		<!-- Profile Content -->
+		<div class="row">
+			<!-- Left Column - Personal Information -->
+			<div class="col-xl-8">
+				<!-- Personal Information -->
+				<div class="info-card">
+					<h4 class="info-card-title">
+						<i class="material-icons">person</i>
+						Personal Information
+					</h4>
+					<div class="info-row">
+						<span class="info-label">Full Name</span>
+						<span class="info-value">{{request.user.first_name|capfirst}}
+							{{request.user.last_name|capfirst}}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Email Address</span>
+						<span class="info-value">{{request.user.email}}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Phone Number</span>
+						<span class="info-value">{{request.user.mobile}}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Country</span>
+						<span class="info-value">{{request.user.country}}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Residential Address</span>
+						<span class="info-value">{{request.user.residential_address}}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Date of Birth</span>
+						<span class="info-value">{{request.user.date_of_birth|date:"F d, Y"}}</span>
+					</div>
+					<div class="text-center mt-3">
+						<button class="btn-action" data-bs-toggle="modal" data-bs-target="#updateAddressModal">
+							<i class="material-icons">home</i>
+							<span>Update Address</span>
+						</button>
+					</div>
+				</div>
 
-                <!-- Account Details -->
-                <div class="info-card">
-                    <h4 class="info-card-title">
-                        <i class="material-icons">account_circle</i>
-                        Account Details
-                    </h4>
-                    <div class="info-row">
-                        <span class="info-label">Username</span>
-                        <span class="info-value">@johnanderson</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">User ID</span>
-                        <span class="info-value">#INF-782901</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Account Type</span>
-                        <span class="info-value">
-                            <span class="account-type-badge" style="font-size: 12px; padding: 4px 12px;">
-                                <i class="material-icons" style="font-size: 14px;">workspace_premium</i>
-                                <span>Premium</span>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Member Since</span>
-                        <span class="info-value">January 10, 2024</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Last Login</span>
-                        <span class="info-value">Today at 2:34 PM</span>
-                    </div>
-                </div>
+				<!-- Account Details -->
+				<div class="info-card">
+					<h4 class="info-card-title">
+						<i class="material-icons">account_circle</i>
+						Account Details
+					</h4>
+					<div class="info-row">
+						<span class="info-label">Username</span>
+						<span class="info-value">@{{request.user.username}}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Account Type</span>
+						<span class="info-value">
+							<span class="account-type-badge" style="font-size: 12px; padding: 4px 12px;">
+								<i class="material-icons" style="font-size: 14px;">workspace_premium</i>
+								<span>
+									{% if request.user.is_premium_account %}
+									Premium
+									{% else %}
+									Basic
+									{% endif %}
+								</span>
+							</span>
+						</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Member Since</span>
+						<span class="info-value">{{request.user.date_joined|date:"F d, Y"}}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Last Login</span>
+						<span class="info-value">{{request.user.time_label}}</span>
+					</div>
+				</div>
 
-                <!-- Recent Activity -->
-                <div class="info-card">
-                    <h4 class="info-card-title">
-                        <i class="material-icons">history</i>
-                        Recent Activity
-                    </h4>
-                    <div class="activity-item">
-                        <div class="activity-icon success">
-                            <i class="material-icons">arrow_downward</i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Deposit Successful</div>
-                            <div class="activity-time">Today at 10:30 AM</div>
-                        </div>
-                        <div class="activity-amount positive">+$500.00</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon info">
-                            <i class="material-icons">content_copy</i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Started copying @ProTrader_Mike</div>
-                            <div class="activity-time">Yesterday at 3:45 PM</div>
-                        </div>
-                        <div class="activity-amount">$200.00</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon success">
-                            <i class="material-icons">trending_up</i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Trade Closed - BTC/USD</div>
-                            <div class="activity-time">2 days ago</div>
-                        </div>
-                        <div class="activity-amount positive">+$42.50</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon danger">
-                            <i class="material-icons">arrow_upward</i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Withdrawal Processed</div>
-                            <div class="activity-time">3 days ago</div>
-                        </div>
-                        <div class="activity-amount negative">-$300.00</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon info">
-                            <i class="material-icons">settings</i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">2FA Security Enabled</div>
-                            <div class="activity-time">1 week ago</div>
-                        </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        <a href="account-activity.php" class="btn-action">
-                            <i class="material-icons">visibility</i>
-                            <span>View All Activity</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+				<!-- Recent Activity -->
+				<div class="info-card">
+					<h4 class="info-card-title">
+						<i class="material-icons">history</i>
+						Recent Activity
+					</h4>
+					{% for activity in activities %}
+					<div class="activity-item">
+						<div class="activity-icon {{ activity.activity_type }}">
+							<i class="material-icons">{{ activity.icon }}</i>
+						</div>
+						<div class="activity-content">
+							<div class="activity-title">{{ activity.title }}</div>
+							<div class="activity-time">{{ activity.time_label }}</div>
+						</div>
+						{% if activity.amount %}
+						<div class="activity-amount {% if activity.is_positive %}positive{% else %}negative{% endif %}">
+							{{ activity.formatted_amount }}
+						</div>
+						{% endif %}
+					</div>
+					{% empty %}
+					<p class="text-muted">No recent activity.</p>
+					{% endfor %}
+					<div class="text-center mt-3">
+						<a href="#" class="btn-action">
+							<i class="material-icons">visibility</i>
+							<span>View All Activity</span>
+						</a>
+					</div>
+				</div>
 
-            <!-- Right Column - Verification -->
-            <div class="col-xl-4">
-                <!-- Verification Status -->
-                <div class="info-card">
-                    <h4 class="info-card-title">
-                        <i class="material-icons">verified_user</i>
-                        Verification Status
-                    </h4>
-                    <div class="info-row">
-                        <span class="info-label">Email</span>
-                        <span class="info-value">
-                            <span class="verification-badge verified">
-                                <i class="material-icons">check_circle</i>
-                                Verified
-                            </span>
-                        </span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Phone</span>
-                        <span class="info-value">
-                            <span class="verification-badge unverified">
-                                <i class="material-icons">cancel</i>
-                                Failed
-                            </span>
-                        </span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Identity (KYC)</span>
-                        <span class="info-value">
-                            <span class="verification-badge verified">
-                                <i class="material-icons">check_circle</i>
-                                Verified
-                            </span>
-                        </span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Address Proof</span>
-                        <span class="info-value">
-                            <span class="verification-badge pending">
-                                <i class="material-icons">schedule</i>
-                                Pending
-                            </span>
-                        </span>
-                    </div>
-                    <div class="text-center mt-3">
-                        <a href="account-verification.php" class="btn-action w-100 justify-content-center">
-                            <i class="material-icons">upload</i>
-                            <span>Complete Verification</span>
-                        </a>
-                    </div>
-                </div>
+			</div>
 
-                <!-- Quick Links -->
-                <div class="info-card">
-                    <h4 class="info-card-title">
-                        <i class="material-icons">link</i>
-                        Quick Links
-                    </h4>
-                    <a href="settings.html" class="btn-action w-100 justify-content-center mb-3">
-                        <i class="material-icons">settings</i>
-                        <span>Account Settings</span>
-                    </a>
-                    <a href="account-security.php" class="btn-action w-100 justify-content-center mb-3">
-                        <i class="material-icons">security</i>
-                        <span>Security & 2FA</span>
-                    </a>
-                    <a href="account-verification.php" class="btn-action w-100 justify-content-center mb-3">
-                        <i class="material-icons">verified_user</i>
-                        <span>Verification (KYC)</span>
-                    </a>
-                    <a href="account-activity.php" class="btn-action w-100 justify-content-center">
-                        <i class="material-icons">history</i>
-                        <span>Activity Log</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+			<!-- Right Column - Verification -->
+			<div class="col-xl-4">
+				<!-- Verification Status -->
+				<div class="info-card">
+					<h4 class="info-card-title">
+						<i class="material-icons">verified_user</i>
+						Verification Status
+					</h4>
+
+					<!-- Email -->
+					<div class="info-row">
+						<span class="info-label">Email</span>
+						<span class="info-value">
+							<span class="verification-badge {{ request.user.email_verification_status }}">
+								<i class="material-icons">
+									{% if request.user.email_verification_status == 'verified' %}
+									check_circle
+									{% elif request.user.email_verification_status == 'failed' %}
+									cancel
+									{% elif request.user.email_verification_status == 'pending' %}
+									schedule
+									{% else %}
+									error
+									{% endif %}
+								</i>
+								{{ request.user.email_verification_status|title }}
+							</span>
+						</span>
+					</div>
+
+					<!-- Phone -->
+					<div class="info-row">
+						<span class="info-label">Phone</span>
+						<span class="info-value">
+							<span class="verification-badge {{ request.user.mobile_verification_status }}">
+								<i class="material-icons">
+									{% if request.user.mobile_verification_status == 'verified' %}
+									check_circle
+									{% elif request.user.mobile_verification_status == 'failed' %}
+									cancel
+									{% elif request.user.mobile_verification_status == 'pending' %}
+									schedule
+									{% else %}
+									error
+									{% endif %}
+								</i>
+								{{ request.user.mobile_verification_status|title }}
+							</span>
+						</span>
+					</div>
+
+					<!-- Identity (KYC) -->
+					<div class="info-row">
+						<span class="info-label">Identity (KYC)</span>
+						<span class="info-value">
+							<span class="verification-badge {{ request.user.kyc_verification_status }}">
+								<i class="material-icons">
+									{% if request.user.kyc_verification_status == 'verified' %}
+									check_circle
+									{% elif request.user.kyc_verification_status == 'failed' %}
+									cancel
+									{% elif request.user.kyc_verification_status == 'pending' %}
+									schedule
+									{% else %}
+									error
+									{% endif %}
+								</i>
+								{{ request.user.kyc_verification_status|title }}
+							</span>
+						</span>
+					</div>
+
+					<!-- Address Proof -->
+					<div class="info-row">
+						<span class="info-label">Address Proof</span>
+						<span class="info-value">
+							<span class="verification-badge {{ request.user.address_verification_status }}">
+								<i class="material-icons">
+									{% if request.user.address_verification_status == 'verified' %}
+									check_circle
+									{% elif request.user.address_verification_status == 'failed' %}
+									cancel
+									{% elif request.user.address_verification_status == 'pending' %}
+									schedule
+									{% else %}
+									error
+									{% endif %}
+								</i>
+								{{ request.user.address_verification_status|title }}
+							</span>
+						</span>
+					</div>
+				</div>
+
+				<!-- Quick Links -->
+				<div class="info-card">
+					<h4 class="info-card-title">
+						<i class="material-icons">link</i>
+						Quick Links
+					</h4>
+
+					<a href="{% url 'settings' %}" class="btn-action w-100 justify-content-center mb-3">
+						<i class="material-icons">settings</i>
+						<span>Account Settings</span>
+					</a>
+
+					<a href="{% url 'kyc_verification' %}" class="btn-action w-100 justify-content-center mb-3">
+						<i class="material-icons">verified_user</i>
+						<span>Verification (KYC)</span>
+					</a>
+
+					<a href="#" class="btn-action w-100 justify-content-center">
+						<i class="material-icons">show_chart</i>
+						<span>My Trades</span>
+					</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
 </div>
+<!--**********************************
+			Content body end
+		***********************************-->
+
+
+
+
 
 <!-- Edit Profile Modal -->
-<div class="modal fade modal-edit-profile" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProfileModalLabel">
-                    <i class="material-icons" style="color: var(--primary);">edit</i>
-                    Edit Profile
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editProfileForm">
-                    <!-- Profile Photo -->
-                    <div class="form-group-modal">
-                        <label class="form-label-modal">Profile Photo</label>
-                        <div class="upload-photo-section">
-                            <img src="images/avatar/1.jpg" alt="Profile Preview" class="upload-photo-preview" id="profilePhotoPreview">
-                            <div style="flex: 1;">
-                                <h6 style="font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #1a1a1a;">Update your profile photo</h6>
-                                <p style="font-size: 13px; color: #6b7280; margin-bottom: 12px;">JPG, PNG or GIF. Max size 2MB.</p>
-                                <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
-                                <button type="button" class="btn-upload" onclick="document.getElementById('profilePhotoInput').click();">
-                                    <i class="material-icons" style="font-size: 18px;">upload</i>
-                                    Choose Photo
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+<div class="modal fade modal-edit-profile" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="editProfileModalLabel">
+					<i class="material-icons" style="color: var(--primary);">edit</i>
+					Edit Profile
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form id="editProfileForm" method="post">
+				<div class="modal-body">
+					{% csrf_token %}
+					<!-- Profile Photo -->
+					<div class="form-group-modal">
+						<label class="form-label-modal">Profile Photo</label>
+						<div class="upload-photo-section">
+							<img src="{{request.user.image.url}}" alt="Profile Preview" class="upload-photo-preview"
+								id="profilePhotoPreview">
+							<div style="flex: 1;">
+								<h6 style="font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #1a1a1a;">
+									Update your profile photo</h6>
+								<p style="font-size: 13px; color: #6b7280; margin-bottom: 12px;">JPG, PNG or GIF. Max
+									size 2MB.</p>
+								<input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
+								<button type="button" class="btn-upload" type="button"
+									onclick="document.getElementById('profilePhotoInput').click();">
+									<i class="material-icons" style="font-size: 18px;">upload</i>
+									Choose Photo
+								</button>
+								<script>
+									function previewImage(event) {
+										const preview = document.getElementById('profilePhotoPreview');
+										preview.src = URL.createObjectURL(event.target.files[0]);
+									}
+								</script>
+							</div>
+						</div>
+					</div>
 
-                    <!-- Display Name -->
-                    <div class="form-group-modal">
-                        <label class="form-label-modal" for="displayName">Display Name</label>
-                        <input type="text" class="form-input-modal" id="displayName" value="John Anderson" placeholder="Enter your display name">
-                    </div>
+					<!-- Display Name -->
+					<div class="form-group-modal">
+						<label class="form-label-modal" for="displayName">Display Name</label>
+						<input type="text" class="form-input-modal" id="displayName"
+							value="{{request.user.display_name}}" placeholder="Enter your display name" name="name">
+					</div>
 
-                    <!-- Username -->
-                    <div class="form-group-modal">
-                        <label class="form-label-modal" for="username">Username</label>
-                        <div style="position: relative;">
-                            <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 15px; font-weight: 600;">@</span>
-                            <input type="text" class="form-input-modal" id="username" value="johnanderson" placeholder="Enter your username" style="padding-left: 32px;">
-                        </div>
-                        <small style="color: #6b7280; font-size: 13px; margin-top: 6px; display: block;">Your unique username. Only letters, numbers, and underscores allowed.</small>
-                    </div>
+					<!-- Username -->
+					<div class="form-group-modal">
+						<label class="form-label-modal" for="username">Username</label>
+						<div style="position: relative;">
+							<span
+								style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 15px; font-weight: 600;">@</span>
+							<input type="text" class="form-input-modal" id="username" value="{{request.user.username}}"
+								placeholder="Enter your username" style="padding-left: 32px;" name="username">
+						</div>
+						<small style="color: #6b7280; font-size: 13px; margin-top: 6px; display: block;">Your unique
+							username. Only letters, numbers, and underscores allowed.</small>
+					</div>
 
-                    <!-- Username Change Warning -->
-                    <div style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 0;">
-                        <i class="material-icons" style="color: #d97706; font-size: 20px;">warning</i>
-                        <div>
-                            <h6 style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 4px;">Username Change Restriction</h6>
-                            <p style="font-size: 13px; color: #78350f; margin: 0; line-height: 1.5;">You can only change your username once every 180 days (6 months). Choose carefully!</p>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="padding: 12px 24px; border-radius: 10px; font-weight: 600;">Cancel</button>
-                <button type="button" class="btn-save-modal" onclick="saveProfile()">
-                    <i class="material-icons" style="font-size: 18px;">save</i>
-                    Save Changes
-                </button>
-            </div>
-        </div>
-    </div>
+					<!-- Username Change Warning -->
+					<div
+						style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 0;">
+						<i class="material-icons" style="color: #d97706; font-size: 20px;">warning</i>
+						<div>
+							<h6 style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 4px;">Username
+								Change Restriction</h6>
+							<p style="font-size: 13px; color: #78350f; margin: 0; line-height: 1.5;">You can only change
+								your username once every 180 days (6 months). Choose carefully!</p>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+						style="padding: 12px 24px; border-radius: 10px; font-weight: 600;">Cancel</button>
+					<button type="submit" class="btn-save-modal" name="update_name">
+						<i class="material-icons" style="font-size: 18px;">save</i>
+						Save Changes
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <!-- Update Address Modal -->
-<div class="modal fade modal-edit-profile" id="updateAddressModal" tabindex="-1" aria-labelledby="updateAddressModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateAddressModalLabel">
-                    <i class="material-icons" style="color: var(--primary);">home</i>
-                    Update Residential Address
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div style="background: #f0f9ff; border: 2px solid #bfdbfe; border-radius: 12px; padding: 16px; margin-bottom: 24px; display: flex; gap: 10px;">
-                    <i class="material-icons" style="color: var(--primary); font-size: 20px;">info</i>
-                    <p style="font-size: 13px; color: #1e3a8a; margin: 0; line-height: 1.6;">
-                        <strong>Note:</strong> This will update your residential address on file. You may need to provide proof of address verification for certain transactions.
-                    </p>
-                </div>
+<div class="modal fade modal-edit-profile" id="updateAddressModal" tabindex="-1"
+	aria-labelledby="updateAddressModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="updateAddressModalLabel">
+					<i class="material-icons" style="color: var(--primary);">home</i>
+					Update Residential Address
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form id="updateAddressForm" method="post">
+				{% csrf_token %}
+				<div class="modal-body">
+					<div
+						style="background: #f0f9ff; border: 2px solid #bfdbfe; border-radius: 12px; padding: 16px; margin-bottom: 24px; display: flex; gap: 10px;">
+						<i class="material-icons" style="color: var(--primary); font-size: 20px;">info</i>
+						<p style="font-size: 13px; color: #1e3a8a; margin: 0; line-height: 1.6;">
+							<strong>Note:</strong> This will update your residential address on file. You may need to
+							provide proof of address verification for certain transactions.
+						</p>
+					</div>
 
-                <form id="updateAddressForm">
-                    <!-- Street Address -->
-                    <div class="form-group-modal">
-                        <label class="form-label-modal" for="streetAddress">Street Address *</label>
-                        <input type="text" class="form-input-modal" id="streetAddress" value="123 Main Street" placeholder="Enter street address" required>
-                    </div>
+					<!-- Street Address -->
+					<div class="form-group-modal">
+						<label class="form-label-modal" for="streetAddress">Street Address *</label>
+						<input type="text" class="form-input-modal" id="streetAddress"
+							value="{{request.user.street_address}}" placeholder="Enter street address" required
+							name="street">
+					</div>
 
-                    <!-- Apartment/Suite (Optional) -->
-                    <div class="form-group-modal">
-                        <label class="form-label-modal" for="apartment">Apartment, Suite, Unit (Optional)</label>
-                        <input type="text" class="form-input-modal" id="apartment" placeholder="Apt 4B, Suite 200, etc.">
-                    </div>
+					<!-- Apartment/Suite (Optional) -->
+					<div class="form-group-modal">
+						<label class="form-label-modal" for="apartment">Apartment, Suite, Unit (Optional)</label>
+						<input type="text" class="form-input-modal" id="apartment" placeholder="Apt 4B, Suite 200, etc."
+							value="{{request.user.apartment_number}}" name="apartment">
+					</div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- City -->
-                            <div class="form-group-modal">
-                                <label class="form-label-modal" for="city">City *</label>
-                                <input type="text" class="form-input-modal" id="city" value="New York" placeholder="Enter city" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <!-- State/Province -->
-                            <div class="form-group-modal">
-                                <label class="form-label-modal" for="state">State/Province *</label>
-                                <input type="text" class="form-input-modal" id="state" value="NY" placeholder="Enter state" required>
-                            </div>
-                        </div>
-                    </div>
+					<div class="row">
+						<div class="col-md-6">
+							<!-- City -->
+							<div class="form-group-modal">
+								<label class="form-label-modal" for="city">City *</label>
+								<input type="text" class="form-input-modal" id="city" value="{{request.user.city}}"
+									placeholder="Enter city" required name="city">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<!-- State/Province -->
+							<div class="form-group-modal">
+								<label class="form-label-modal" for="state">State/Province *</label>
+								<input type="text" class="form-input-modal" id="state" value="{{request.user.state}}"
+									placeholder="Enter state" required name="state">
+							</div>
+						</div>
+					</div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- Postal Code -->
-                            <div class="form-group-modal">
-                                <label class="form-label-modal" for="postalCode">Postal/Zip Code *</label>
-                                <input type="text" class="form-input-modal" id="postalCode" value="10001" placeholder="Enter postal code" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <!-- Country -->
-                            <div class="form-group-modal">
-                                <label class="form-label-modal" for="country">Country *</label>
-                                <select class="form-input-modal" id="country" required style="cursor: pointer;">
-                                    <option value="">Select country</option>
-                                    <option value="United States" selected>United States</option>
-                                    <option value="United Kingdom">United Kingdom</option>
-                                    <option value="Canada">Canada</option>
-                                    <option value="Australia">Australia</option>
-                                    <option value="Germany">Germany</option>
-                                    <option value="France">France</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                    <option value="South Africa">South Africa</option>
-                                    <option value="India">India</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+					<div class="row">
+						<div class="col-md-6">
+							<!-- Postal Code -->
+							<div class="form-group-modal">
+								<label class="form-label-modal" for="postalCode">Postal/Zip Code *</label>
+								<input type="text" class="form-input-modal" id="postalCode"
+									value="{{request.user.postal}}" placeholder="Enter postal code" required
+									name="postal">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<!-- Country -->
+							<div class="form-group-modal">
+								<label class="form-label-modal" for="country">Country *</label>
+								<select class="form-input-modal" id="country" name="country" required style="cursor: pointer;">
+									<option value="">Select country</option>
+									<option value="United States" {% if request.user.country == "United States" %}selected{% endif %}>United States</option>
+									<option value="United Kingdom" {% if request.user.country == "United Kingdom" %}selected{% endif %}>United Kingdom</option>
+									<option value="Canada" {% if request.user.country == "Canada" %}selected{% endif %}>Canada</option>
+									<option value="Australia" {% if request.user.country == "Australia" %}selected{% endif %}>Australia</option>
+									<option value="Germany" {% if request.user.country == "Germany" %}selected{% endif %}>Germany</option>
+									<option value="France" {% if request.user.country == "France" %}selected{% endif %}>France</option>
+									<option value="Nigeria" {% if request.user.country == "Nigeria" %}selected{% endif %}>Nigeria</option>
+									<option value="South Africa" {% if request.user.country == "South Africa" %}selected{% endif %}>South Africa</option>
+									<option value="India" {% if request.user.country == "India" %}selected{% endif %}>India</option>
+									<option value="Other" {% if request.user.country == "Other" %}selected{% endif %}>Other</option>
+								</select>								
+							</div>
+						</div>
+					</div>
 
-                    <!-- Warning Box -->
-                    <div style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 0;">
-                        <i class="material-icons" style="color: #d97706; font-size: 20px;">warning</i>
-                        <div>
-                            <h6 style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 4px;">Address Verification</h6>
-                            <p style="font-size: 13px; color: #78350f; margin: 0; line-height: 1.5;">
-                                If this is a significant change from your verified address, you may be required to submit new proof of address documents for verification.
-                            </p>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="padding: 12px 24px; border-radius: 10px; font-weight: 600;">Cancel</button>
-                <button type="button" class="btn-save-modal" onclick="saveAddress()">
-                    <i class="material-icons" style="font-size: 18px;">save</i>
-                    Update Address
-                </button>
-            </div>
-        </div>
-    </div>
+					<!-- Warning Box -->
+					<div
+						style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 0;">
+						<i class="material-icons" style="color: #d97706; font-size: 20px;">warning</i>
+						<div>
+							<h6 style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 4px;">Address
+								Verification</h6>
+							<p style="font-size: 13px; color: #78350f; margin: 0; line-height: 1.5;">
+								If this is a significant change from your verified address, you may be required to
+								submit new proof of address documents for verification.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+						style="padding: 12px 24px; border-radius: 10px; font-weight: 600;">Cancel</button>
+					<button type="submit" class="btn-save-modal" name="update_address">
+						<i class="material-icons" style="font-size: 18px;">save</i>
+						Update Address
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
-{% endblock content %}
-{% block extra_scripts %}
-<script>
-    // Profile photo upload preview
-    document.getElementById('profilePhotoInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profilePhotoPreview').src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        }
-    });
 
-    // Save profile function (placeholder - programmer will implement backend)
-    function saveProfile() {
-        // Get form values
-        const displayName = document.getElementById('displayName').value;
-        const username = document.getElementById('username').value;
 
-        // Validate username (only letters, numbers, underscores)
-        const usernameRegex = /^[a-zA-Z0-9_]+$/;
-        if (!usernameRegex.test(username)) {
-            alert('Username can only contain letters, numbers, and underscores');
-            return;
-        }
 
-        // TODO: Programmer will implement AJAX call to save profile data
-        console.log('Profile data to save:', {
-            displayName,
-            username,
-            profilePhoto: document.getElementById('profilePhotoInput').files[0]
-        });
+<!-- Footer -->
+{% endblock %}
 
-        // For now, just close the modal and show success message
-        alert('Profile updated successfully! (Backend integration pending)');
-        const modalElement = document.getElementById('editProfileModal');
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-            modalInstance.hide();
-        }
-    }
+{% block page_scripts %}
 
-    // Open Update Address Modal
-    function openUpdateAddressModal() {
-        const modal = new bootstrap.Modal(document.getElementById('updateAddressModal'));
-        modal.show();
-    }
-
-    // Save address function
-    function saveAddress() {
-        // Get form values
-        const streetAddress = document.getElementById('streetAddress').value;
-        const apartment = document.getElementById('apartment').value;
-        const city = document.getElementById('city').value;
-        const state = document.getElementById('state').value;
-        const postalCode = document.getElementById('postalCode').value;
-        const country = document.getElementById('country').value;
-
-        // Validate required fields
-        if (!streetAddress || !city || !state || !postalCode || !country) {
-            alert('Please fill in all required fields');
-            return;
-        }
-
-        // Build full address string
-        const fullAddress = apartment
-            ? `${streetAddress}, ${apartment}, ${city}, ${state} ${postalCode}`
-            : `${streetAddress}, ${city}, ${state} ${postalCode}`;
-
-        // TODO: Programmer will implement AJAX call to save address data
-        console.log('Address data to save:', {
-            streetAddress,
-            apartment,
-            city,
-            state,
-            postalCode,
-            country,
-            fullAddress
-        });
-
-        // For now, just close the modal and show success message
-        alert('Address updated successfully! You may need to verify your new address for certain transactions.');
-        const modalElement = document.getElementById('updateAddressModal');
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-            modalInstance.hide();
-        }
-
-        // Update the displayed address on the page (this would normally come from backend)
-        // document.querySelector('.info-row:has(.info-label:contains("Residential Address")) .info-value').textContent = fullAddress + ', ' + country;
-    }
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

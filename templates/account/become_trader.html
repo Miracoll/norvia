@@ -1,564 +1,455 @@
-{% extends 'account/base.html' %}
+{%extends "account/base.html" %}
 {% load static %}
+
+{% block title %}Become a Trader{% endblock %}
+
+{% block body_class %}page-becometrader{% endblock %}
+
 {% block content %}
-<div class="content-body">
-    <div class="container-fluid">
-        <div class="application-container">
-            <!-- Header -->
-            <div class="application-header">
-                <i class="material-icons" style="font-size: 60px; margin-bottom: 15px;">star</i>
-                <h1>Become a Copy Trading Leader</h1>
-                <p>Share your trading expertise and earn additional income by allowing others to copy your trades</p>
-            </div>
+<div class="content-body default-height">
+	<div class="container-fluid">
+		<!-- Breadcrumb -->
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="page-titles">
+					<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'copy_trader' %}">Copy Trading</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Become a Trader</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
 
-            <!-- Benefits Section -->
-            <div class="benefits-section">
-                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 5px;">Why Become a Trader?</h2>
-                <p style="color: #6b7280; margin-bottom: 20px;">Join our elite community of professional traders</p>
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="application-container">
+					<!-- Header -->
+					<div class="application-header">
+						<i class="material-icons" style="font-size: 60px; margin-bottom: 15px;">star</i>
+						<h1>Become a Copy Trading Leader</h1>
+						<p>Share your trading expertise and earn additional income by allowing others to copy your trades</p>
+					</div>
 
-                <div class="benefits-grid">
-                    <div class="benefit-card">
-                        <i class="material-icons">payments</i>
-                        <h4>Earn Extra Income</h4>
-                        <p>Receive commission from followers who copy your trades</p>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="material-icons">group</i>
-                        <h4>Build Your Reputation</h4>
-                        <p>Grow your follower base and establish yourself as a trusted trader</p>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="material-icons">analytics</i>
-                        <h4>Performance Tracking</h4>
-                        <p>Access advanced analytics and insights on your trading performance</p>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="material-icons">verified</i>
-                        <h4>Verified Badge</h4>
-                        <p>Get a verified trader badge to boost your credibility</p>
-                    </div>
-                </div>
-            </div>
+					<!-- Benefits Section -->
+					<div class="benefits-section">
+						<h2 style="font-size: 24px; font-weight: 700; margin-bottom: 5px;">Why Become a Trader?</h2>
+						<p style="color: #6b7280; margin-bottom: 20px;">Join our elite community of professional traders</p>
 
-            <!-- Application Form -->
-            <div class="application-form-section">
-                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 30px;">Trader Application Form</h2>
+						<div class="benefits-grid">
+							<div class="benefit-card">
+								<i class="material-icons">payments</i>
+								<h4>Earn Extra Income</h4>
+								<p>Receive commission from followers who copy your trades</p>
+							</div>
+							<div class="benefit-card">
+								<i class="material-icons">group</i>
+								<h4>Build Your Reputation</h4>
+								<p>Grow your follower base and establish yourself as a trusted trader</p>
+							</div>
+							<div class="benefit-card">
+								<i class="material-icons">analytics</i>
+								<h4>Performance Tracking</h4>
+								<p>Access advanced analytics and insights on your trading performance</p>
+							</div>
+							<div class="benefit-card">
+								<i class="material-icons">verified</i>
+								<h4>Verified Badge</h4>
+								<p>Get a verified trader badge to boost your credibility</p>
+							</div>
+						</div>
+					</div>
 
-                <!-- Step Indicator -->
-                <div class="step-indicator">
-                    <div class="step active" data-step="1">
-                        <div class="step-number">1</div>
-                        <div class="step-label">Personal Info</div>
-                    </div>
-                    <div class="step" data-step="2">
-                        <div class="step-number">2</div>
-                        <div class="step-label">Trading Experience</div>
-                    </div>
-                    <div class="step" data-step="3">
-                        <div class="step-number">3</div>
-                        <div class="step-label">Strategy & Style</div>
-                    </div>
-                    <div class="step" data-step="4">
-                        <div class="step-number">4</div>
-                        <div class="step-label">Verification</div>
-                    </div>
-                    <div class="step" data-step="5">
-                        <div class="step-number">5</div>
-                        <div class="step-label">Review</div>
-                    </div>
-                </div>
+					<!-- Application Form -->
+					<div class="application-form-section">
+						<h2 style="font-size: 24px; font-weight: 700; margin-bottom: 30px;">Trader Application Form</h2>
 
-                <!-- Form Steps -->
-                <form id="traderApplicationForm">
-                    <!-- Step 1: Personal Information -->
-                    <div class="form-step active" data-step="1">
-                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Personal Information</h3>
+						<!-- Step Indicator -->
+						<div class="step-indicator">
+							<div class="step active" data-step="1">
+								<div class="step-number">1</div>
+								<div class="step-label">Personal Info</div>
+							</div>
+							<div class="step" data-step="2">
+								<div class="step-number">2</div>
+								<div class="step-label">Trading Experience</div>
+							</div>
+							<div class="step" data-step="3">
+								<div class="step-number">3</div>
+								<div class="step-label">Strategy & Style</div>
+							</div>
+							<div class="step" data-step="4">
+								<div class="step-number">4</div>
+								<div class="step-label">Verification</div>
+							</div>
+							<div class="step" data-step="5">
+								<div class="step-number">5</div>
+								<div class="step-label">Review</div>
+							</div>
+						</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Full Name <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
-                            <div class="error-message">Please enter your full name</div>
-                        </div>
+						<!-- Form Steps -->
+						<form id="traderApplicationForm" method="post" action="{% url 'become_trader' %}" enctype="multipart/form-data">
+							{% csrf_token %}
+							<!-- Step 1: Personal Information -->
+							<div class="form-step active" data-step="1">
+								<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Personal Information</h3>
 
-                        <div class="form-group">
-                            <label class="form-label">Email Address <span class="required">*</span></label>
-                            <input type="email" class="form-control" id="email" placeholder="your.email@example.com" required>
-                            <div class="error-message">Please enter a valid email address</div>
-                        </div>
+								<div class="form-group">
+									<label class="form-label">Full Name <span class="required">*</span></label>
+									<input type="text" class="form-control" id="fullName" placeholder="Enter your full name" name="fullName" value="{{request.user.first_name}} {{request.user.last_name}}" required>
+									<div class="error-message">Please enter your full name</div>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Phone Number <span class="required">*</span></label>
-                            <input type="tel" class="form-control" id="phone" placeholder="+1 (555) 000-0000" required>
-                            <div class="error-message">Please enter your phone number</div>
-                        </div>
+								<div class="form-group">
+									<label class="form-label">Email Address <span class="required">*</span></label>
+									<input type="email" class="form-control" id="email" placeholder="your.email@example.com" name="email" value="{{request.user.email}}" required>
+									<div class="error-message">Please enter a valid email address</div>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Country of Residence <span class="required">*</span></label>
-                            <select class="form-select" id="country" required>
-                                <option value="">Select country</option>
-                                <option value="US">United States</option>
-                                <option value="UK">United Kingdom</option>
-                                <option value="CA">Canada</option>
-                                <option value="AU">Australia</option>
-                                <option value="DE">Germany</option>
-                                <option value="FR">France</option>
-                                <option value="IN">India</option>
-                                <option value="CN">China</option>
-                                <option value="JP">Japan</option>
-                                <option value="BR">Brazil</option>
-                                <option value="MX">Mexico</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <div class="error-message">Please select your country</div>
-                        </div>
-                    </div>
+								<div class="form-group">
+									<label class="form-label">Phone Number <span class="required">*</span></label>
+									<input type="tel" class="form-control" id="phone" placeholder="+1 (555) 000-0000" name="phone" required>
+									<div class="error-message">Please enter your phone number</div>
+								</div>
 
-                    <!-- Step 2: Trading Experience -->
-                    <div class="form-step" data-step="2">
-                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Trading Experience</h3>
+								<div class="form-group">
+									<label class="form-label">Country of Residence <span class="required">*</span></label>
+									<select class="form-select" id="country" required name="country">
+										<option value="">Select country</option>
+										<option value="US">United States</option>
+										<option value="UK">United Kingdom</option>
+										<option value="CA">Canada</option>
+										<option value="AU">Australia</option>
+										<option value="DE">Germany</option>
+										<option value="FR">France</option>
+										<option value="IN">India</option>
+										<option value="CN">China</option>
+										<option value="JP">Japan</option>
+										<option value="BR">Brazil</option>
+										<option value="MX">Mexico</option>
+										<option value="Other">Other</option>
+									</select>
+									<div class="error-message">Please select your country</div>
+								</div>
+							</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Years of Trading Experience <span class="required">*</span></label>
-                            <select class="form-select" id="experience" required>
-                                <option value="">Select experience level</option>
-                                <option value="1">Less than 1 year</option>
-                                <option value="2">1-2 years</option>
-                                <option value="3">3-5 years</option>
-                                <option value="5">5-10 years</option>
-                                <option value="10">More than 10 years</option>
-                            </select>
-                            <div class="error-message">Please select your experience level</div>
-                        </div>
+							<!-- Step 2: Trading Experience -->
+							<div class="form-step" data-step="2">
+								<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Trading Experience</h3>
 
-                        <div class="form-group">
-                            <label class="form-label">Primary Trading Markets <span class="required">*</span></label>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" name="markets" value="crypto" style="width: 18px; height: 18px;">
-                                    <span>Cryptocurrency</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" name="markets" value="stocks" style="width: 18px; height: 18px;">
-                                    <span>Stocks</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" name="markets" value="forex" style="width: 18px; height: 18px;">
-                                    <span>Forex</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" name="markets" value="commodities" style="width: 18px; height: 18px;">
-                                    <span>Commodities</span>
-                                </label>
-                            </div>
-                            <div class="error-message">Please select at least one market</div>
-                        </div>
+								<div class="form-group">
+									<label class="form-label">Years of Trading Experience <span class="required">*</span></label>
+									<select class="form-select" id="experience" required name="experience">
+										<option value="">Select experience level</option>
+										<option value="1">Less than 1 year</option>
+										<option value="2">1-2 years</option>
+										<option value="3">3-5 years</option>
+										<option value="5">5-10 years</option>
+										<option value="10">More than 10 years</option>
+									</select>
+									<div class="error-message">Please select your experience level</div>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Average Monthly Trading Volume (USD) <span class="required">*</span></label>
-                            <select class="form-select" id="volume" required>
-                                <option value="">Select trading volume</option>
-                                <option value="1">Less than $10,000</option>
-                                <option value="2">$10,000 - $50,000</option>
-                                <option value="3">$50,000 - $100,000</option>
-                                <option value="4">$100,000 - $500,000</option>
-                                <option value="5">More than $500,000</option>
-                            </select>
-                            <div class="error-message">Please select your average trading volume</div>
-                        </div>
+								<div class="form-group">
+									<label class="form-label">Primary Trading Markets <span class="required">*</span></label>
+									<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+										<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+											<input type="checkbox" name="markets" value="crypto" style="width: 18px; height: 18px;">
+											<span>Cryptocurrency</span>
+										</label>
+										<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+											<input type="checkbox" name="markets" value="stocks" style="width: 18px; height: 18px;">
+											<span>Stocks</span>
+										</label>
+										<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+											<input type="checkbox" name="markets" value="forex" style="width: 18px; height: 18px;">
+											<span>Forex</span>
+										</label>
+										<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+											<input type="checkbox" name="markets" value="commodities" style="width: 18px; height: 18px;">
+											<span>Commodities</span>
+										</label>
+									</div>
+									<div class="error-message">Please select at least one market</div>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Do you have any professional trading certifications?</label>
-                            <textarea class="form-control" id="certifications" placeholder="List any relevant certifications (e.g., CFA, CFTe, CMT, etc.)"></textarea>
-                        </div>
-                    </div>
+								<div class="form-group">
+									<label class="form-label">Average Monthly Trading Volume (USD) <span class="required">*</span></label>
+									<select class="form-select" id="volume" required name="volume">
+										<option value="">Select trading volume</option>
+										<option value="1">Less than $10,000</option>
+										<option value="2">$10,000 - $50,000</option>
+										<option value="3">$50,000 - $100,000</option>
+										<option value="4">$100,000 - $500,000</option>
+										<option value="5">More than $500,000</option>
+									</select>
+									<div class="error-message">Please select your average trading volume</div>
+								</div>
 
-                    <!-- Step 3: Strategy & Style -->
-                    <div class="form-step" data-step="3">
-                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Trading Strategy & Style</h3>
+								<div class="form-group">
+									<label class="form-label">Do you have any professional trading certifications?</label>
+									<textarea class="form-control" id="certifications" placeholder="List any relevant certifications (e.g., CFA, CFTe, CMT, etc.)" name="certifications"></textarea>
+								</div>
+							</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Trading Style <span class="required">*</span></label>
-                            <select class="form-select" id="tradingStyle" required>
-                                <option value="">Select trading style</option>
-                                <option value="scalping">Scalping (Very Short-term)</option>
-                                <option value="day">Day Trading</option>
-                                <option value="swing">Swing Trading</option>
-                                <option value="position">Position Trading (Long-term)</option>
-                                <option value="algorithmic">Algorithmic Trading</option>
-                            </select>
-                            <div class="error-message">Please select your trading style</div>
-                        </div>
+							<!-- Step 3: Strategy & Style -->
+							<div class="form-step" data-step="3">
+								<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Trading Strategy & Style</h3>
 
-                        <div class="form-group">
-                            <label class="form-label">Risk Management Approach <span class="required">*</span></label>
-                            <select class="form-select" id="riskLevel" required>
-                                <option value="">Select risk level</option>
-                                <option value="conservative">Conservative (Low Risk)</option>
-                                <option value="moderate">Moderate (Medium Risk)</option>
-                                <option value="aggressive">Aggressive (High Risk)</option>
-                            </select>
-                            <div class="error-message">Please select your risk management approach</div>
-                        </div>
+								<div class="form-group">
+									<label class="form-label">Trading Style <span class="required">*</span></label>
+									<select class="form-select" id="tradingStyle" required name="tradingStyle">
+										<option value="">Select trading style</option>
+										<option value="scalping">Scalping (Very Short-term)</option>
+										<option value="day">Day Trading</option>
+										<option value="swing">Swing Trading</option>
+										<option value="position">Position Trading (Long-term)</option>
+										<option value="algorithmic">Algorithmic Trading</option>
+									</select>
+									<div class="error-message">Please select your trading style</div>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Describe Your Trading Strategy <span class="required">*</span></label>
-                            <textarea class="form-control" id="strategy" placeholder="Explain your trading strategy, approach to market analysis, and what makes your strategy unique..." required></textarea>
-                            <div class="error-message">Please describe your trading strategy</div>
-                        </div>
+								<div class="form-group">
+									<label class="form-label">Risk Management Approach <span class="required">*</span></label>
+									<select class="form-select" id="riskLevel" required name="riskLevel">
+										<option value="">Select risk level</option>
+										<option value="conservative">Conservative (Low Risk)</option>
+										<option value="moderate">Moderate (Medium Risk)</option>
+										<option value="aggressive">Aggressive (High Risk)</option>
+									</select>
+									<div class="error-message">Please select your risk management approach</div>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Average Win Rate (%) <span class="required">*</span></label>
-                            <input type="number" class="form-control" id="winRate" placeholder="e.g., 65" min="0" max="100" required>
-                            <div class="error-message">Please enter your average win rate</div>
-                        </div>
-                    </div>
+								<div class="form-group">
+									<label class="form-label">Describe Your Trading Strategy <span class="required">*</span></label>
+									<textarea class="form-control" id="strategy" placeholder="Explain your trading strategy, approach to market analysis, and what makes your strategy unique..." required name="strategy"></textarea>
+									<div class="error-message">Please describe your trading strategy</div>
+								</div>
 
-                    <!-- Step 4: Verification Documents -->
-                    <div class="form-step" data-step="4">
-                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Verification Documents</h3>
+								<div class="form-group">
+									<label class="form-label">Average Win Rate (%) <span class="required">*</span></label>
+									<input type="number" class="form-control" id="winRate" placeholder="e.g., 65" min="0" max="100" required name="winRate">
+									<div class="error-message">Please enter your average win rate</div>
+								</div>
+							</div>
 
-                        <div class="requirements-list">
-                            <h4>
-                                <i class="material-icons" style="font-size: 20px;">info</i>
-                                Required Documents
-                            </h4>
-                            <ul>
-                                <li>Trading statements from the last 6 months (PDF format)</li>
-                                <li>Government-issued ID (Passport, Driver's License, etc.)</li>
-                                <li>Proof of trading account (Screenshot showing account balance and history)</li>
-                                <li>All documents must be clear and legible</li>
-                            </ul>
-                        </div>
+							<!-- Step 4: Verification Documents -->
+							<div class="form-step" data-step="4">
+								<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Verification Documents</h3>
 
-                        <div class="form-group">
-                            <label class="form-label">Trading Statements (Last 6 Months) <span class="required">*</span></label>
-                            <div class="file-upload-area" onclick="document.getElementById('tradingStatements').click()">
-                                <i class="material-icons">cloud_upload</i>
-                                <p><strong>Click to upload</strong> or drag and drop</p>
-                                <p style="font-size: 12px; color: #9ca3af;">PDF files only, max 10MB</p>
-                            </div>
-                            <input type="file" id="tradingStatements" accept=".pdf" style="display: none;" onchange="handleFileUpload(this, 'statements-preview')">
-                            <div id="statements-preview"></div>
-                        </div>
+								<div class="requirements-list">
+									<h4>
+										<i class="material-icons" style="font-size: 20px;">info</i>
+										Required Documents
+									</h4>
+									<ul>
+										<li>Trading statements from the last 6 months (PDF format)</li>
+										<li>Government-issued ID (Passport, Driver's License, etc.)</li>
+										<li>Proof of trading account (Screenshot showing account balance and history)</li>
+										<li>All documents must be clear and legible</li>
+									</ul>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Government-Issued ID <span class="required">*</span></label>
-                            <div class="file-upload-area" onclick="document.getElementById('governmentId').click()">
-                                <i class="material-icons">cloud_upload</i>
-                                <p><strong>Click to upload</strong> or drag and drop</p>
-                                <p style="font-size: 12px; color: #9ca3af;">JPG, PNG or PDF, max 5MB</p>
-                            </div>
-                            <input type="file" id="governmentId" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" onchange="handleFileUpload(this, 'id-preview')">
-                            <div id="id-preview"></div>
-                        </div>
+								<div class="form-group">
+									<label class="form-label">Trading Statements (Last 6 Months) <span class="required">*</span></label>
+									<div class="file-upload-area">
+										<i class="material-icons">cloud_upload</i>
+										<p><strong>Click to upload</strong> or drag and drop</p>
+										<p style="font-size: 12px; color: #9ca3af;">PDF files only, max 10MB</p>
+									</div>
+									<input type="file" id="tradingStatements" accept=".pdf" style="display: none;" name="tradingStatements" onchange="handleFileUpload(this, 'statements-preview')">
+									<div id="statements-preview"></div>
+								</div>
 
-                        <div class="form-group">
-                            <label class="form-label">Proof of Trading Account <span class="required">*</span></label>
-                            <div class="file-upload-area" onclick="document.getElementById('proofAccount').click()">
-                                <i class="material-icons">cloud_upload</i>
-                                <p><strong>Click to upload</strong> or drag and drop</p>
-                                <p style="font-size: 12px; color: #9ca3af;">JPG, PNG or PDF, max 5MB</p>
-                            </div>
-                            <input type="file" id="proofAccount" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" onchange="handleFileUpload(this, 'proof-preview')">
-                            <div id="proof-preview"></div>
-                        </div>
-                    </div>
+								<div class="form-group">
+									<label class="form-label">Government-Issued ID <span class="required">*</span></label>
+									<div class="file-upload-area">
+										<i class="material-icons">cloud_upload</i>
+										<p><strong>Click to upload</strong> or drag and drop</p>
+										<p style="font-size: 12px; color: #9ca3af;">JPG, PNG or PDF, max 5MB</p>
+									</div>
+									<input type="file" id="governmentId" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" name="governmentId" onchange="handleFileUpload(this, 'id-preview')">
+									<div id="id-preview"></div>
+								</div>
 
-                    <!-- Step 5: Review & Submit -->
-                    <div class="form-step" data-step="5">
-                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Review Your Application</h3>
+								<div class="form-group">
+									<label class="form-label">Proof of Trading Account <span class="required">*</span></label>
+									<div class="file-upload-area">
+										<i class="material-icons">cloud_upload</i>
+										<p><strong>Click to upload</strong> or drag and drop</p>
+										<p style="font-size: 12px; color: #9ca3af;">JPG, PNG or PDF, max 5MB</p>
+									</div>
+									<input type="file" id="proofAccount" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" name="proofAccount" onchange="handleFileUpload(this, 'proof-preview')">
+									<div id="proof-preview"></div>
+								</div>
+							</div>
 
-                        <div style="background: #f5f7fa; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
-                            <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #1a1a1a;">Personal Information</h4>
-                            <div style="display: grid; gap: 10px; font-size: 14px;">
-                                <div><strong>Name:</strong> <span id="review-name">-</span></div>
-                                <div><strong>Email:</strong> <span id="review-email">-</span></div>
-                                <div><strong>Phone:</strong> <span id="review-phone">-</span></div>
-                                <div><strong>Country:</strong> <span id="review-country">-</span></div>
-                            </div>
-                        </div>
+							<!-- Step 5: Review & Submit -->
+							<div class="form-step" data-step="5">
+								<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Review Your Application</h3>
 
-                        <div style="background: #f5f7fa; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
-                            <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #1a1a1a;">Trading Experience</h4>
-                            <div style="display: grid; gap: 10px; font-size: 14px;">
-                                <div><strong>Experience:</strong> <span id="review-experience">-</span></div>
-                                <div><strong>Trading Volume:</strong> <span id="review-volume">-</span></div>
-                                <div><strong>Trading Style:</strong> <span id="review-style">-</span></div>
-                                <div><strong>Risk Level:</strong> <span id="review-risk">-</span></div>
-                                <div><strong>Win Rate:</strong> <span id="review-winrate">-</span>%</div>
-                            </div>
-                        </div>
+								<div style="background: #f5f7fa; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
+									<h4 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #1a1a1a;">Personal Information</h4>
+									<div style="display: grid; gap: 10px; font-size: 14px;">
+										<div><strong>Name:</strong> <span id="review-name">-</span></div>
+										<div><strong>Email:</strong> <span id="review-email">-</span></div>
+										<div><strong>Phone:</strong> <span id="review-phone">-</span></div>
+										<div><strong>Country:</strong> <span id="review-country">-</span></div>
+									</div>
+								</div>
 
-                        <div style="background: #ecfdf5; border: 2px solid #10b981; padding: 20px; border-radius: 12px;">
-                            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
-                                <input type="checkbox" id="agreeTerms" style="width: 20px; height: 20px; margin-top: 2px;">
-                                <span style="font-size: 14px; color: #1a1a1a;">
-                                    I confirm that all information provided is accurate and true. I understand that false information may result in rejection or termination of my trader account. I agree to the <a href="#" style="color: #01A3FF; text-decoration: underline;">Terms and Conditions</a> for Copy Trading Leaders.
-                                </span>
-                            </label>
-                        </div>
-                    </div>
+								<div style="background: #f5f7fa; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
+									<h4 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #1a1a1a;">Trading Experience</h4>
+									<div style="display: grid; gap: 10px; font-size: 14px;">
+										<div><strong>Experience:</strong> <span id="review-experience">-</span></div>
+										<div><strong>Trading Volume:</strong> <span id="review-volume">-</span></div>
+										<div><strong>Trading Style:</strong> <span id="review-style">-</span></div>
+										<div><strong>Risk Level:</strong> <span id="review-risk">-</span></div>
+										<div><strong>Win Rate:</strong> <span id="review-winrate">-</span>%</div>
+									</div>
+								</div>
 
-                    <!-- Success Message -->
-                    <div class="form-step" data-step="6">
-                        <div class="success-animation">
-                            <i class="material-icons">check_circle</i>
-                            <h2>Application Submitted Successfully!</h2>
-                            <p>Thank you for applying to become a trader. Our team will review your application and get back to you within 3-5 business days.</p>
-                            <p style="margin-top: 20px;">
-                                <a href="dashboard.html" class="btn btn-primary">
-                                    <i class="material-icons">home</i>
-                                    Back to Dashboard
-                                </a>
-                            </p>
-                        </div>
-                    </div>
+								<div style="background: #ecfdf5; border: 2px solid #10b981; padding: 20px; border-radius: 12px;">
+									<label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+										<input type="checkbox" id="agreeTerms" style="width: 20px; height: 20px; margin-top: 2px;" required>
+										<span style="font-size: 14px; color: #1a1a1a;">
+											I confirm that all information provided is accurate and true. I understand that false information may result in rejection or termination of my trader account. I agree to the <a href="#" style="color: #01A3FF; text-decoration: underline;">Terms and Conditions</a> for Copy Trading Leaders.
+										</span>
+									</label>
+								</div>
+							</div>
 
-                    <!-- Navigation Buttons -->
-                    <div class="form-buttons">
-                        <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
-                            <i class="material-icons">arrow_back</i>
-                            Previous
-                        </button>
-                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
-                            Next
-                            <i class="material-icons">arrow_forward</i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+							<!-- Success Message -->
+							<div class="form-step" data-step="6">
+								<div class="success-animation">
+									<i class="material-icons">check_circle</i>
+									<h2>Application Submitted Successfully!</h2>
+									<p>Thank you for applying to become a trader. Our team will review your application and get back to you within 3-5 business days.</p>
+									<p style="margin-top: 20px;">
+										<a href="{% url 'home' %}" class="btn btn-primary">
+											<i class="material-icons">home</i>
+											Back to Dashboard
+										</a>
+									</p>
+								</div>
+							</div>
+
+							<!-- Navigation Buttons -->
+							<div class="form-buttons">
+								<button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+									<i class="material-icons">arrow_back</i>
+									Previous
+								</button>
+								<button type="button" class="btn btn-primary" id="nextBtn">
+									Next
+									<i class="material-icons">arrow_forward</i>
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-{% endblock content %}
+{% endblock %}
 
-{% block extra_scripts %}
+{% block page_scripts %}
 <script>
-    let currentStep = 1;
-    const totalSteps = 5;
+// Multi-step form - UI ONLY (no validation, Django handles that)
+let currentStep = 1;
+const totalSteps = 5;
 
-    function changeStep(direction) {
-        // Validate current step before proceeding
-        if (direction === 1 && !validateStep(currentStep)) {
-            return;
-        }
+// Navigation buttons
+const nextBtn = document.getElementById('nextBtn');
+const prevBtn = document.getElementById('prevBtn');
 
-        // Special handling for final step
-        if (currentStep === 5 && direction === 1) {
-            if (!document.getElementById('agreeTerms').checked) {
-                alert('Please agree to the terms and conditions to submit your application.');
-                return;
-            }
-            submitApplication();
-            return;
-        }
+// Show/hide steps - UI ONLY
+function showStep(step) {
+	// Hide all steps
+	document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+	document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
 
-        const newStep = currentStep + direction;
+	// Show current step
+	const currentFormStep = document.querySelector(`.form-step[data-step="${step}"]`);
+	const currentIndicator = document.querySelector(`.step[data-step="${step}"]`);
 
-        if (newStep >= 1 && newStep <= totalSteps) {
-            // Hide current step
-            document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
-            document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+	if (currentFormStep) currentFormStep.classList.add('active');
+	if (currentIndicator) currentIndicator.classList.add('active');
 
-            // Mark completed steps
-            if (direction === 1) {
-                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('completed');
-            }
+	// Mark completed steps (visual only)
+	document.querySelectorAll('.step').forEach(s => {
+		const stepNum = parseInt(s.getAttribute('data-step'));
+		if (stepNum < step) {
+			s.classList.add('completed');
+		} else {
+			s.classList.remove('completed');
+		}
+	});
 
-            // Show new step
-            currentStep = newStep;
-            document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.add('active');
-            document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+	// Update button visibility
+	prevBtn.style.display = (step === 1) ? 'none' : 'inline-flex';
 
-            // Update buttons
-            updateButtons();
+	// Update Next button text
+	if (step === totalSteps) {
+		nextBtn.innerHTML = '<i class="material-icons">check</i> Submit Application';
+	} else if (step === 6) {
+		nextBtn.style.display = 'none';
+		prevBtn.style.display = 'none';
+	} else {
+		nextBtn.innerHTML = 'Next <i class="material-icons">arrow_forward</i>';
+	}
+}
 
-            // Populate review if on step 5
-            if (currentStep === 5) {
-                populateReview();
-            }
+// Next button - just go to next step (no validation)
+nextBtn.addEventListener('click', () => {
+	if (currentStep < totalSteps) {
+		currentStep++;
+		showStep(currentStep);
+	} else if (currentStep === totalSteps) {
+		// For now, just show success (Django will handle actual submission later)
+		// currentStep = 6;
+		// showStep(currentStep);
+		document.getElementById('traderApplicationForm').submit();
+	}
+});
 
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
+// Previous button - just go back
+prevBtn.addEventListener('click', () => {
+	if (currentStep > 1) {
+		currentStep--;
+		showStep(currentStep);
+	}
+});
 
-    function validateStep(step) {
-        const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
-        const requiredInputs = currentStepElement.querySelectorAll('[required]');
-        let isValid = true;
+// File upload preview - UI ONLY
+function handleFileUpload(input, previewId) {
+	const preview = document.getElementById(previewId);
+	const file = input.files[0];
 
-        requiredInputs.forEach(input => {
-            const errorMessage = input.parentElement.querySelector('.error-message');
+	if (file) {
+		preview.innerHTML = `
+			<div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; margin-top: 10px;">
+				<i class="material-icons" style="color: #22c55e;">check_circle</i>
+				<span style="flex: 1;">${file.name}</span>
+				<span style="color: #6b7280; font-size: 12px;">${(file.size / 1024).toFixed(2)} KB</span>
+			</div>
+		`;
+	}
+}
 
-            if (input.type === 'checkbox' && input.name === 'markets') {
-                const checkedBoxes = currentStepElement.querySelectorAll('input[name="markets"]:checked');
-                if (checkedBoxes.length === 0) {
-                    if (errorMessage) {
-                        errorMessage.style.display = 'block';
-                    }
-                    isValid = false;
-                } else {
-                    if (errorMessage) {
-                        errorMessage.style.display = 'none';
-                    }
-                }
-            } else if (!input.value.trim()) {
-                input.classList.add('error');
-                if (errorMessage) {
-                    errorMessage.style.display = 'block';
-                }
-                isValid = false;
-            } else {
-                input.classList.remove('error');
-                if (errorMessage) {
-                    errorMessage.style.display = 'none';
-                }
-            }
-        });
+// Make file upload areas clickable
+document.querySelectorAll('.file-upload-area').forEach((area, index) => {
+	area.addEventListener('click', () => {
+		const inputs = document.querySelectorAll('input[type="file"]');
+		if (inputs[index]) inputs[index].click();
+	});
+});
 
-        return isValid;
-    }
-
-    function updateButtons() {
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-
-        // Show/hide previous button
-        if (currentStep === 1) {
-            prevBtn.style.display = 'none';
-        } else {
-            prevBtn.style.display = 'flex';
-        }
-
-        // Update next button text
-        if (currentStep === totalSteps) {
-            nextBtn.innerHTML = '<i class="material-icons">send</i> Submit Application';
-        } else {
-            nextBtn.innerHTML = 'Next <i class="material-icons">arrow_forward</i>';
-        }
-    }
-
-    function handleFileUpload(input, previewId) {
-        const file = input.files[0];
-        if (file) {
-            const preview = document.getElementById(previewId);
-            preview.innerHTML = `
-                <div class="uploaded-file">
-                    <div class="uploaded-file-info">
-                        <i class="material-icons">description</i>
-                        <div>
-                            <div style="font-weight: 600; font-size: 14px;">${file.name}</div>
-                            <div style="font-size: 12px; color: #6b7280;">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
-                        </div>
-                    </div>
-                    <button type="button" class="remove-file" onclick="removeFile('${input.id}', '${previewId}')">
-                        <i class="material-icons">close</i>
-                    </button>
-                </div>
-            `;
-        }
-    }
-
-    function removeFile(inputId, previewId) {
-        document.getElementById(inputId).value = '';
-        document.getElementById(previewId).innerHTML = '';
-    }
-
-    function populateReview() {
-        // Personal Info
-        document.getElementById('review-name').textContent = document.getElementById('fullName').value;
-        document.getElementById('review-email').textContent = document.getElementById('email').value;
-        document.getElementById('review-phone').textContent = document.getElementById('phone').value;
-        document.getElementById('review-country').textContent = document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
-
-        // Trading Experience
-        document.getElementById('review-experience').textContent = document.getElementById('experience').options[document.getElementById('experience').selectedIndex].text;
-        document.getElementById('review-volume').textContent = document.getElementById('volume').options[document.getElementById('volume').selectedIndex].text;
-        document.getElementById('review-style').textContent = document.getElementById('tradingStyle').options[document.getElementById('tradingStyle').selectedIndex].text;
-        document.getElementById('review-risk').textContent = document.getElementById('riskLevel').options[document.getElementById('riskLevel').selectedIndex].text;
-        document.getElementById('review-winrate').textContent = document.getElementById('winRate').value;
-    }
-
-    function submitApplication() {
-        // Hide form steps
-        document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
-
-        // Show success message
-        currentStep = 6;
-        document.querySelector(`.form-step[data-step="6"]`).classList.add('active');
-
-        // Hide buttons
-        document.querySelector('.form-buttons').style.display = 'none';
-
-        // Mark all steps as completed
-        document.querySelectorAll('.step').forEach(step => {
-            step.classList.add('completed');
-        });
-
-        // In production, send data to backend
-        const formData = {
-            fullName: document.getElementById('fullName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            country: document.getElementById('country').value,
-            experience: document.getElementById('experience').value,
-            tradingStyle: document.getElementById('tradingStyle').value,
-            riskLevel: document.getElementById('riskLevel').value,
-            strategy: document.getElementById('strategy').value,
-            winRate: document.getElementById('winRate').value,
-            submittedAt: new Date().toISOString()
-        };
-
-        console.log('Application submitted:', formData);
-        // fetch('/api/trader-applications', { method: 'POST', body: JSON.stringify(formData) });
-    }
-
-    // Initialize
-    updateButtons();
-
-    // Remove sale popup and floating buttons on page load
-    window.addEventListener('DOMContentLoaded', function() {
-        // Remove sale popup/banner
-        const removeElements = setInterval(function() {
-            const elementsToRemove = document.querySelectorAll('.dlab-demo-panel, .DZ-bt-buy-now, .DZ-bt-support-now, .dlab-sale-banner, .dzSaleBanner, #dzSaleBanner, [class*="sale"], [class*="Sale"], [class*="SALE"], [class*="diwali"], [class*="Diwali"], [class*="DIWALI"], [id*="sale"], [id*="Sale"], [id*="banner"], [id*="Banner"]');
-            elementsToRemove.forEach(el => {
-                el.remove();
-            });
-        }, 100);
-        setTimeout(() => clearInterval(removeElements), 5000);
-    });
-
-    // Fix theme toggle function
-    function toggleTheme() {
-        const body = document.body;
-        const currentTheme = body.getAttribute('data-theme-version');
-
-        if (currentTheme === 'dark') {
-            body.setAttribute('data-theme-version', 'light');
-            document.getElementById('theme-icon-light').style.display = 'block';
-            document.getElementById('theme-icon-dark').style.display = 'none';
-            localStorage.setItem('theme', 'light');
-        } else {
-            body.setAttribute('data-theme-version', 'dark');
-            document.getElementById('theme-icon-light').style.display = 'none';
-            document.getElementById('theme-icon-dark').style.display = 'block';
-            localStorage.setItem('theme', 'dark');
-        }
-    }
-
-    // Load saved theme on page load
-    window.addEventListener('DOMContentLoaded', function() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.setAttribute('data-theme-version', savedTheme);
-
-        if (savedTheme === 'dark') {
-            document.getElementById('theme-icon-light').style.display = 'none';
-            document.getElementById('theme-icon-dark').style.display = 'block';
-        } else {
-            document.getElementById('theme-icon-light').style.display = 'block';
-            document.getElementById('theme-icon-dark').style.display = 'none';
-        }
-    });
+// Initialize - show first step
+showStep(currentStep);
 </script>
-{% endblock extra_scripts %}
+{% endblock %}

@@ -20,40 +20,43 @@
 
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">Pending KYC Verifications (8)</h1>
+            <h1 class="page-title">Pending KYC Verifications ({{pending_count}})</h1>
         </div>
 
         <!-- Stats Mini Cards -->
         <div class="stats-row">
             <div class="stat-mini">
                 <div class="stat-mini-label">Pending Review</div>
-                <div class="stat-mini-value" style="color: #f59e0b;">8</div>
+                <div class="stat-mini-value" style="color: #f59e0b;">{{pending_count}}</div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Approved Today</div>
-                <div class="stat-mini-value" style="color: #10b981;">15</div>
+                <div class="stat-mini-value" style="color: #10b981;">{{approved_today}}</div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Rejected Today</div>
-                <div class="stat-mini-value" style="color: #ef4444;">2</div>
+                <div class="stat-mini-value" style="color: #ef4444;">{{rejected_today}}</div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Total Verified Users</div>
-                <div class="stat-mini-value">1,847</div>
+                <div class="stat-mini-value">{{total_verified_users}}</div>
             </div>
         </div>
 
         <!-- KYC Cards Grid -->
         <div class="kyc-grid">
 
+            <!-- TODO: Django will render KYC submissions from database -->
+
             <!-- KYC Card 1 -->
+             {% for kyc in kycs %}
             <div class="kyc-card">
                 <div class="kyc-header">
                     <div class="user-info">
-                        <div class="user-avatar">JD</div>
+                        <div class="user-avatar">{{kyc.first_name|slice:1}}{{kyc.last_name|slice:1}}</div>
                         <div class="user-details">
-                            <h4>John Doe</h4>
-                            <p>#USR-10245 • john@example.com</p>
+                            <h4>{{kyc.first_name}} {{kyc.last_name}}</h4>
+                            <p>#USR-{{kyc.id}} • {{kyc.user.email}}</p>
                         </div>
                     </div>
                     <div class="kyc-level">
@@ -64,7 +67,7 @@
 
                 <div class="submitted-date">
                     <i class="material-icons" style="font-size: 14px;">schedule</i>
-                    Submitted 2 hours ago
+                    Submitted {{ kyc.submitted_at|timesince }} ago
                 </div>
 
                 <!-- Personal Information -->
@@ -76,19 +79,19 @@
                     <div class="doc-info">
                         <div class="info-item">
                             <div class="info-label">First Name</div>
-                            <div class="info-value">John</div>
+                            <div class="info-value">{{kyc.first_name}}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Last Name</div>
-                            <div class="info-value">Doe</div>
+                            <div class="info-value">{{kyc.last_name}}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Date of Birth</div>
-                            <div class="info-value">Mar 15, 1990</div>
+                            <div class="info-value">{{kyc.dob|date:"M j, Y"}}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Nationality</div>
-                            <div class="info-value">United States</div>
+                            <div class="info-value">{{kyc.nationality}}</div>
                         </div>
                     </div>
                 </div>
@@ -102,19 +105,19 @@
                     <div class="doc-info">
                         <div class="info-item full-width">
                             <div class="info-label">Full Address</div>
-                            <div class="info-value">123 Main Street, Apt 4B</div>
+                            <div class="info-value">{{kyc.address}}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">City</div>
-                            <div class="info-value">New York</div>
+                            <div class="info-value">{{kyc.city}}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">State/Province</div>
-                            <div class="info-value">New York</div>
+                            <div class="info-value">{{kyc.state}}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Postal Code</div>
-                            <div class="info-value">10001</div>
+                            <div class="info-value">{{kyc.postal_code}}</div>
                         </div>
                     </div>
                 </div>
@@ -122,346 +125,235 @@
                 <!-- ID Document Type -->
                 <div class="id-type-banner">
                     <span class="id-type-banner-label">ID Document Type:</span>
-                    <span class="id-type-banner-value">Driver's License</span>
+                    <span class="id-type-banner-value">{{kyc.id_type}}</span>
                 </div>
 
                 <!-- ID Documents -->
                 <div class="doc-section">
                     <div class="doc-label">Government ID (Front)</div>
-                    <div class="doc-preview" onclick="viewDocument('id-front-1.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">image</i>
+                    <div class="doc-preview">
+                        <img src="{{kyc.id_front.url}}" alt="front">
                     </div>
                 </div>
 
                 <div class="doc-section">
                     <div class="doc-label">Government ID (Back)</div>
-                    <div class="doc-preview" onclick="viewDocument('id-back-1.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">image</i>
+                    <div class="doc-preview">
+                        <img src="{{kyc.id_back.url}}" alt="back">
                     </div>
                 </div>
 
                 <div class="doc-section">
                     <div class="doc-label">Selfie with ID</div>
-                    <div class="doc-preview" onclick="viewDocument('selfie-1.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">portrait</i>
+                    <div class="doc-preview">
+                        <img src="{{kyc.selfie.url}}" alt="sefie">
                     </div>
                 </div>
 
+                {% if kyc.status == 'not_submitted' %}
                 <div class="kyc-actions">
-                    <button class="btn-approve" onclick="approveKYC('John Doe', 'USR-10245')">
+                    <button class="btn-approve" data-bs-toggle="modal" data-bs-target="#approveModal{{kyc.id}}">
                         <i class="material-icons" style="font-size: 18px;">check_circle</i>
                         Approve
                     </button>
-                    <button class="btn-reject" onclick="rejectKYC('John Doe', 'USR-10245')">
+                    <button class="btn-reject" data-bs-toggle="modal" data-bs-target="#rejectModal{{kyc.id}}">
                         <i class="material-icons" style="font-size: 18px;">cancel</i>
                         Reject
                     </button>
                 </div>
+                {% endif %}
             </div>
 
-            <!-- KYC Card 2 -->
-            <div class="kyc-card">
-                <div class="kyc-header">
-                    <div class="user-info">
-                        <div class="user-avatar">SA</div>
-                        <div class="user-details">
-                            <h4>Sarah Anderson</h4>
-                            <p>#USR-10244 • sarah@example.com</p>
+            <div class="modal fade" id="approveModal{{kyc.id}}" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; padding: 20px 24px;">
+                            <h5 class="modal-title" id="approveModalLabel" style="color: white; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                                <i class="material-icons" style="font-size: 24px;">check_circle</i>
+                                Approve KYC Verification
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="padding: 24px;">
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="{{kyc.ref}}">
+            
+                                <!-- User Info Display -->
+                                <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                        <i class="material-icons" style="color: #10b981; font-size: 20px;">info</i>
+                                        <span style="font-weight: 600; color: #065f46; font-size: 14px;">You are approving KYC for:</span>
+                                    </div>
+                                    <div style="color: #065f46; font-size: 14px; line-height: 1.6; margin-left: 32px;">
+                                        <strong>Name:</strong> {{kyc.first_name}} {{kyc.last_name}}<br>
+                                        <strong>User ID:</strong> #USR-{{kyc.id}}<br>
+                                        <strong>Email:</strong> {{kyc.user.email}}<br>
+                                        <strong>KYC Level:</strong> Level 3
+                                    </div>
+                                </div>
+            
+                                <!-- Notification Options -->
+                                <div style="margin-bottom: 24px;">
+                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 12px;">
+                                        <i class="material-icons" style="font-size: 18px; vertical-align: middle; color: #6b7280;">notifications</i>
+                                        Send User Notification (Optional)
+                                    </label>
+            
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <!-- Email Notification -->
+                                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px;">
+                                            <input type="checkbox" name="send_email" id="approveEmail" value="1" style="width: 18px; height: 18px; cursor: pointer;">
+                                            <label for="approveEmail" style="flex: 1; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #1f2937;">
+                                                <i class="material-icons" style="font-size: 20px; color: #3b82f6;">email</i>
+                                                <span><strong>Email Notification</strong> - Send approval email to {{kyc.user.email}}</span>
+                                            </label>
+                                        </div>
+            
+                                        <!-- In-App Notification -->
+                                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px;">
+                                            <input type="checkbox" name="send_inapp" id="approveInApp" value="1" style="width: 18px; height: 18px; cursor: pointer;" checked>
+                                            <label for="approveInApp" style="flex: 1; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #1f2937;">
+                                                <i class="material-icons" style="font-size: 20px; color: #10b981;">notifications_active</i>
+                                                <span><strong>In-App Notification</strong> - User will see notification in dashboard</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <!-- Approval Note -->
+                                <div style="background: #fffbeb; border: 1px solid #fbbf24; border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                                    <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                        <i class="material-icons" style="color: #d97706; font-size: 18px;">verified</i>
+                                        <div style="font-size: 13px; color: #92400e; line-height: 1.5;">
+                                            <strong>Account will be upgraded</strong><br>
+                                            User tier will be upgraded and additional features will be unlocked upon approval.
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <!-- Action Buttons -->
+                                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="padding: 10px 20px; font-size: 14px; font-weight: 600;">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" name="accept" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                                        Approve KYC
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="kyc-level">
-                        <i class="material-icons" style="font-size: 14px;">verified_user</i>
-                        KYC Level 2
-                    </div>
-                </div>
-
-                <div class="submitted-date">
-                    <i class="material-icons" style="font-size: 14px;">schedule</i>
-                    Submitted 5 hours ago
-                </div>
-
-                <!-- Personal Information -->
-                <div class="section-divider">
-                    <div class="section-title">
-                        <i class="material-icons" style="font-size: 16px;">person</i>
-                        Personal Information
-                    </div>
-                    <div class="doc-info">
-                        <div class="info-item">
-                            <div class="info-label">First Name</div>
-                            <div class="info-value">Sarah</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Last Name</div>
-                            <div class="info-value">Anderson</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Date of Birth</div>
-                            <div class="info-value">Jul 22, 1985</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Nationality</div>
-                            <div class="info-value">Canada</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Residential Address -->
-                <div class="section-divider">
-                    <div class="section-title">
-                        <i class="material-icons" style="font-size: 16px;">location_on</i>
-                        Residential Address
-                    </div>
-                    <div class="doc-info">
-                        <div class="info-item full-width">
-                            <div class="info-label">Full Address</div>
-                            <div class="info-value">456 Maple Ave, Unit 12</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">City</div>
-                            <div class="info-value">Toronto</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">State/Province</div>
-                            <div class="info-value">Ontario</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Postal Code</div>
-                            <div class="info-value">M5H 2N2</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ID Document Type -->
-                <div class="id-type-banner">
-                    <span class="id-type-banner-label">ID Document Type:</span>
-                    <span class="id-type-banner-value">Passport</span>
-                </div>
-
-                <!-- ID Documents -->
-                <div class="doc-section">
-                    <div class="doc-label">Government ID (Front)</div>
-                    <div class="doc-preview" onclick="viewDocument('id-front-2.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">image</i>
-                    </div>
-                </div>
-
-                <div class="doc-section">
-                    <div class="doc-label">Government ID (Back)</div>
-                    <div class="doc-preview" onclick="viewDocument('id-back-2.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">image</i>
-                    </div>
-                </div>
-
-                <!-- Note: Level 2 doesn't require selfie -->
-                <div style="background: #eff6ff; padding: 12px; border-radius: 8px; font-size: 12px; color: #1e40af; text-align: center; margin-bottom: 16px;">
-                    <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
-                    Level 2 verification - Selfie not required
-                </div>
-
-                <div class="kyc-actions">
-                    <button class="btn-approve" onclick="approveKYC('Sarah Anderson', 'USR-10244')">
-                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                        Approve
-                    </button>
-                    <button class="btn-reject" onclick="rejectKYC('Sarah Anderson', 'USR-10244')">
-                        <i class="material-icons" style="font-size: 18px;">cancel</i>
-                        Reject
-                    </button>
                 </div>
             </div>
-
-            <!-- KYC Card 3 -->
-            <div class="kyc-card">
-                <div class="kyc-header">
-                    <div class="user-info">
-                        <div class="user-avatar">MB</div>
-                        <div class="user-details">
-                            <h4>Michael Brown</h4>
-                            <p>#USR-10243 • michael@example.com</p>
+            
+            <!-- Reject Modal -->
+            <div class="modal fade" id="rejectModal{{kyc.id}}" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; padding: 20px 24px;">
+                            <h5 class="modal-title" id="rejectModalLabel" style="color: white; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                                <i class="material-icons" style="font-size: 24px;">cancel</i>
+                                Reject KYC Verification
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="padding: 24px;">
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="{{kyc.ref}}">
+            
+                                <!-- User Info Display -->
+                                <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                        <i class="material-icons" style="color: #ef4444; font-size: 20px;">warning</i>
+                                        <span style="font-weight: 600; color: #991b1b; font-size: 14px;">You are rejecting KYC for:</span>
+                                    </div>
+                                    <div style="color: #991b1b; font-size: 14px; line-height: 1.6; margin-left: 32px;">
+                                        <strong>Name:</strong> {{kyc.first_name}} {{kyc.last_name}}<br>
+                                        <strong>User ID:</strong> #USR-{{kyc.id}}<br>
+                                        <strong>Email:</strong> {{kyc.user.email}}<br>
+                                        <strong>KYC Level:</strong> Level 3
+                                    </div>
+                                </div>
+            
+                                <!-- Rejection Reason -->
+                                <div style="margin-bottom: 24px;">
+                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px;">
+                                        <i class="material-icons" style="font-size: 18px; vertical-align: middle; color: #ef4444;">edit_note</i>
+                                        Rejection Reason <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <textarea
+                                        name="rejection_reason"
+                                        required
+                                        placeholder="Explain why this KYC submission is being rejected. This message will be sent to the user."
+                                        style="width: 100%; min-height: 120px; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; line-height: 1.6; resize: vertical; font-family: inherit;"
+                                    ></textarea>
+                                    <div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
+                                        <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
+                                        Be specific and professional. User will receive this message.
+                                    </div>
+                                </div>
+            
+                                <!-- Notification Options -->
+                                <div style="margin-bottom: 24px;">
+                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 12px;">
+                                        <i class="material-icons" style="font-size: 18px; vertical-align: middle; color: #6b7280;">notifications</i>
+                                        Send User Notification (Optional)
+                                    </label>
+            
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <!-- Email Notification -->
+                                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px;">
+                                            <input type="checkbox" name="send_email" id="rejectEmail" value="1" style="width: 18px; height: 18px; cursor: pointer;" checked>
+                                            <label for="rejectEmail" style="flex: 1; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #1f2937;">
+                                                <i class="material-icons" style="font-size: 20px; color: #3b82f6;">email</i>
+                                                <span><strong>Email Notification</strong> - Send rejection email to {{kyc.user.email}}</span>
+                                            </label>
+                                        </div>
+            
+                                        <!-- In-App Notification -->
+                                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px;">
+                                            <input type="checkbox" name="send_inapp" id="rejectInApp" value="1" style="width: 18px; height: 18px; cursor: pointer;" checked>
+                                            <label for="rejectInApp" style="flex: 1; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #1f2937;">
+                                                <i class="material-icons" style="font-size: 20px; color: #10b981;">notifications_active</i>
+                                                <span><strong>In-App Notification</strong> - User will see notification in dashboard</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <!-- Warning Note -->
+                                <div style="background: #fef2f2; border: 1px solid #ef4444; border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                                    <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                        <i class="material-icons" style="color: #dc2626; font-size: 18px;">error</i>
+                                        <div style="font-size: 13px; color: #7f1d1d; line-height: 1.5;">
+                                            <strong>This action cannot be undone</strong><br>
+                                            User will be notified and can resubmit their KYC documents.
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <!-- Action Buttons -->
+                                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="padding: 10px 20px; font-size: 14px; font-weight: 600;">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" name="reject" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                        <i class="material-icons" style="font-size: 18px;">cancel</i>
+                                        Reject KYC
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="kyc-level">
-                        <i class="material-icons" style="font-size: 14px;">verified_user</i>
-                        KYC Level 3
-                    </div>
-                </div>
-
-                <div class="submitted-date">
-                    <i class="material-icons" style="font-size: 14px;">schedule</i>
-                    Submitted 1 day ago
-                </div>
-
-                <!-- Personal Information -->
-                <div class="section-divider">
-                    <div class="section-title">
-                        <i class="material-icons" style="font-size: 16px;">person</i>
-                        Personal Information
-                    </div>
-                    <div class="doc-info">
-                        <div class="info-item">
-                            <div class="info-label">First Name</div>
-                            <div class="info-value">Michael</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Last Name</div>
-                            <div class="info-value">Brown</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Date of Birth</div>
-                            <div class="info-value">Dec 8, 1992</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Nationality</div>
-                            <div class="info-value">United Kingdom</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Residential Address -->
-                <div class="section-divider">
-                    <div class="section-title">
-                        <i class="material-icons" style="font-size: 16px;">location_on</i>
-                        Residential Address
-                    </div>
-                    <div class="doc-info">
-                        <div class="info-item full-width">
-                            <div class="info-label">Full Address</div>
-                            <div class="info-value">789 Oxford Street, Flat 3</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">City</div>
-                            <div class="info-value">London</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">State/Province</div>
-                            <div class="info-value">Greater London</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Postal Code</div>
-                            <div class="info-value">W1D 1BS</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ID Document Type -->
-                <div class="id-type-banner">
-                    <span class="id-type-banner-label">ID Document Type:</span>
-                    <span class="id-type-banner-value">National ID Card</span>
-                </div>
-
-                <!-- ID Documents -->
-                <div class="doc-section">
-                    <div class="doc-label">Government ID (Front)</div>
-                    <div class="doc-preview" onclick="viewDocument('id-front-3.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">image</i>
-                    </div>
-                </div>
-
-                <div class="doc-section">
-                    <div class="doc-label">Government ID (Back)</div>
-                    <div class="doc-preview" onclick="viewDocument('id-back-3.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">image</i>
-                    </div>
-                </div>
-
-                <div class="doc-section">
-                    <div class="doc-label">Selfie with ID</div>
-                    <div class="doc-preview" onclick="viewDocument('selfie-3.jpg')">
-                        <i class="material-icons" style="font-size: 48px; color: #6b7280;">portrait</i>
-                    </div>
-                </div>
-
-                <div class="kyc-actions">
-                    <button class="btn-approve" onclick="approveKYC('Michael Brown', 'USR-10243')">
-                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                        Approve
-                    </button>
-                    <button class="btn-reject" onclick="rejectKYC('Michael Brown', 'USR-10243')">
-                        <i class="material-icons" style="font-size: 18px;">cancel</i>
-                        Reject
-                    </button>
                 </div>
             </div>
+            {% endfor %}
 
         </div>
 
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_scripts %}
-<script>
-    function approveKYC(name, userId) {
-        if (confirm(`Approve KYC verification for ${name} (${userId})?\n\nThis will upgrade their account tier and unlock additional features.`)) {
-            alert(`KYC approved for ${name}! User upgraded to Tier 2. Email sent. (Demo)`);
-            location.reload();
-        }
-    }
-
-    function rejectKYC(name, userId) {
-        const reason = prompt(`Reject KYC for ${name} (${userId})?\n\nEnter rejection reason (user will be notified):`);
-        if (reason) {
-            alert(`KYC rejected for ${name}. Reason: "${reason}"\nUser notified via email. (Demo)`);
-            location.reload();
-        }
-    }
-
-    function viewDocument(doc) {
-        alert(`Opening document: ${doc}\n\n(In production, this will open a lightbox with the full document image)`);
-    }
-
-    // Mobile Sidebar Toggle
-    (function() {
-        let overlay = document.querySelector('.sidebar-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-        }
-
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.dlabnav');
-
-        if (hamburger && sidebar) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('is-active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', function() {
-                hamburger.classList.remove('is-active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            sidebar.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 768) {
-                        setTimeout(function() {
-                            hamburger.classList.remove('is-active');
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }, 300);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    hamburger.classList.remove('is-active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    })();
-
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

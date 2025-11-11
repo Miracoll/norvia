@@ -23,40 +23,32 @@
             <h1 class="page-title">User Account Settings</h1>
         </div>
 
-        <!-- Settings Tabs -->
-        <div class="settings-tabs">
-            <button class="tab-btn active" onclick="switchTab('general')">General</button>
-            <button class="tab-btn" onclick="switchTab('accounts')">Account Defaults</button>
-            <button class="tab-btn" onclick="switchTab('leverage')">Leverage & Tiers</button>
-            <button class="tab-btn" onclick="switchTab('timeframes')">Trade Timeframes</button>
-            <button class="tab-btn" onclick="switchTab('security')">Security</button>
-        </div>
+        <!-- Section: General Settings -->
+        <div class="settings-section">
+            <h2 class="section-title">
+                <i class="material-icons">settings</i>
+                General Settings
+            </h2>
 
-        <!-- Tab Content: General -->
-        <div id="general-tab" class="tab-content active">
-            <div class="settings-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="material-icons">settings</i>
-                        General Settings
-                    </h3>
-                </div>
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_general_settings">
+
                 <p class="card-description">Configure basic platform settings and preferences.</p>
 
                 <div class="form-group">
                     <label class="form-label">Platform Name</label>
-                    <input type="text" class="form-input" value="Norvia.io" />
+                    <input type="text" class="form-input" name="platform_name" value="Norvia.io" />
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Minimum Deposit Amount (USD)</label>
-                    <input type="number" class="form-input" value="10.00" step="0.01" />
+                    <input type="number" class="form-input" name="min_deposit" value="10.00" step="0.01" />
                     <div class="form-help">Minimum amount users can deposit</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Minimum Withdrawal Amount (USD)</label>
-                    <input type="number" class="form-input" value="50.00" step="0.01" />
+                    <input type="number" class="form-input" name="min_withdrawal" value="50.00" step="0.01" />
                     <div class="form-help">Minimum amount users can withdraw</div>
                 </div>
 
@@ -64,7 +56,7 @@
                     <label class="form-label">Platform Status</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="platform_active" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Platform Active</span>
@@ -76,23 +68,30 @@
                     <label class="form-label">New User Registration</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="allow_registration" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Allow New Registrations</span>
                     </div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Changes
                 </button>
-            </div>
+            </form>
         </div>
 
-        <!-- Tab Content: Account Defaults & Restrictions -->
-        <div id="accounts-tab" class="tab-content">
-            <div class="settings-card">
+        <!-- Section: Account Defaults & Restrictions -->
+        <div class="settings-section">
+            <h2 class="section-title">
+                <i class="material-icons">account_circle</i>
+                Account Defaults & Restrictions
+            </h2>
+
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_user_defaults">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">person_add</i>
@@ -103,7 +102,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Default Account Tier</label>
-                    <select class="form-select">
+                    <select class="form-select" name="default_tier">
                         <option value="1" selected>Tier 1 - New User</option>
                         <option value="2">Tier 2 - Verified User</option>
                         <option value="3">Tier 3 - Premium User</option>
@@ -113,7 +112,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Default Language</label>
-                    <select class="form-select">
+                    <select class="form-select" name="default_language">
                         <option value="en" selected>English</option>
                         <option value="es">Spanish</option>
                         <option value="fr">French</option>
@@ -125,7 +124,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Default Currency Display</label>
-                    <select class="form-select">
+                    <select class="form-select" name="default_currency">
                         <option value="usd" selected>USD ($)</option>
                         <option value="eur">EUR (€)</option>
                         <option value="gbp">GBP (£)</option>
@@ -137,34 +136,36 @@
                     <label class="form-label">Default Notification Preferences</label>
                     <div class="toggle-switch" style="margin-bottom: 8px;">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="default_email_notif" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Email Notifications (Enabled by default)</span>
                     </div>
                     <div class="toggle-switch" style="margin-bottom: 8px;">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="default_push_notif" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Push Notifications (Enabled by default)</span>
                     </div>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" name="default_sms_notif" value="1">
                             <span class="slider"></span>
                         </label>
                         <span>SMS Notifications (Disabled by default)</span>
                     </div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Defaults
                 </button>
-            </div>
+            </form>
 
-            <div class="settings-card">
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_2fa_security">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">lock</i>
@@ -177,7 +178,7 @@
                     <label class="form-label">Require 2FA for All Users</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" id="require2fa">
+                            <input type="checkbox" name="require_2fa" value="1">
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Mandatory 2FA</span>
@@ -189,21 +190,21 @@
                     <label class="form-label">2FA Methods Allowed</label>
                     <div class="toggle-switch" style="margin-bottom: 8px;">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="allow_totp" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Google Authenticator / TOTP</span>
                     </div>
                     <div class="toggle-switch" style="margin-bottom: 8px;">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="allow_sms_otp" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>SMS OTP</span>
                     </div>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="allow_email_otp" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Email OTP</span>
@@ -214,7 +215,7 @@
                     <label class="form-label">Require Security Questions</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" name="require_security_questions" value="1">
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled</span>
@@ -222,13 +223,15 @@
                     <div class="form-help">Users must set security questions for account recovery</div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Security Requirements
                 </button>
-            </div>
+            </form>
 
-            <div class="settings-card">
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_password_policies">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">vpn_key</i>
@@ -239,7 +242,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Minimum Password Length</label>
-                    <input type="number" class="form-input" value="8" min="6" max="32" />
+                    <input type="number" class="form-input" name="min_password_length" value="8" min="6" max="32" />
                     <div class="form-help">Minimum characters required for passwords</div>
                 </div>
 
@@ -247,28 +250,28 @@
                     <label class="form-label">Password Requirements</label>
                     <div class="toggle-switch" style="margin-bottom: 8px;">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="require_uppercase" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Require Uppercase Letter</span>
                     </div>
                     <div class="toggle-switch" style="margin-bottom: 8px;">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="require_lowercase" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Require Lowercase Letter</span>
                     </div>
                     <div class="toggle-switch" style="margin-bottom: 8px;">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="require_number" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Require Number</span>
                     </div>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="require_special_char" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span>Require Special Character</span>
@@ -277,23 +280,25 @@
 
                 <div class="form-group">
                     <label class="form-label">Password Expiry Period (Days)</label>
-                    <input type="number" class="form-input" value="90" placeholder="0 = Never expires" />
+                    <input type="number" class="form-input" name="password_expiry_days" value="90" placeholder="0 = Never expires" />
                     <div class="form-help">Force password change after X days (0 to disable)</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Failed Login Attempts Before Lockout</label>
-                    <input type="number" class="form-input" value="5" min="3" max="10" />
+                    <input type="number" class="form-input" name="max_failed_logins" value="5" min="3" max="10" />
                     <div class="form-help">Number of failed attempts before temporary lockout</div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Password Policies
                 </button>
-            </div>
+            </form>
 
-            <div class="settings-card">
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_session_settings">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">schedule</i>
@@ -304,13 +309,13 @@
 
                 <div class="form-group">
                     <label class="form-label">Maximum Active Sessions Per User</label>
-                    <input type="number" class="form-input" value="3" min="1" max="10" />
+                    <input type="number" class="form-input" name="max_sessions" value="3" min="1" max="10" />
                     <div class="form-help">Max concurrent logins allowed per account</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Inactive Account Auto-Suspension (Days)</label>
-                    <input type="number" class="form-input" value="365" placeholder="0 = Disable" />
+                    <input type="number" class="form-input" name="inactive_suspension_days" value="365" placeholder="0 = Disable" />
                     <div class="form-help">Suspend accounts inactive for X days (0 to disable)</div>
                 </div>
 
@@ -318,7 +323,7 @@
                     <label class="form-label">Require Login Notifications</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="login_notifications" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled</span>
@@ -330,7 +335,7 @@
                     <label class="form-label">Require Withdrawal Whitelist</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" name="require_withdrawal_whitelist" value="1">
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Optional</span>
@@ -338,13 +343,15 @@
                     <div class="form-help">Users can only withdraw to whitelisted addresses</div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Session Settings
                 </button>
-            </div>
+            </form>
 
-            <div class="settings-card">
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_feature_settings">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">block</i>
@@ -357,7 +364,7 @@
                     <label class="form-label">Allow Users to Customize Notifications</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="allow_notif_customization" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled</span>
@@ -369,7 +376,7 @@
                     <label class="form-label">Allow Auto-Copy Trading</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="allow_copy_trading" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled Platform-Wide</span>
@@ -381,7 +388,7 @@
                     <label class="form-label">Allow Account Self-Deletion</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="allow_self_deletion" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled</span>
@@ -393,7 +400,7 @@
                     <label class="form-label">Require Stop-Loss Protection</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" name="require_stop_loss" value="1">
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Optional</span>
@@ -401,13 +408,15 @@
                     <div class="form-help">Force users to set stop-loss on all trades</div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Feature Settings
                 </button>
-            </div>
+            </form>
 
-            <div class="settings-card">
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_trader_requirements">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">star</i>
@@ -420,7 +429,7 @@
                     <label class="form-label">Enable Trader Applications</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" id="enableTraderApplications" checked>
+                            <input type="checkbox" name="enable_trader_applications" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled</span>
@@ -430,19 +439,19 @@
 
                 <div class="form-group">
                     <label class="form-label">Minimum Trading Balance Required (USD)</label>
-                    <input type="number" class="form-input" id="minTraderBalance" value="20000" step="1000" />
+                    <input type="number" class="form-input" name="min_trader_balance" value="20000" step="1000" />
                     <div class="form-help">Minimum balance in trading wallet required to apply as a trader</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Minimum Account Age (Days)</label>
-                    <input type="number" class="form-input" id="minAccountAge" value="30" min="0" />
+                    <input type="number" class="form-input" name="min_account_age" value="30" min="0" />
                     <div class="form-help">Account must be at least this old to apply (0 = no restriction)</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Required KYC Verification Level</label>
-                    <select class="form-select" id="requiredKycLevel">
+                    <select class="form-select" name="required_kyc_level">
                         <option value="0">No Verification Required</option>
                         <option value="1">Level 1 - Email Verified</option>
                         <option value="2" selected>Level 2 - ID Verified</option>
@@ -453,13 +462,13 @@
 
                 <div class="form-group">
                     <label class="form-label">Minimum Trading Volume (Last 30 Days, USD)</label>
-                    <input type="number" class="form-input" id="minTradingVolume" value="50000" step="5000" />
+                    <input type="number" class="form-input" name="min_trading_volume" value="50000" step="5000" />
                     <div class="form-help">Minimum trading volume required in the last 30 days</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Require Minimum Win Rate (%)</label>
-                    <input type="number" class="form-input" id="minWinRate" value="55" min="0" max="100" />
+                    <input type="number" class="form-input" name="min_win_rate" value="55" min="0" max="100" />
                     <div class="form-help">Minimum win rate percentage required (0 = no restriction)</div>
                 </div>
 
@@ -467,7 +476,7 @@
                     <label class="form-label">Auto-Approve Applications</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" id="autoApproveTraders">
+                            <input type="checkbox" name="auto_approve_traders" value="1">
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Manual Review Required</span>
@@ -477,19 +486,24 @@
 
                 <div class="form-group">
                     <label class="form-label">Application Review Period (Days)</label>
-                    <input type="number" class="form-input" id="reviewPeriod" value="5" min="1" max="30" />
+                    <input type="number" class="form-input" name="review_period" value="5" min="1" max="30" />
                     <div class="form-help">Maximum days to review and respond to applications</div>
                 </div>
 
-                <button class="btn-save" onclick="saveTraderRequirements()">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Trader Requirements
                 </button>
-            </div>
+            </form>
         </div>
 
-        <!-- Tab Content: Leverage & Tiers -->
-        <div id="leverage-tab" class="tab-content">
+        <!-- Section: Leverage & Tiers -->
+        <div class="settings-section">
+            <h2 class="section-title">
+                <i class="material-icons">leaderboard</i>
+                Leverage & Tiers
+            </h2>
+
             <div class="settings-card">
                 <div class="card-header">
                     <h3 class="card-title">
@@ -514,52 +528,66 @@
                             <td><span class="tier-badge tier-1">Tier 1</span></td>
                             <td><strong>New User</strong></td>
                             <td>
-                                <input type="number" class="form-input" value="50" style="width: 100px; height: 36px;" />
-                                <span style="margin-left: 4px;">X</span>
+                                <form method="POST" action="" style="display: inline-flex; align-items: center; gap: 8px;">
+                                    <input type="hidden" name="action" value="save_tier_leverage">
+                                    <input type="hidden" name="tier" value="1">
+                                    <input type="number" class="form-input" name="max_leverage" value="50" style="width: 100px; height: 36px;" />
+                                    <span>X</span>
                             </td>
                             <td>Default tier for all new users</td>
                             <td>
-                                <button class="btn-save" style="padding: 8px 16px; font-size: 12px;">
+                                <button type="submit" class="btn-save" style="padding: 8px 16px; font-size: 12px;">
                                     <i class="material-icons" style="font-size: 14px;">save</i>
                                     Save
                                 </button>
+                                </form>
                             </td>
                         </tr>
                         <tr>
                             <td><span class="tier-badge tier-2">Tier 2</span></td>
                             <td><strong>Verified User</strong></td>
                             <td>
-                                <input type="number" class="form-input" value="200" style="width: 100px; height: 36px;" />
-                                <span style="margin-left: 4px;">X</span>
+                                <form method="POST" action="" style="display: inline-flex; align-items: center; gap: 8px;">
+                                    <input type="hidden" name="action" value="save_tier_leverage">
+                                    <input type="hidden" name="tier" value="2">
+                                    <input type="number" class="form-input" name="max_leverage" value="200" style="width: 100px; height: 36px;" />
+                                    <span>X</span>
                             </td>
                             <td>KYC Level 2 completed</td>
                             <td>
-                                <button class="btn-save" style="padding: 8px 16px; font-size: 12px;">
+                                <button type="submit" class="btn-save" style="padding: 8px 16px; font-size: 12px;">
                                     <i class="material-icons" style="font-size: 14px;">save</i>
                                     Save
                                 </button>
+                                </form>
                             </td>
                         </tr>
                         <tr>
                             <td><span class="tier-badge tier-3">Tier 3</span></td>
                             <td><strong>Premium User</strong></td>
                             <td>
-                                <input type="number" class="form-input" value="500" style="width: 100px; height: 36px;" />
-                                <span style="margin-left: 4px;">X</span>
+                                <form method="POST" action="" style="display: inline-flex; align-items: center; gap: 8px;">
+                                    <input type="hidden" name="action" value="save_tier_leverage">
+                                    <input type="hidden" name="tier" value="3">
+                                    <input type="number" class="form-input" name="max_leverage" value="500" style="width: 100px; height: 36px;" />
+                                    <span>X</span>
                             </td>
                             <td>KYC Level 3 + Premium subscription</td>
                             <td>
-                                <button class="btn-save" style="padding: 8px 16px; font-size: 12px;">
+                                <button type="submit" class="btn-save" style="padding: 8px 16px; font-size: 12px;">
                                     <i class="material-icons" style="font-size: 14px;">save</i>
                                     Save
                                 </button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="settings-card">
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_leverage_options">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">trending_up</i>
@@ -573,7 +601,7 @@
                         <label class="form-label">10X Leverage</label>
                         <div class="toggle-switch">
                             <label class="switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" name="leverage_10x" value="1" checked>
                                 <span class="slider"></span>
                             </label>
                             <span>Enabled (Tier 1+)</span>
@@ -584,7 +612,7 @@
                         <label class="form-label">25X Leverage</label>
                         <div class="toggle-switch">
                             <label class="switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" name="leverage_25x" value="1" checked>
                                 <span class="slider"></span>
                             </label>
                             <span>Enabled (Tier 1+)</span>
@@ -595,7 +623,7 @@
                         <label class="form-label">50X Leverage</label>
                         <div class="toggle-switch">
                             <label class="switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" name="leverage_50x" value="1" checked>
                                 <span class="slider"></span>
                             </label>
                             <span>Enabled (Tier 1+)</span>
@@ -606,7 +634,7 @@
                         <label class="form-label">100X Leverage</label>
                         <div class="toggle-switch">
                             <label class="switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" name="leverage_100x" value="1" checked>
                                 <span class="slider"></span>
                             </label>
                             <span>Enabled (Tier 2+)</span>
@@ -617,7 +645,7 @@
                         <label class="form-label">200X Leverage</label>
                         <div class="toggle-switch">
                             <label class="switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" name="leverage_200x" value="1" checked>
                                 <span class="slider"></span>
                             </label>
                             <span>Enabled (Tier 2+)</span>
@@ -628,7 +656,7 @@
                         <label class="form-label">500X Leverage</label>
                         <div class="toggle-switch">
                             <label class="switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" name="leverage_500x" value="1" checked>
                                 <span class="slider"></span>
                             </label>
                             <span>Enabled (Tier 3)</span>
@@ -636,16 +664,23 @@
                     </div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Leverage Options
                 </button>
-            </div>
+            </form>
         </div>
 
-        <!-- Tab Content: Timeframes -->
-        <div id="timeframes-tab" class="tab-content">
-            <div class="settings-card">
+        <!-- Section: Trade Timeframes -->
+        <div class="settings-section">
+            <h2 class="section-title">
+                <i class="material-icons">schedule</i>
+                Trade Timeframes
+            </h2>
+
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_timeframes">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">schedule</i>
@@ -660,16 +695,16 @@
                             <label class="form-label">3 Seconds</label>
                             <div class="toggle-switch">
                                 <label class="switch">
-                                    <input type="checkbox">
+                                    <input type="checkbox" name="timeframe_3s_enabled" value="1">
                                     <span class="slider"></span>
                                 </label>
                                 <span style="font-size: 12px;">High Risk</span>
                             </div>
                         </div>
-                        <select class="form-select" style="height: 36px;">
-                            <option>Tier 1+</option>
-                            <option selected>Tier 2+</option>
-                            <option>Tier 3 Only</option>
+                        <select class="form-select" name="timeframe_3s_tier" style="height: 36px;">
+                            <option value="1">Tier 1+</option>
+                            <option value="2" selected>Tier 2+</option>
+                            <option value="3">Tier 3 Only</option>
                         </select>
                     </div>
 
@@ -678,16 +713,16 @@
                             <label class="form-label">1 Minute</label>
                             <div class="toggle-switch">
                                 <label class="switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" name="timeframe_1m_enabled" value="1" checked>
                                     <span class="slider"></span>
                                 </label>
                                 <span style="font-size: 12px;">Enabled</span>
                             </div>
                         </div>
-                        <select class="form-select" style="height: 36px;">
-                            <option selected>Tier 1+</option>
-                            <option>Tier 2+</option>
-                            <option>Tier 3 Only</option>
+                        <select class="form-select" name="timeframe_1m_tier" style="height: 36px;">
+                            <option value="1" selected>Tier 1+</option>
+                            <option value="2">Tier 2+</option>
+                            <option value="3">Tier 3 Only</option>
                         </select>
                     </div>
 
@@ -696,16 +731,16 @@
                             <label class="form-label">5 Minutes</label>
                             <div class="toggle-switch">
                                 <label class="switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" name="timeframe_5m_enabled" value="1" checked>
                                     <span class="slider"></span>
                                 </label>
                                 <span style="font-size: 12px;">Enabled</span>
                             </div>
                         </div>
-                        <select class="form-select" style="height: 36px;">
-                            <option selected>Tier 1+</option>
-                            <option>Tier 2+</option>
-                            <option>Tier 3 Only</option>
+                        <select class="form-select" name="timeframe_5m_tier" style="height: 36px;">
+                            <option value="1" selected>Tier 1+</option>
+                            <option value="2">Tier 2+</option>
+                            <option value="3">Tier 3 Only</option>
                         </select>
                     </div>
 
@@ -714,16 +749,16 @@
                             <label class="form-label">15 Minutes</label>
                             <div class="toggle-switch">
                                 <label class="switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" name="timeframe_15m_enabled" value="1" checked>
                                     <span class="slider"></span>
                                 </label>
                                 <span style="font-size: 12px;">Enabled</span>
                             </div>
                         </div>
-                        <select class="form-select" style="height: 36px;">
-                            <option selected>Tier 1+</option>
-                            <option>Tier 2+</option>
-                            <option>Tier 3 Only</option>
+                        <select class="form-select" name="timeframe_15m_tier" style="height: 36px;">
+                            <option value="1" selected>Tier 1+</option>
+                            <option value="2">Tier 2+</option>
+                            <option value="3">Tier 3 Only</option>
                         </select>
                     </div>
 
@@ -732,30 +767,37 @@
                             <label class="form-label">30 Minutes</label>
                             <div class="toggle-switch">
                                 <label class="switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" name="timeframe_30m_enabled" value="1" checked>
                                     <span class="slider"></span>
                                 </label>
                                 <span style="font-size: 12px;">Enabled</span>
                             </div>
                         </div>
-                        <select class="form-select" style="height: 36px;">
-                            <option selected>Tier 1+</option>
-                            <option>Tier 2+</option>
-                            <option>Tier 3 Only</option>
+                        <select class="form-select" name="timeframe_30m_tier" style="height: 36px;">
+                            <option value="1" selected>Tier 1+</option>
+                            <option value="2">Tier 2+</option>
+                            <option value="3">Tier 3 Only</option>
                         </select>
                     </div>
                 </div>
 
-                <button class="btn-save" style="margin-top: 24px;">
+                <button type="submit" class="btn-save" style="margin-top: 24px;">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Timeframe Settings
                 </button>
-            </div>
+            </form>
         </div>
 
-        <!-- Tab Content: Security -->
-        <div id="security-tab" class="tab-content">
-            <div class="settings-card">
+        <!-- Section: Security -->
+        <div class="settings-section">
+            <h2 class="section-title">
+                <i class="material-icons">security</i>
+                Security
+            </h2>
+
+            <form method="POST" action="" class="settings-card">
+                <input type="hidden" name="action" value="save_security_settings">
+
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="material-icons">security</i>
@@ -768,7 +810,7 @@
                     <label class="form-label">Require 2FA for Withdrawals</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="require_2fa_withdrawal" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled</span>
@@ -780,7 +822,7 @@
                     <label class="form-label">Require Email Verification</label>
                     <div class="toggle-switch">
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" name="require_email_verification" value="1" checked>
                             <span class="slider"></span>
                         </label>
                         <span style="font-weight: 600;">Enabled</span>
@@ -790,117 +832,23 @@
 
                 <div class="form-group">
                     <label class="form-label">IP Whitelist for Admin Access</label>
-                    <textarea class="form-input" rows="4" placeholder="Enter IPs (one per line)&#10;192.168.1.1&#10;203.45.67.89" style="height: auto; padding: 12px; resize: vertical;"></textarea>
+                    <textarea class="form-input" name="ip_whitelist" rows="4" placeholder="Enter IPs (one per line)&#10;192.168.1.1&#10;203.45.67.89" style="height: auto; padding: 12px; resize: vertical;"></textarea>
                     <div class="form-help">Leave blank to allow from any IP</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Session Timeout (minutes)</label>
-                    <input type="number" class="form-input" value="30" />
+                    <input type="number" class="form-input" name="session_timeout" value="30" />
                     <div class="form-help">Auto logout after inactivity</div>
                 </div>
 
-                <button class="btn-save">
+                <button type="submit" class="btn-save">
                     <i class="material-icons" style="font-size: 18px;">save</i>
                     Save Security Settings
                 </button>
-            </div>
+            </form>
         </div>
 
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_scripts %}
-<script>
-    function switchTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
-
-        // Remove active from all buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // Show selected tab
-        document.getElementById(tabName + '-tab').classList.add('active');
-
-        // Add active to clicked button
-        event.target.classList.add('active');
-    }
-
-    // Mobile Sidebar Toggle
-    (function() {
-        let overlay = document.querySelector('.sidebar-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-        }
-
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.dlabnav');
-
-        if (hamburger && sidebar) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('is-active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', function() {
-                hamburger.classList.remove('is-active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            sidebar.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 768) {
-                        setTimeout(function() {
-                            hamburger.classList.remove('is-active');
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }, 300);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    hamburger.classList.remove('is-active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    })();
-
-    // Save Trader Requirements
-    function saveTraderRequirements() {
-        const requirements = {
-            enabled: document.getElementById('enableTraderApplications').checked,
-            minBalance: document.getElementById('minTraderBalance').value,
-            minAccountAge: document.getElementById('minAccountAge').value,
-            requiredKycLevel: document.getElementById('requiredKycLevel').value,
-            minTradingVolume: document.getElementById('minTradingVolume').value,
-            minWinRate: document.getElementById('minWinRate').value,
-            autoApprove: document.getElementById('autoApproveTraders').checked,
-            reviewPeriod: document.getElementById('reviewPeriod').value
-        };
-
-        console.log('Saving trader requirements:', requirements);
-        alert('Trader application requirements saved successfully!');
-
-        // In production: fetch('/admin/api/save-trader-requirements', {...});
-    }
-
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

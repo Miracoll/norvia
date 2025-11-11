@@ -30,38 +30,41 @@
         <!-- Traders Grid -->
         <div class="traders-grid">
 
-            <!-- Trader Card 1 -->
+            {% for trader in traders %}
             <div class="trader-card">
                 <div class="trader-header">
-                    <div class="trader-avatar">JD</div>
+                    <div class="trader-avatar">
+                        <!-- {{ trader.full_name|slice:":2"|upper }} -->
+                          <img src="{{trader.image.url}}" class="img-fluid" alt="">
+                    </div>
                     <div class="trader-info">
                         <div class="trader-name">
-                            John Crypto
+                            {{ trader.full_name }}
                             <span class="verified-badge">
                                 <i class="material-icons" style="font-size: 12px;">verified</i>
                                 Verified
                             </span>
                         </div>
-                        <div class="trader-username">@johncrypto</div>
+                        <div class="trader-username">@{{ trader.username }}</div>
                     </div>
                 </div>
 
                 <div class="trader-stats">
                     <div class="stat-item">
                         <div class="stat-label">Win Rate</div>
-                        <div class="stat-value success">96%</div>
+                        <div class="stat-value success">{{ trader.win_rate }}%</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-label">Profit Share</div>
-                        <div class="stat-value">20%</div>
+                        <div class="stat-value">{{ trader.profit_share }}%</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-label">Total Wins</div>
-                        <div class="stat-value success">7,847</div>
+                        <div class="stat-value success">{{ trader.win }}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-label">Total Losses</div>
-                        <div class="stat-value danger">290</div>
+                        <div class="stat-value danger">{{ trader.lose }}</div>
                     </div>
                 </div>
 
@@ -72,175 +75,47 @@
                     </div>
                     <div class="config-row">
                         <span class="config-label">Min. Balance:</span>
-                        <span class="config-value">$1,000</span>
+                        <span class="config-value">${{ trader.min_balance|floatformat:0 }}</span>
                     </div>
                     <div class="config-row">
                         <span class="config-label">Approval Required:</span>
-                        <span class="config-value">No</span>
+                        <span class="config-value" style="color: #10b981;">No</span>
                     </div>
                     <div class="config-row">
                         <span class="config-label">Copiers:</span>
-                        <span class="config-value">1,234</span>
+                        <span class="config-value">{{ trader.copier }}</span>
                     </div>
                 </div>
 
                 <div class="status-toggle">
-                    <input type="checkbox" id="trader1" checked>
-                    <label for="trader1">Active & Visible</label>
+                    <input type="checkbox" id="trader{{ trader.id }}" checked>
+                    <label for="trader{{ trader.id }}">Active & Visible</label>
                 </div>
 
                 <div class="trader-actions">
-                    <button class="btn-edit" onclick="window.location.href='trader-edit.html?id=1'">
+                    <a class="btn-edit" href="{% url 'edit_trader' trader.ref %}">
                         <i class="material-icons" style="font-size: 18px;">edit</i>
                         Edit
-                    </button>
-                    <button class="btn-delete" onclick="deleteTrader('John Crypto')">
-                        <i class="material-icons" style="font-size: 18px;">delete</i>
-                    </button>
+                    </a>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="ref" value="{{trader.ref}}">
+                        <button type="submit" class="btn-delete">
+                            <i class="material-icons" style="font-size: 18px;">delete</i>
+                        </button>
+                    </form>
                 </div>
             </div>
-
-            <!-- Trader Card 2 -->
-            <div class="trader-card">
-                <div class="trader-header">
-                    <div class="trader-avatar">SM</div>
-                    <div class="trader-info">
-                        <div class="trader-name">
-                            Sarah Master
-                            <span class="verified-badge">
-                                <i class="material-icons" style="font-size: 12px;">verified</i>
-                                Verified
-                            </span>
-                        </div>
-                        <div class="trader-username">@sarahmaster</div>
-                    </div>
-                </div>
-
-                <div class="trader-stats">
-                    <div class="stat-item">
-                        <div class="stat-label">Win Rate</div>
-                        <div class="stat-value success">87%</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Profit Share</div>
-                        <div class="stat-value">20%</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Total Wins</div>
-                        <div class="stat-value success">6,325</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Total Losses</div>
-                        <div class="stat-value danger">98</div>
-                    </div>
-                </div>
-
-                <div class="config-section">
-                    <div class="config-row">
-                        <span class="config-label">Copy Mode:</span>
-                        <span class="badge-mode full">Full Balance</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-label">Min. Balance:</span>
-                        <span class="config-value">$2,500</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-label">Approval Required:</span>
-                        <span class="config-value" style="color: #f59e0b;">Yes</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-label">Copiers:</span>
-                        <span class="config-value">987</span>
-                    </div>
-                </div>
-
-                <div class="status-toggle">
-                    <input type="checkbox" id="trader2" checked>
-                    <label for="trader2">Active & Visible</label>
-                </div>
-
-                <div class="trader-actions">
-                    <button class="btn-edit" onclick="window.location.href='trader-edit.html?id=2'">
-                        <i class="material-icons" style="font-size: 18px;">edit</i>
-                        Edit
-                    </button>
-                    <button class="btn-delete" onclick="deleteTrader('Sarah Master')">
-                        <i class="material-icons" style="font-size: 18px;">delete</i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Trader Card 3 -->
-            <div class="trader-card">
-                <div class="trader-header">
-                    <div class="trader-avatar">MP</div>
-                    <div class="trader-info">
-                        <div class="trader-name">Mike Pro</div>
-                        <div class="trader-username">@mikepro</div>
-                    </div>
-                </div>
-
-                <div class="trader-stats">
-                    <div class="stat-item">
-                        <div class="stat-label">Win Rate</div>
-                        <div class="stat-value success">95%</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Profit Share</div>
-                        <div class="stat-value">18%</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Total Wins</div>
-                        <div class="stat-value success">8,932</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Total Losses</div>
-                        <div class="stat-value danger">421</div>
-                    </div>
-                </div>
-
-                <div class="config-section">
-                    <div class="config-row">
-                        <span class="config-label">Copy Mode:</span>
-                        <span class="badge-mode flexible">Flexible</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-label">Min. Balance:</span>
-                        <span class="config-value">$750</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-label">Approval Required:</span>
-                        <span class="config-value" style="color: #f59e0b;">Yes</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-label">Copiers:</span>
-                        <span class="config-value">756</span>
-                    </div>
-                </div>
-
-                <div class="status-toggle">
-                    <input type="checkbox" id="trader3" checked>
-                    <label for="trader3">Active & Visible</label>
-                </div>
-
-                <div class="trader-actions">
-                    <button class="btn-edit" onclick="window.location.href='trader-edit.html?id=3'">
-                        <i class="material-icons" style="font-size: 18px;">edit</i>
-                        Edit
-                    </button>
-                    <button class="btn-delete" onclick="deleteTrader('Mike Pro')">
-                        <i class="material-icons" style="font-size: 18px;">delete</i>
-                    </button>
-                </div>
-            </div>
+            {% empty %}
+            <p>No traders found.</p>
+            {% endfor %}
 
         </div>
 
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_scripts %}
+{% endblock %}
+{% block extra_script %}
 <script>
     function deleteTrader(name) {
         if (confirm(`Delete trader "${name}"?\n\nThis will also affect all users currently copying this trader. Are you sure?`)) {
@@ -302,4 +177,4 @@
     })();
 
 </script>
-{% endblock extra_scripts %}
+{% endblock %}

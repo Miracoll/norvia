@@ -1,0 +1,384 @@
+{% extends "account/base.html" %}
+{% load static %}
+
+{% block title %}My Trades{% endblock %}
+
+{% block body_class %}page-mytrades{% endblock %}
+
+{% block content %}
+<div class="content-body default-height">
+            <!-- row -->
+			<div class="container-fluid">
+				<!-- Breadcrumb -->
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="page-titles">
+							<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+								<ol class="breadcrumb">
+								  <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+								  <li class="breadcrumb-item active" aria-current="page">My Trades</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+				</div>
+
+				<!-- Page Title & Stats Row -->
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex justify-content-between align-items-center flex-wrap">
+									<div>
+										<h2 class="mb-2" style="font-size: 24px; font-weight: 700;">My Trade History</h2>
+										<p class="mb-0 text-muted">Complete history of all your copy trading activities</p>
+									</div>
+									<div class="d-flex gap-3 mt-3 mt-md-0">
+										<div class="stats-box">
+											<div class="stats-label">Total Trades</div>
+											<div class="stats-value text-primary">127</div>
+											<!-- Django: {{ user.total_trades }} -->
+										</div>
+										<div class="stats-box">
+											<div class="stats-label">Win Rate</div>
+											<div class="stats-value text-success">68.5%</div>
+											<!-- Django: {{ user.win_rate|floatformat:1 }}% -->
+										</div>
+										<div class="stats-box">
+											<div class="stats-label">Total P&L</div>
+											<div class="stats-value text-success">+$2,847.50</div>
+											<!-- Django: {{ user.total_pnl|floatformat:2 }} -->
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Trades Section -->
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="card">
+							<div class="card-body" style="padding: 20px;">
+								<!-- Tabs Navigation -->
+								<ul class="nav nav-tabs trade-tabs" role="tablist">
+									<li class="nav-item" role="presentation">
+										<button class="nav-link active" id="all-trades-tab" data-bs-toggle="tab" data-bs-target="#all-trades" type="button" role="tab">
+											<i class="material-icons">list</i>
+											<span>All Trades</span>
+										</button>
+									</li>
+									<li class="nav-item" role="presentation">
+										<button class="nav-link" id="open-trades-tab" data-bs-toggle="tab" data-bs-target="#open-trades" type="button" role="tab">
+											<i class="material-icons">hourglass_top</i>
+											<span>Open Trades</span>
+										</button>
+									</li>
+									<li class="nav-item" role="presentation">
+										<button class="nav-link" id="closed-trades-tab" data-bs-toggle="tab" data-bs-target="#closed-trades" type="button" role="tab">
+											<i class="material-icons">hourglass_bottom</i>
+											<span>Closed Trades</span>
+										</button>
+									</li>
+								</ul>
+
+								<!-- Tabs Content -->
+								<div class="tab-content" style="margin-top: 20px;">
+									<!-- All Trades Tab -->
+									<div class="tab-pane fade show active" id="all-trades" role="tabpanel">
+										<!-- Django: {# for trade in trades #} -->
+
+										<!-- Trade 1 - Open/Profit -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">BTC/USDT</div>
+												<div class="trade-status active">Active</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $64,250</span>
+												<span>Current: $65,120</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @johntrader</span>
+												<span>Size: 0.05 BTC</span>
+											</div>
+											<div class="trade-pnl profit">+$43.50 (+1.35%)</div>
+										</div>
+
+										<!-- Trade 2 - Open/Loss -->
+										<div class="trade-card loss">
+											<div class="trade-header">
+												<div class="trade-pair">ETH/USDT</div>
+												<div class="trade-status active">Active</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $3,420</span>
+												<span>Current: $3,385</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @mikeexpert</span>
+												<span>Size: 0.8 ETH</span>
+											</div>
+											<div class="trade-pnl loss">-$28.00 (-1.02%)</div>
+										</div>
+
+										<!-- Trade 3 - Closed/Profit -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">SOL/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $142.30</span>
+												<span>Exit: $145.80</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @sarahpro</span>
+												<span>Closed: 2 hours ago</span>
+											</div>
+											<div class="trade-pnl profit">+$87.50 (+2.46%)</div>
+										</div>
+
+										<!-- Trade 4 - Closed/Profit -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">ADA/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $0.58</span>
+												<span>Exit: $0.61</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @johntrader</span>
+												<span>Closed: 5 hours ago</span>
+											</div>
+											<div class="trade-pnl profit">+$120.00 (+5.17%)</div>
+										</div>
+
+										<!-- Trade 5 - Closed/Loss -->
+										<div class="trade-card loss">
+											<div class="trade-header">
+												<div class="trade-pair">XRP/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $0.52</span>
+												<span>Exit: $0.50</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @mikeexpert</span>
+												<span>Closed: 1 day ago</span>
+											</div>
+											<div class="trade-pnl loss">-$40.00 (-3.85%)</div>
+										</div>
+
+										<!-- Trade 6 - Closed/Profit -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">MATIC/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $0.85</span>
+												<span>Exit: $0.92</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @cryptoking</span>
+												<span>Closed: 2 days ago</span>
+											</div>
+											<div class="trade-pnl profit">+$85.40 (+8.24%)</div>
+										</div>
+
+										<!-- Trade 7 - Closed/Profit -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">LINK/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $15.20</span>
+												<span>Exit: $16.10</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @sarahpro</span>
+												<span>Closed: 3 days ago</span>
+											</div>
+											<div class="trade-pnl profit">+$45.00 (+5.92%)</div>
+										</div>
+
+										<!-- Trade 8 - Closed/Loss -->
+										<div class="trade-card loss">
+											<div class="trade-header">
+												<div class="trade-pair">DOT/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $7.80</span>
+												<span>Exit: $7.50</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @johntrader</span>
+												<span>Closed: 4 days ago</span>
+											</div>
+											<div class="trade-pnl loss">-$30.00 (-3.85%)</div>
+										</div>
+
+										<!-- Trade 9 - Closed/Profit -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">AVAX/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $42.50</span>
+												<span>Exit: $45.20</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @cryptoking</span>
+												<span>Closed: 5 days ago</span>
+											</div>
+											<div class="trade-pnl profit">+$135.00 (+6.35%)</div>
+										</div>
+
+										<!-- Trade 10 - Closed/Profit -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">UNI/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $8.50</span>
+												<span>Exit: $9.20</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @mikeexpert</span>
+												<span>Closed: 1 week ago</span>
+											</div>
+											<div class="trade-pnl profit">+$70.00 (+8.24%)</div>
+										</div>
+
+										<!-- Django: {# endfor #} -->
+
+										<!-- Pagination -->
+										<div class="d-flex justify-content-between align-items-center mt-4">
+											<p class="mb-0 text-muted">Showing 1-10 of 127 trades</p>
+											<!-- Django: Showing {{ start }}-{{ end }} of {{ total }} trades -->
+											<nav>
+												<ul class="pagination mb-0">
+													<li class="page-item disabled">
+														<a class="page-link" href="#" tabindex="-1">&lt;</a>
+													</li>
+													<li class="page-item active"><a class="page-link" href="#">1</a></li>
+													<li class="page-item"><a class="page-link" href="#">2</a></li>
+													<li class="page-item"><a class="page-link" href="#">3</a></li>
+													<li class="page-item"><a class="page-link" href="#">...</a></li>
+													<li class="page-item"><a class="page-link" href="#">13</a></li>
+													<li class="page-item">
+														<a class="page-link" href="#">&gt;</a>
+													</li>
+												</ul>
+												<!-- Django: Use {# paginate #} or pagination template -->
+											</nav>
+										</div>
+									</div>
+
+									<!-- Open Trades Tab -->
+									<div class="tab-pane fade" id="open-trades" role="tabpanel">
+										<!-- Django: {# for trade in open_trades #} -->
+
+										<!-- Active Trade 1 -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">BTC/USDT</div>
+												<div class="trade-status active">Active</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $64,250</span>
+												<span>Current: $65,120</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @johntrader</span>
+												<span>Size: 0.05 BTC</span>
+											</div>
+											<div class="trade-pnl profit">+$43.50 (+1.35%)</div>
+										</div>
+
+										<!-- Active Trade 2 -->
+										<div class="trade-card loss">
+											<div class="trade-header">
+												<div class="trade-pair">ETH/USDT</div>
+												<div class="trade-status active">Active</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $3,420</span>
+												<span>Current: $3,385</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @mikeexpert</span>
+												<span>Size: 0.8 ETH</span>
+											</div>
+											<div class="trade-pnl loss">-$28.00 (-1.02%)</div>
+										</div>
+
+										<!-- Django: {# endfor #} -->
+									</div>
+
+									<!-- Closed Trades Tab -->
+									<div class="tab-pane fade" id="closed-trades" role="tabpanel">
+										<!-- Django: {# for trade in closed_trades #} -->
+
+										<!-- Closed Trade 1 -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">SOL/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $142.30</span>
+												<span>Exit: $145.80</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @sarahpro</span>
+												<span>2 hours ago</span>
+											</div>
+											<div class="trade-pnl profit">+$87.50 (+2.46%)</div>
+										</div>
+
+										<!-- Closed Trade 2 -->
+										<div class="trade-card profit">
+											<div class="trade-header">
+												<div class="trade-pair">ADA/USDT</div>
+												<div class="trade-status">Closed</div>
+											</div>
+											<div class="trade-info">
+												<span>Entry: $0.58</span>
+												<span>Exit: $0.61</span>
+											</div>
+											<div class="trade-info">
+												<span>Trader: @johntrader</span>
+												<span>5 hours ago</span>
+											</div>
+											<div class="trade-pnl profit">+$120.00 (+5.17%)</div>
+										</div>
+
+										<!-- More closed trades... -->
+
+										<!-- Django: {# endfor #} -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--**********************************
+            Content body end
+        ***********************************-->
+
+		<!--**********************************
+            Footer start
+        ***********************************-->
+{% endblock %}

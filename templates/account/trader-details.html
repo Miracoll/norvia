@@ -1,0 +1,206 @@
+{%extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Trader Details{% endblock %}
+
+{% block body_class %}page-traderdetails{% endblock %}
+
+{% block content %}
+<div class="content-body default-height">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xl-12">
+				<!-- Breadcrumb -->
+				<div class="page-titles">
+							<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+								<ol class="breadcrumb">
+								  <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+								  <li class="breadcrumb-item"><a href="{% url 'copy_trader' %}">Browse Traders</a></li>
+								  <li class="breadcrumb-item active" aria-current="page">Trader Details</li>
+								</ol>
+							</nav>
+						</div>
+
+						<!-- Trader Profile Header -->
+						<div class="trader-profile-header">
+							<div class="profile-main">
+								<img src="{% static 'images/avatar/1.jpg' %}" alt="Trader" class="profile-avatar-large">
+								<div class="profile-info-main">
+									<h1>Michael Rodriguez</h1>
+									<p class="profile-username">@crypto_master</p>
+									<div class="profile-badges">
+										<span class="profile-badge">
+											<i class="material-icons">verified</i>
+											Verified Trader
+										</span>
+										<span class="profile-badge">
+											<i class="material-icons">emoji_events</i>
+											Top Performer
+										</span>
+										<span class="profile-badge">
+											<i class="material-icons">school</i>
+											5 Years Experience
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="profile-stats">
+								<div class="profile-stat-item">
+									<div class="profile-stat-label">Win Rate</div>
+									<div class="profile-stat-value">96.5%</div>
+								</div>
+								<div class="profile-stat-item">
+									<div class="profile-stat-label">Total Copiers</div>
+									<div class="profile-stat-value">1,234</div>
+								</div>
+							</div>
+
+							<div class="action-buttons">
+								<button class="btn-copy-large">
+									<i class="material-icons">content_copy</i>
+									Copy This Trader
+								</button>
+								<button class="btn-share">
+									<i class="material-icons">share</i>
+								</button>
+							</div>
+						</div>
+
+						<!-- Statistics Grid -->
+						<div class="content-card">
+							<div class="content-card-header">
+								<h3 class="content-card-title">Trading Statistics</h3>
+							</div>
+							<div class="stats-grid-detailed">
+								<div class="stat-box">
+									<div class="stat-box-label">
+										<i class="material-icons" style="color: #f59e0b;">emoji_events</i>
+										Total Wins
+									</div>
+									<div class="stat-box-value green">7,847</div>
+								</div>
+								<div class="stat-box">
+									<div class="stat-box-label">
+										<i class="material-icons" style="color: #ef4444;">close</i>
+										Total Losses
+									</div>
+									<div class="stat-box-value red">290</div>
+								</div>
+								<div class="stat-box">
+									<div class="stat-box-label">
+										<i class="material-icons" style="color: #3b82f6;">show_chart</i>
+										Win Rate
+									</div>
+									<div class="stat-box-value">96.5%</div>
+								</div>
+								<div class="stat-box">
+									<div class="stat-box-label">
+										<i class="material-icons" style="color: #10b981;">attach_money</i>
+										Average Trade Duration
+									</div>
+									<div class="stat-box-value">4.2h</div>
+								</div>
+								<div class="stat-box">
+									<div class="stat-box-label">
+										<i class="material-icons" style="color: #8b5cf6;">trending_up</i>
+										Best Trade
+									</div>
+									<div class="stat-box-value green">+$12,450</div>
+								</div>
+								<div class="stat-box">
+									<div class="stat-box-label">
+										<i class="material-icons" style="color: #ec4899;">trending_down</i>
+										Worst Trade
+									</div>
+									<div class="stat-box-value red">-$850</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- About Section -->
+						<div class="content-card">
+							<div class="content-card-header">
+								<h3 class="content-card-title">About This Trader</h3>
+							</div>
+							<div class="about-content">
+								<p style="margin-bottom: 25px;">
+									Professional cryptocurrency trader with over 5 years of experience in technical analysis and algorithmic trading. Specializes in short to medium-term trades with a focus on risk management and consistent returns.
+								</p>
+
+								<div class="about-item">
+									<div class="about-icon">
+										<i class="material-icons">psychology</i>
+									</div>
+									<div class="about-text">
+										<h5>Trading Strategy</h5>
+										<p>Technical Analysis, Support/Resistance, Moving Averages, RSI, MACD. Focus on high-probability setups with strict risk management protocols.</p>
+									</div>
+								</div>
+
+								<div class="about-item">
+									<div class="about-icon">
+										<i class="material-icons">schedule</i>
+									</div>
+									<div class="about-text">
+										<h5>Trading Hours</h5>
+										<p>Active primarily during Asian and European market hours (UTC 00:00 - 16:00). Average of 3-5 trades per day.</p>
+									</div>
+								</div>
+
+								<div class="about-item">
+									<div class="about-icon">
+										<i class="material-icons">account_balance</i>
+									</div>
+									<div class="about-text">
+										<h5>Preferred Markets</h5>
+										<p>Major cryptocurrencies (BTC, ETH, BNB), Large-cap altcoins (SOL, ADA, XRP), occasional DeFi tokens. Minimum liquidity requirement: $50M daily volume.</p>
+									</div>
+								</div>
+
+								<div class="about-item">
+									<div class="about-icon">
+										<i class="material-icons">shield</i>
+									</div>
+									<div class="about-text">
+										<h5>Risk Management</h5>
+										<p>Maximum 2% risk per trade, Stop-loss on every position, Position sizing based on volatility, No leverage above 3x.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+// Copy trader button - redirect to copy trading agreement
+document.querySelector('.btn-copy-large').addEventListener('click', function() {
+	const btn = this;
+	const originalHTML = btn.innerHTML;
+
+	// Show success feedback
+	btn.innerHTML = '<i class="material-icons">check</i>Starting...';
+	btn.style.background = '#10b981';
+
+	setTimeout(function() {
+		// Redirect to copytrading agreement page
+		window.location.href = "{% url 'copytrading_agreement' %}";
+	}, 800);
+});
+
+// TODO: Django backend will handle:
+// - Get trader ID from URL parameter
+// - Fetch trader details from database (name, stats, profile, etc.)
+// - Pass trader data via template context
+// - Handle copy relationship creation
+// - Validate user has sufficient funds
+// - Store copy trading settings
+</script>
+{% endblock %}
+

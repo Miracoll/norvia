@@ -1,1282 +1,430 @@
-{% extends 'account/base.html' %}
+{% extends "account/base.html" %}
 {% load static %}
+{% load humanize %}
+
+{% block title %}Copy Traders{% endblock %}
+
+{% block body_class %}page-copytraders{% endblock %}
+
+{% block page_scripts %}
+<script>
+	// Update percentage slider display
+	function updatePercentage(value) {
+		document.getElementById('percentageValue').textContent = value + '%';
+		document.getElementById('sliderFill').style.width = value + '%';
+	}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="content-body default-height">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="page-titles">
-                            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                  <li class="breadcrumb-item"><a href="dashboard_new.html">Dashboard</a></li>
-                                  <li class="breadcrumb-item active" aria-current="page">Browse Traders</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filter Section -->
-                <div class="filter-section">
-                    <h5 class="filter-title">Search & Filter Traders</h5>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <input type="text" class="filter-input" placeholder="Search trader name...">
-                        </div>
-                        <div class="col-md-2">
-                            <select class="filter-select">
-                                <option value="">All Risk Levels</option>
-                                <option value="low">Low Risk</option>
-                                <option value="medium">Medium Risk</option>
-                                <option value="high">High Risk</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="filter-select">
-                                <option value="">Sort By</option>
-                                <option value="profit">Most Profitable</option>
-                                <option value="winrate">Best Win Rate</option>
-                                <option value="copiers">Most Popular</option>
-                                <option value="recent">Recently Joined</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="filter-select">
-                                <option value="">All Trading Pairs</option>
-                                <option value="btc">BTC Pairs</option>
-                                <option value="eth">ETH Pairs</option>
-                                <option value="usdt">USDT Pairs</option>
-                                <option value="forex">Forex</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Traders Grid -->
-                <!-- Row 1 -->
-                <div class="row trader-row">
-                    <!-- Trader Card 1 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/1.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Michael Rodriguez</a></h5>
-                                    <p>@crypto_master</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $1,000</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">7847 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">290 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">100% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">20% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn" onclick="openCopyModal('Michael Rodriguez')">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,234 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 2 - Already Copying -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card copying">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/2.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Sarah Chen</a></h5>
-                                    <p>@sarahtrader</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $500</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">6325 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">98 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">87% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">20% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn already-copying">
-                                <i class="material-icons">check_circle</i>
-                                Copying
-                            </button>
-
-                            <button class="btn-cancel-copy" onclick="openStopCopyModal('Sarah Chen')">
-                                <i class="material-icons">cancel</i>
-                                Stop Copying
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>987 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 3 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/3.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">David Thompson</a></h5>
-                                    <p>@davidpro</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $2,500</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">5421 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">178 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">97% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">15% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn" onclick="openCopyModal('David Thompson')">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>2,456 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Row 2 -->
-                <div class="row trader-row">
-                    <!-- Trader Card 4 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/4.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Emma Wilson</a></h5>
-                                    <p>@emmawins</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $750</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">8932 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">421 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">95% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">18% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn" onclick="openCopyModal('Emma Wilson')">
-                                <i class="material-icons">send</i>
-                                Request to Copy
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>756 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 5 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/5.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">James Anderson</a></h5>
-                                    <p>@jamesalgo</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $1,500</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">4567 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">234 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">95% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">25% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,543 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 6 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/6.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Sophia Martinez</a></h5>
-                                    <p>@sophiatech</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $800</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">3892 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">156 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">22% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>892 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Row 3 -->
-                <div class="row trader-row">
-                    <!-- Trader Card 7 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/7.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Oliver Brown</a></h5>
-                                    <p>@oliverbull</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $1,200</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">7234 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">312 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">17% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,789 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 8 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/8.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Isabella Taylor</a></h5>
-                                    <p>@isabellafx</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $950</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">5678 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">189 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">97% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">19% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,345 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 9 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/1.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Lucas Garcia</a></h5>
-                                    <p>@lucasquant</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $2,000</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">9123 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">456 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">95% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">23% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>2,134 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Row 4 -->
-                <div class="row trader-row">
-                    <!-- Trader Card 10 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/2.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Mia Johnson</a></h5>
-                                    <p>@miacrypto</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $600</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">4321 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">201 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">16% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>967 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 11 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/3.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Ethan Williams</a></h5>
-                                    <p>@ethanpro</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $1,800</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">8456 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">378 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">21% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,678 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 12 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/4.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Ava Davis</a></h5>
-                                    <p>@avaforex</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $1,100</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">6789 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">267 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">18% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,234 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Row 5 -->
-                <div class="row trader-row">
-                    <!-- Trader Card 13 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/5.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Noah Miller</a></h5>
-                                    <p>@noahbtc</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $850</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">5234 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">223 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">20% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,456 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 14 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/6.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">Charlotte Moore</a></h5>
-                                    <p>@charlottepro</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $1,350</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">7891 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">334 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">22% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>1,923 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trader Card 15 -->
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="trader-card">
-                            <div class="trader-header">
-                                <img src="{% static 'account/images/avatar/7.jpg' %}" alt="Trader" class="trader-avatar">
-                                <div class="trader-info">
-                                    <h5><a href="trader-details.html" style="color: inherit; text-decoration: none;">William Lee</a></h5>
-                                    <p>@williameth</p>
-                                </div>
-                                <div class="verified-badge">
-                                    <i class="material-icons">verified</i>
-                                </div>
-                            </div>
-
-                            <div class="min-balance">
-                                <i class="material-icons">account_balance_wallet</i>
-                                <span>Min. Balance: $1,650</span>
-                            </div>
-
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon trophy">emoji_events</i>
-                                    <span class="stat-text">8567 Wins</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon cross">close</i>
-                                    <span class="stat-text">389 Losses</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon chart">show_chart</i>
-                                    <span class="stat-text">96% Win Rate</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="material-icons stat-icon money">attach_money</i>
-                                    <span class="stat-text">24% Profit Share</span>
-                                </div>
-                            </div>
-
-                            <button class="copy-btn">
-                                <i class="material-icons">content_copy</i>
-                                Copy Trader
-                            </button>
-
-                            <div class="copiers-count">
-                                <i class="material-icons">group</i>
-                                <span>2,567 copiers</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pagination -->
-                <div class="d-flex justify-content-center mt-4 mb-4">
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
-            </div>
-        </div>
-    </div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="page-titles">
+							<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Browse Traders</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+				</div>
+
+				<!-- Filter Section -->
+				<div class="filter-section">
+					<h5 class="filter-title">Search & Filter Traders</h5>
+					<div class="row g-3">
+						<div class="col-md-4">
+							<input type="text" class="filter-input" placeholder="Search trader name...">
+						</div>
+						<div class="col-md-2">
+							<select class="filter-select">
+								<option value="">All Risk Levels</option>
+								<option value="low">Low Risk</option>
+								<option value="medium">Medium Risk</option>
+								<option value="high">High Risk</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<select class="filter-select">
+								<option value="">Sort By</option>
+								<option value="profit">Most Profitable</option>
+								<option value="winrate">Best Win Rate</option>
+								<option value="copiers">Most Popular</option>
+								<option value="recent">Recently Joined</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<select class="filter-select">
+								<option value="">All Trading Pairs</option>
+								<option value="btc">BTC Pairs</option>
+								<option value="eth">ETH Pairs</option>
+								<option value="usdt">USDT Pairs</option>
+								<option value="forex">Forex</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<!-- Traders Grid -->
+				<!-- Row 1 -->
+				<div class="row trader-row">
+					<!-- Trader Card 1 -->
+					{% for copy in copied_trades %}
+					<div class="col-xl-4 col-lg-6 col-md-6 my-4">
+						<div class="trader-card copying">
+							<div class="trader-header">
+								<img src="{{copy.trader.image.url}}" alt="Trader" class="trader-avatar">
+								<div class="trader-info">
+									<h5><a href="#"
+											style="color: inherit; text-decoration: none;">{{copy.trader.full_name}}</a>
+									</h5>
+									<p>@{{copy.trader.username}}</p>
+								</div>
+								<div class="verified-badge">
+									<i class="material-icons">verified</i>
+								</div>
+							</div>
+
+							<div class="min-balance">
+								<i class="material-icons">account_balance_wallet</i>
+								<span>Min. Balance: ${{copy.trader.min_balance}}</span>
+							</div>
+
+							<div class="stats-list">
+								<div class="stat-item">
+									<i class="material-icons stat-icon trophy">emoji_events</i>
+									<span class="stat-text">{{copy.trader.win}} Wins</span>
+								</div>
+								<div class="stat-item">
+									<i class="material-icons stat-icon cross">close</i>
+									<span class="stat-text">{{copy.trader.lose}} Losses</span>
+								</div>
+								<div class="stat-item">
+									<i class="material-icons stat-icon chart">show_chart</i>
+									<span class="stat-text">{{copy.trader.win_rate}}% Win Rate</span>
+								</div>
+								<div class="stat-item">
+									<i class="material-icons stat-icon money">attach_money</i>
+									<span class="stat-text">{{copy.trader.profit_share}}% Profit Share</span>
+								</div>
+							</div>
+
+							<button class="copy-btn already-copying">
+								<i class="material-icons">check_circle</i>
+								Copying
+							</button>
+
+							<button class="btn-cancel-copy" data-bs-toggle="modal" data-bs-target="#stopCopyModal">
+								<i class="material-icons">cancel</i>
+								Stop Copying
+							</button>
+
+							<div class="copiers-count">
+								<i class="material-icons">group</i>
+								<span>{{copy.trader.copier|intcomma}} copiers</span>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+
+					<!-- Trader Card 2 -->
+					{% for trader in traders %}
+					<div class="col-xl-4 col-lg-6 col-md-6 my-4">
+						<div class="trader-card">
+							<div class="trader-header">
+								<img src="{{trader.image.url}}" alt="Trader" class="trader-avatar">
+								<div class="trader-info">
+									<h5><a href="#"
+											style="color: inherit; text-decoration: none;">{{trader.full_name}}</a></h5>
+									<p>@{{trader.username}}</p>
+								</div>
+								<div class="verified-badge">
+									<i class="material-icons">verified</i>
+								</div>
+							</div>
+
+							<div class="min-balance">
+								<i class="material-icons">account_balance_wallet</i>
+								<span>Min. Balance: ${{trader.min_balance}}</span>
+							</div>
+
+							<div class="stats-list">
+								<div class="stat-item">
+									<i class="material-icons stat-icon trophy">emoji_events</i>
+									<span class="stat-text">{{trader.win}} Wins</span>
+								</div>
+								<div class="stat-item">
+									<i class="material-icons stat-icon cross">close</i>
+									<span class="stat-text">{{trader.lose}} Losses</span>
+								</div>
+								<div class="stat-item">
+									<i class="material-icons stat-icon chart">show_chart</i>
+									<span class="stat-text">{{trader.win_rate}}% Win Rate</span>
+								</div>
+								<div class="stat-item">
+									<i class="material-icons stat-icon money">attach_money</i>
+									<span class="stat-text">{{trader.profit_share}}% Profit Share</span>
+								</div>
+							</div>
+
+							<button class="copy-btn" data-bs-toggle="modal" data-bs-target="#copyModalFlexible{{trader.id}}">
+								<i class="material-icons">content_copy</i>
+								Copy Trader
+							</button>
+
+							<div class="copiers-count">
+								<i class="material-icons">group</i>
+								<span>{{ trader.copier|intcomma }} copiers</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal fade" id="copyModalFlexible{{trader.id}}" tabindex="-1" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<div>
+										<h5 class="modal-title">Configure Copy Trading</h5>
+										<p class="mb-0" style="font-size: 14px; color: #6b7280;">Set your copy trading parameters for
+											<strong><span id="traderNameFlexible"></span></strong>
+										</p>
+									</div>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<form action="" method="post">
+									{% csrf_token %}
+									<div class="modal-body">
+					
+										<!-- Approval Notice (shown only for request mode) -->
+										<div class="approval-notice" id="approvalNoticeFlexible" style="display: none;">
+											<div class="approval-notice-header">
+												<i class="material-icons approval-notice-icon">schedule</i>
+												<h5 class="approval-notice-title">Approval Required</h5>
+											</div>
+											<p class="approval-notice-text">
+												This trader requires approval before you can start copying. Your request will be sent to the
+												trader for review. You'll be notified once they approve or decline your request.
+											</p>
+										</div>
+					
+										<div class="form-group">
+											<label>Amount to Allocate (USD)</label>
+											<input type="number" class="form-control" id="amountInputFlexible" name="amount"
+												placeholder="{{request.user.balance}}" min="100" step="0.01" required
+												style="font-size: 20px; font-weight: 700; color: var(--primary);">
+											<small style="color: #6b7280; margin-top: 5px; display: block;">Available balance: $<span
+													id="availableBalanceFlexible">5420.50</span></small>
+										</div>
+										<div class="form-group">
+											<label>Allocation Percentage</label>
+											<div class="percentage-slider-container">
+												<div class="percentage-display">
+													<div>
+														<span class="percentage-value" id="percentageValue">20%</span>
+													</div>
+												</div>
+												<div style="position: relative;">
+													<div class="slider-track">
+														<div class="slider-fill" id="sliderFill" style="width: 20%;"></div>
+													</div>
+													<input type="range" class="percentage-input" id="percentageSlider" min="1" max="100"
+														name="allocation" step="1" oninput="updatePercentage(this.value)">
+												</div>
+												<div class="slider-labels">
+													<span>1%</span>
+													<span>25%</span>
+													<span>50%</span>
+													<span>75%</span>
+													<span>100%</span>
+												</div>
+											</div>
+											<small style="color: #6b7280; margin-top: 5px; display: block;">Drag the slider or enter amount
+												directly</small>
+										</div>
+										<div class="form-group">
+											<label>Leverage</label>
+											<select class="form-control" name="leverage" id="leverageSelectFlexible"
+												style="height: 48px; padding: 0 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px;">
+												<option value="10">10X Leverage</option>
+												<option value="25" selected>25X Leverage</option>
+												<option value="50">50X Leverage</option>
+												<option value="100" class="leverage-locked">100X Leverage (Locked)</option>
+												<option value="200" class="leverage-locked">200X Leverage (Locked)</option>
+												<option value="500" class="leverage-locked">500X Leverage (Locked)</option>
+											</select>
+											<small style="color: #6b7280; margin-top: 5px; display: block;">Higher leverage increases both
+												potential profit and risk. <span id="leverageWarning"
+													style="color: #ef4444; display: none; font-weight: 600;">This leverage option is locked
+													for your account level.</span></small>
+										</div>
+					
+										<div class="terms-container">
+											<input type="checkbox" class="terms-checkbox" id="termsCheckboxFlexible">
+											<label for="termsCheckboxFlexible" class="terms-text">
+												By copying this trader, you accept the <a href="{% url 'copytrading_agreement' %}"
+													target="_blank">Copy Trading Agreement</a> and understand the risks involved.
+											</label>
+										</div>
+										<input type="hidden" name="ref" value="{{trader.ref}}">
+					
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+										<button type="submit" name="copy_trader" class="btn btn-primary" id="confirmBtnFlexible">Start
+											Copying</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+
+				<!-- Pagination -->
+				<div class="d-flex justify-content-center mt-4 mb-4">
+					<nav>
+						<ul class="pagination">
+							<li class="page-item disabled">
+								<a class="page-link" href="#" tabindex="-1">&lt;</a>
+							</li>
+							<li class="page-item active"><a class="page-link" href="#">1</a></li>
+							<li class="page-item"><a class="page-link" href="#">2</a></li>
+							<li class="page-item"><a class="page-link" href="#">3</a></li>
+							<li class="page-item"><a class="page-link" href="#">4</a></li>
+							<li class="page-item">
+								<a class="page-link" href="#">&gt;</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+
+			</div>
+		</div>
+	</div>
 </div>
+<!--**********************************
+			Content body end
+		***********************************-->
 
 <!-- Copy Configuration Modal - Flexible Percentage -->
-<div class="copy-modal" id="copyModalFlexible">
-    <div class="modal-content-wrapper">
-        <div class="modal-header-custom">
-            <h4 id="modalTitleFlexible">Configure Copy Trading</h4>
-            <p>Set your copy trading parameters for <strong><span id="traderNameFlexible"></span></strong></p>
-        </div>
 
-        <!-- Approval Notice (shown only for request mode) -->
-        <div class="approval-notice" id="approvalNoticeFlexible" style="display: none;">
-            <div class="approval-notice-header">
-                <i class="material-icons approval-notice-icon">schedule</i>
-                <h5 class="approval-notice-title">Approval Required</h5>
-            </div>
-            <p class="approval-notice-text">
-                This trader requires approval before you can start copying. Your request will be sent to the trader for review. You'll be notified once they approve or decline your request.
-            </p>
-        </div>
-
-        <form class="config-form">
-            <div class="form-group">
-                <label>Amount to Allocate (USD)</label>
-                <input type="number" class="form-control" id="amountInputFlexible" placeholder="1084.10" value="1084.10" min="100" step="0.01" required style="font-size: 20px; font-weight: 700; color: var(--primary);">
-                <small style="color: #6b7280; margin-top: 5px; display: block;">Available balance: $<span id="availableBalanceFlexible">5420.50</span></small>
-            </div>
-            <div class="form-group">
-                <label>Allocation Percentage</label>
-                <div class="percentage-slider-container">
-                    <div class="percentage-display">
-                        <div>
-                            <span class="percentage-value" id="percentageValue">20%</span>
-                        </div>
-                    </div>
-                    <div style="position: relative;">
-                        <div class="slider-track">
-                            <div class="slider-fill" id="sliderFill" style="width: 20%;"></div>
-                        </div>
-                        <input type="range" class="percentage-input" id="percentageSlider" min="1" max="100" value="20" step="1">
-                    </div>
-                    <div class="slider-labels">
-                        <span>1%</span>
-                        <span>25%</span>
-                        <span>50%</span>
-                        <span>75%</span>
-                        <span>100%</span>
-                    </div>
-                </div>
-                <small style="color: #6b7280; margin-top: 5px; display: block;">Drag the slider or enter amount directly</small>
-            </div>
-            <div class="form-group">
-                <label>Leverage</label>
-                <select class="form-control" id="leverageSelectFlexible" style="height: 48px; padding: 0 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px;">
-                    <option value="10">10X Leverage</option>
-                    <option value="25" selected>25X Leverage</option>
-                    <option value="50">50X Leverage</option>
-                    <option value="100" class="leverage-locked">100X Leverage (Locked)</option>
-                    <option value="200" class="leverage-locked">200X Leverage (Locked)</option>
-                    <option value="500" class="leverage-locked">500X Leverage (Locked)</option>
-                </select>
-                <small style="color: #6b7280; margin-top: 5px; display: block;">Higher leverage increases both potential profit and risk. <span id="leverageWarning" style="color: #ef4444; display: none; font-weight: 600;">This leverage option is locked for your account level.</span></small>
-            </div>
-        </form>
-
-        <div class="terms-container">
-            <input type="checkbox" class="terms-checkbox" id="termsCheckboxFlexible">
-            <label for="termsCheckboxFlexible" class="terms-text">
-                By copying this trader, you accept the <a href="copytrading-agreement.html" target="_blank">Copy Trading Agreement</a> and understand the risks involved.
-            </label>
-        </div>
-
-        <div class="modal-buttons">
-            <button class="btn-cancel" onclick="closeCopyModal()">Cancel</button>
-            <button class="btn-confirm" id="confirmBtnFlexible" onclick="submitCopyConfigFlexible()">Start Copying</button>
-        </div>
-    </div>
-</div>
 
 <!-- Copy Configuration Modal - Full Balance Only (100%) -->
-<div class="copy-modal" id="copyModalFull">
-    <div class="modal-content-wrapper">
-        <div class="modal-header-custom">
-            <h4 id="modalTitleFull">Configure Copy Trading</h4>
-            <p>Set your copy trading parameters for <strong><span id="traderNameFull"></span></strong></p>
-        </div>
+<div class="modal fade" id="copyModalFull" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div>
+					<h5 class="modal-title">Configure Copy Trading</h5>
+					<p class="mb-0" style="font-size: 14px; color: #6b7280;">Set your copy trading parameters for
+						<strong><span id="traderNameFull"></span></strong>
+					</p>
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
 
-        <!-- Approval Notice (shown only for request mode) -->
-        <div class="approval-notice" id="approvalNoticeFull" style="display: none;">
-            <div class="approval-notice-header">
-                <i class="material-icons approval-notice-icon">schedule</i>
-                <h5 class="approval-notice-title">Approval Required</h5>
-            </div>
-            <p class="approval-notice-text">
-                This trader requires approval before you can start copying. Your request will be sent to the trader for review. You'll be notified once they approve or decline your request.
-            </p>
-        </div>
+				<!-- Approval Notice (shown only for request mode) -->
+				<div class="approval-notice" id="approvalNoticeFull" style="display: none;">
+					<div class="approval-notice-header">
+						<i class="material-icons approval-notice-icon">schedule</i>
+						<h5 class="approval-notice-title">Approval Required</h5>
+					</div>
+					<p class="approval-notice-text">
+						This trader requires approval before you can start copying. Your request will be sent to the
+						trader for review. You'll be notified once they approve or decline your request.
+					</p>
+				</div>
 
-        <form class="config-form">
-            <div class="form-group">
-                <label>Your Available Balance</label>
-                <div style="padding: 15px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 10px;">
-                    <div style="font-size: 28px; font-weight: 700; color: var(--primary);">
-                        $<span id="availableBalanceFull">5420.50</span>
-                    </div>
-                    <div style="font-size: 13px; color: #6b7280; margin-top: 5px;">
-                        This full amount will be allocated for copy trading (100%)
-                    </div>
-                </div>
-            </div>
-        </form>
+				<form class="config-form">
+					<div class="form-group">
+						<label>Your Available Balance</label>
+						<div
+							style="padding: 15px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 10px;">
+							<div style="font-size: 28px; font-weight: 700; color: var(--primary);">
+								$<span id="availableBalanceFull">5420.50</span>
+							</div>
+							<div style="font-size: 13px; color: #6b7280; margin-top: 5px;">
+								This full amount will be allocated for copy trading (100%)
+							</div>
+						</div>
+					</div>
+				</form>
 
-        <div class="terms-container">
-            <input type="checkbox" class="terms-checkbox" id="termsCheckboxFull">
-            <label for="termsCheckboxFull" class="terms-text">
-                By copying this trader, you accept the <a href="copytrading-agreement.html" target="_blank">Copy Trading Agreement</a> and understand the risks involved.
-            </label>
-        </div>
+				<div class="terms-container">
+					<input type="checkbox" class="terms-checkbox" id="termsCheckboxFull">
+					<label for="termsCheckboxFull" class="terms-text">
+						By copying this trader, you accept the <a href="{% url 'copytrading_agreement' %}"
+							target="_blank">Copy Trading Agreement</a> and understand the risks involved.
+					</label>
+				</div>
 
-        <div class="modal-buttons">
-            <button class="btn-cancel" onclick="closeCopyModal()">Cancel</button>
-            <button class="btn-confirm" id="confirmBtnFull" onclick="submitCopyConfigFull()">Start Copying</button>
-        </div>
-    </div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="confirmBtnFull" onclick="submitCopyConfigFull()">Start
+					Copying</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Stop Copying Confirmation Modal -->
-<div class="copy-modal" id="stopCopyModal">
-    <div class="modal-content-wrapper" style="max-width: 450px;">
-        <div class="modal-header-custom">
-            <h4 style="color: #dc2626;">Stop Copying Trader</h4>
-            <p>Are you sure you want to stop copying <strong><span id="stopTraderName"></span></strong>?</p>
-        </div>
+<div class="modal fade" id="stopCopyModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div>
+					<h5 class="modal-title" style="color: #dc2626;">Stop Copying Trader</h5>
+					<p class="mb-0" style="font-size: 14px; color: #6b7280;">Are you sure you want to stop copying
+						<strong><span id="stopTraderName"></span></strong>?
+					</p>
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div
+					style="background: #fee2e2; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #dc2626;">
+					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+						<i class="material-icons" style="color: #991b1b; font-size: 24px;">warning</i>
+						<h5 style="margin: 0; font-size: 16px; font-weight: 700; color: #991b1b;">Warning</h5>
+					</div>
+					<p style="margin: 0; font-size: 13px; color: #7f1d1d; line-height: 1.5;">
+						Stopping will close all open positions copied from this trader and you will no longer receive
+						new trade signals. This action cannot be undone.
+					</p>
+				</div>
 
-        <div style="background: #fee2e2; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #dc2626;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                <i class="material-icons" style="color: #991b1b; font-size: 24px;">warning</i>
-                <h5 style="margin: 0; font-size: 16px; font-weight: 700; color: #991b1b;">Warning</h5>
-            </div>
-            <p style="margin: 0; font-size: 13px; color: #7f1d1d; line-height: 1.5;">
-                Stopping will close all open positions copied from this trader and you will no longer receive new trade signals. This action cannot be undone.
-            </p>
-        </div>
-
-        <div style="background: #f9fafb; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: #6b7280; font-size: 14px;">Current Allocation:</span>
-                <span style="font-weight: 700; font-size: 14px;" id="stopCurrentAllocation">$1,084.10</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: #6b7280; font-size: 14px;">Open Positions:</span>
-                <span style="font-weight: 700; font-size: 14px;" id="stopOpenPositions">3</span>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span style="color: #6b7280; font-size: 14px;">Total P/L:</span>
-                <span style="font-weight: 700; font-size: 14px; color: #10b981;" id="stopTotalPL">+$247.50</span>
-            </div>
-        </div>
-
-        <div class="modal-buttons">
-            <button class="btn-cancel" onclick="closeStopCopyModal()">Cancel</button>
-            <button class="btn-confirm" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" onclick="confirmStopCopy()">Yes, Stop Copying</button>
-        </div>
-    </div>
+				<div style="background: #f9fafb; padding: 15px; border-radius: 10px;">
+					<div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+						<span style="color: #6b7280; font-size: 14px;">Current Allocation:</span>
+						<span style="font-weight: 700; font-size: 14px;" id="stopCurrentAllocation">$1,084.10</span>
+					</div>
+					<div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+						<span style="color: #6b7280; font-size: 14px;">Open Positions:</span>
+						<span style="font-weight: 700; font-size: 14px;" id="stopOpenPositions">3</span>
+					</div>
+					<div style="display: flex; justify-content: space-between;">
+						<span style="color: #6b7280; font-size: 14px;">Total P/L:</span>
+						<span style="font-weight: 700; font-size: 14px; color: #10b981;"
+							id="stopTotalPL">+$247.50</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" onclick="confirmStopCopy()">Yes, Stop Copying</button>
+			</div>
+		</div>
+	</div>
 </div>
-{% endblock content %}
-{% block extra_scripts %}
-<script src="{% static 'account/vendor/chart-js/chart.bundle.min.js' %}"></script>
-<script src="{% static 'account/vendor/apexchart/apexchart.js' %}"></script>
-<script src="{% static 'account/vendor/swiper/js/swiper-bundle.min.js' %}"></script>
-<script src="{% static 'account/vendor/wow-master/dist/wow.min.js' %}"></script>
 
-<script>
-    // Available balance (in production, this will come from Django backend)
-    const AVAILABLE_BALANCE = 5420.50;
-
-    // TRADER CONFIGURATION DATA
-    // In production, Django will pass this data for each trader
-    // Format: { traderId: { mode: 'flexible'/'full', minBalance: amount, requireApproval: true/false } }
-    const TRADER_CONFIG = {
-        'Michael Rodriguez': { mode: 'flexible', minBalance: 1000, requireApproval: false },
-        'Sarah Chen': { mode: 'flexible', minBalance: 500, requireApproval: false }, // User is already copying
-        'David Thompson': { mode: 'full', minBalance: 2500, requireApproval: false },
-        'Emma Wilson': { mode: 'flexible', minBalance: 750, requireApproval: true },
-        // Add more traders here...
-    };
-
-    // Open copy modal based on trader configuration
-    function openCopyModal(traderName) {
-        const config = TRADER_CONFIG[traderName] || { mode: 'flexible', minBalance: 100, requireApproval: false };
-
-        // Check if user has minimum balance required
-        if (AVAILABLE_BALANCE < config.minBalance) {
-            alert(`Insufficient balance! This trader requires a minimum balance of $${config.minBalance.toFixed(2)}. Your current balance is $${AVAILABLE_BALANCE.toFixed(2)}.`);
-            return;
-        }
-
-        const requiresApproval = config.requireApproval;
-
-        // Show appropriate modal based on trader's mode
-        if (config.mode === 'full') {
-            // Full balance mode (100%)
-            document.getElementById('traderNameFull').textContent = traderName;
-            document.getElementById('availableBalanceFull').textContent = AVAILABLE_BALANCE.toFixed(2);
-            document.getElementById('termsCheckboxFull').checked = false;
-
-            // Handle approval requirement
-            if (requiresApproval) {
-                document.getElementById('approvalNoticeFull').style.display = 'block';
-                document.getElementById('modalTitleFull').textContent = 'Request to Copy Trader';
-                document.getElementById('confirmBtnFull').textContent = 'Send Request';
-            } else {
-                document.getElementById('approvalNoticeFull').style.display = 'none';
-                document.getElementById('modalTitleFull').textContent = 'Configure Copy Trading';
-                document.getElementById('confirmBtnFull').textContent = 'Start Copying';
-            }
-
-            document.getElementById('copyModalFull').classList.add('show');
-        } else {
-            // Flexible percentage mode
-            document.getElementById('traderNameFlexible').textContent = traderName;
-            document.getElementById('availableBalanceFlexible').textContent = AVAILABLE_BALANCE.toFixed(2);
-            document.getElementById('termsCheckboxFlexible').checked = false;
-
-            // Handle approval requirement
-            if (requiresApproval) {
-                document.getElementById('approvalNoticeFlexible').style.display = 'block';
-                document.getElementById('modalTitleFlexible').textContent = 'Request to Copy Trader';
-                document.getElementById('confirmBtnFlexible').textContent = 'Send Request';
-            } else {
-                document.getElementById('approvalNoticeFlexible').style.display = 'none';
-                document.getElementById('modalTitleFlexible').textContent = 'Configure Copy Trading';
-                document.getElementById('confirmBtnFlexible').textContent = 'Start Copying';
-            }
-
-            document.getElementById('copyModalFlexible').classList.add('show');
-            updatePercentage(20); // Reset to default 20%
-        }
-    }
-
-    // Close copy modal
-    function closeCopyModal() {
-        document.getElementById('copyModalFlexible').classList.remove('show');
-        document.getElementById('copyModalFull').classList.remove('show');
-    }
-
-    // Open stop copy modal
-    function openStopCopyModal(traderName) {
-        document.getElementById('stopTraderName').textContent = traderName;
-        // In production, Django will populate these values
-        document.getElementById('stopCurrentAllocation').textContent = '$1,084.10';
-        document.getElementById('stopOpenPositions').textContent = '3';
-        document.getElementById('stopTotalPL').textContent = '+$247.50';
-
-        document.getElementById('stopCopyModal').classList.add('show');
-    }
-
-    // Close stop copy modal
-    function closeStopCopyModal() {
-        document.getElementById('stopCopyModal').classList.remove('show');
-    }
-
-    // Confirm stop copying
-    function confirmStopCopy() {
-        const traderName = document.getElementById('stopTraderName').textContent;
-        // In production, Django will handle this
-        alert(`Stopped copying ${traderName}!\n\nAll open positions have been closed.\n(Django backend will handle this)`);
-        closeStopCopyModal();
-        // In production: Reload page or update UI to reflect changes
-    }
-
-    // Submit copy configuration - Flexible mode
-    function submitCopyConfigFlexible() {
-        const traderName = document.getElementById('traderNameFlexible').textContent;
-        const config = TRADER_CONFIG[traderName];
-        const percentage = document.getElementById('percentageSlider').value;
-        const amount = document.getElementById('amountInputFlexible').value;
-        const termsChecked = document.getElementById('termsCheckboxFlexible').checked;
-
-        // Validation - Terms and Conditions
-        if (!termsChecked) {
-            alert('Please accept the Terms and Conditions to continue');
-            return;
-        }
-
-        // Validation - Minimum amount
-        if (parseFloat(amount) < 100) {
-            alert('Minimum allocation amount is $100');
-            return;
-        }
-
-        // In production, Django will handle form submission
-        if (config.requireApproval) {
-            alert(`Request sent successfully!\n\nTrader: ${traderName}\nMode: Flexible\nPercentage: ${percentage}%\nAmount: $${amount}\n\nYour request has been sent to the trader for approval. You'll be notified once they respond.\n\n(Django backend will handle this)`);
-        } else {
-            alert(`Copy trading started!\n\nTrader: ${traderName}\nMode: Flexible\nPercentage: ${percentage}%\nAmount: $${amount}\n\n(Django backend will handle this)`);
-        }
-        closeCopyModal();
-    }
-
-    // Submit copy configuration - Full balance mode
-    function submitCopyConfigFull() {
-        const traderName = document.getElementById('traderNameFull').textContent;
-        const config = TRADER_CONFIG[traderName];
-        const amount = AVAILABLE_BALANCE.toFixed(2);
-        const termsChecked = document.getElementById('termsCheckboxFull').checked;
-
-        // Validation - Terms and Conditions
-        if (!termsChecked) {
-            alert('Please accept the Terms and Conditions to continue');
-            return;
-        }
-
-        // In production, Django will handle form submission
-        if (config.requireApproval) {
-            alert(`Request sent successfully!\n\nTrader: ${traderName}\nMode: Full Balance\nPercentage: 100%\nAmount: $${amount}\n\nYour request has been sent to the trader for approval. You'll be notified once they respond.\n\n(Django backend will handle this)`);
-        } else {
-            alert(`Copy trading started!\n\nTrader: ${traderName}\nMode: Full Balance\nPercentage: 100%\nAmount: $${amount}\n\n(Django backend will handle this)`);
-        }
-        closeCopyModal();
-    }
-
-    // Cancel copying a trader
-    function cancelCopyTrader(traderName) {
-        if (confirm(`Are you sure you want to stop copying ${traderName}?`)) {
-            // In production, Django will handle this
-            alert(`Stopped copying ${traderName}! (Django backend will handle this)`);
-            // Reload page or update UI
-        }
-    }
-
-    // Update percentage and amount from slider (Flexible mode only)
-    function updatePercentage(value) {
-        const percentage = parseInt(value);
-        const amount = (AVAILABLE_BALANCE * percentage / 100).toFixed(2);
-
-        document.getElementById('percentageValue').textContent = percentage + '%';
-        document.getElementById('sliderFill').style.width = percentage + '%';
-        document.getElementById('percentageSlider').value = percentage;
-        document.getElementById('amountInputFlexible').value = amount;
-    }
-
-    // Update slider and percentage from amount input
-    function updateFromAmount(amount) {
-        const numAmount = parseFloat(amount);
-
-        // Validate amount
-        if (isNaN(numAmount) || numAmount < 0) {
-            return;
-        }
-
-        // Cap at available balance
-        const cappedAmount = Math.min(numAmount, AVAILABLE_BALANCE);
-
-        // Calculate percentage
-        const percentage = Math.round((cappedAmount / AVAILABLE_BALANCE) * 100);
-
-        // Update slider and percentage display
-        document.getElementById('percentageValue').textContent = percentage + '%';
-        document.getElementById('sliderFill').style.width = percentage + '%';
-        document.getElementById('percentageSlider').value = percentage;
-
-        // Update amount with capped value
-        if (numAmount > AVAILABLE_BALANCE) {
-            document.getElementById('amountInputFlexible').value = AVAILABLE_BALANCE.toFixed(2);
-        }
-    }
-
-    // Percentage slider and amount input functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const slider = document.getElementById('percentageSlider');
-        const amountInput = document.getElementById('amountInputFlexible');
-
-        if (slider) {
-            // Slider input - update amount
-            slider.addEventListener('input', function() {
-                updatePercentage(this.value);
-            });
-        }
-
-        if (amountInput) {
-            // Amount input - update slider
-            amountInput.addEventListener('input', function() {
-                updateFromAmount(this.value);
-            });
-
-            // Also update on blur (when user finishes typing)
-            amountInput.addEventListener('blur', function() {
-                // Ensure minimum amount
-                const numAmount = parseFloat(this.value);
-                if (!isNaN(numAmount) && numAmount < 100) {
-                    this.value = '100.00';
-                    updateFromAmount(100);
-                }
-            });
-        }
-
-        // Initialize with default value
-        updatePercentage(20);
-    });
-
-    // Close modal when clicking outside
-    document.addEventListener('click', function(event) {
-        const modalFlexible = document.getElementById('copyModalFlexible');
-        const modalFull = document.getElementById('copyModalFull');
-        const modalStop = document.getElementById('stopCopyModal');
-
-        if (event.target === modalFlexible || event.target === modalFull) {
-            closeCopyModal();
-        }
-        if (event.target === modalStop) {
-            closeStopCopyModal();
-        }
-    });
-
-    // Close modal on ESC key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeCopyModal();
-            closeStopCopyModal();
-        }
-    });
-
-    // Filter functionality (basic)
-    // In production, Django will handle filtering via backend
-    const searchInput = document.querySelector('.filter-input');
-    const riskFilter = document.querySelectorAll('.filter-select')[0];
-    const sortFilter = document.querySelectorAll('.filter-select')[1];
-    const pairFilter = document.querySelectorAll('.filter-select')[2];
-
-    // Add event listeners for filters
-    // Django backend will handle actual filtering
-</script>
-{% endblock extra_scripts %}
+<!--**********************************
+		Scripts
+	***********************************-->
+{% endblock %}

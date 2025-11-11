@@ -20,8 +20,11 @@ urlpatterns = [
     path('address-verification/', views.address_verification, name='address_verification'),
     path('settings/', views.settings, name='settings'),
     path('sign-in/', views.sign_in, name='sign_in'),
+    path('logout/', views.logout_view, name='logout'),
     path('forget-password/', views.forget_password, name='forget_password'),
     path('sign-up-step-1/', views.sign_up_step_1, name='sign_up_step_1'),
-    path('sign-up-step-2/<uuid:ref>/', views.sign_up_step_2, name='sign_up_step_2'),
-    path('sign-up-step-3/<uuid:ref>/', views.sign_up_step_3, name='sign_up_step_3'),
+    path('sign-up-step-2/', views.sign_up_step_2, name='sign_up_step_2'),
+    path('sign-up-step-3/', views.sign_up_step_3, name='sign_up_step_3'),
+    path('agreement/', views.copytrading_agreement, name='copytrading_agreement'),
+    path('password/change/', views.change_password, name='change_password'),
 ]

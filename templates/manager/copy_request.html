@@ -87,14 +87,25 @@
                 </div>
 
                 <div class="request-actions">
-                    <button class="btn-approve" onclick="approveRequest('John Doe', 'Sarah Master', 1500)">
-                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                        Approve
-                    </button>
-                    <button class="btn-reject" onclick="rejectRequest('John Doe', 'Sarah Master')">
-                        <i class="material-icons" style="font-size: 18px;">cancel</i>
-                        Reject
-                    </button>
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="action" value="approve">
+                        <input type="hidden" name="user" value="John Doe">
+                        <input type="hidden" name="trader" value="Sarah Master">
+                        <input type="hidden" name="amount" value="1500">
+                        <button type="submit" class="btn-approve">
+                            <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                            Approve
+                        </button>
+                    </form>
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="action" value="reject">
+                        <input type="hidden" name="user" value="John Doe">
+                        <input type="hidden" name="trader" value="Sarah Master">
+                        <button type="submit" class="btn-reject">
+                            <i class="material-icons" style="font-size: 18px;">cancel</i>
+                            Reject
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -139,14 +150,25 @@
                 </div>
 
                 <div class="request-actions">
-                    <button class="btn-approve" onclick="approveRequest('Emma Wilson', 'Mike Pro', 800)">
-                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                        Approve
-                    </button>
-                    <button class="btn-reject" onclick="rejectRequest('Emma Wilson', 'Mike Pro')">
-                        <i class="material-icons" style="font-size: 18px;">cancel</i>
-                        Reject
-                    </button>
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="action" value="approve">
+                        <input type="hidden" name="user" value="Emma Wilson">
+                        <input type="hidden" name="trader" value="Mike Pro">
+                        <input type="hidden" name="amount" value="800">
+                        <button type="submit" class="btn-approve">
+                            <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                            Approve
+                        </button>
+                    </form>
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="action" value="reject">
+                        <input type="hidden" name="user" value="Emma Wilson">
+                        <input type="hidden" name="trader" value="Mike Pro">
+                        <button type="submit" class="btn-reject">
+                            <i class="material-icons" style="font-size: 18px;">cancel</i>
+                            Reject
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -191,14 +213,25 @@
                 </div>
 
                 <div class="request-actions">
-                    <button class="btn-approve" onclick="approveRequest('Robert Johnson', 'John Crypto', 2500)">
-                        <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                        Approve
-                    </button>
-                    <button class="btn-reject" onclick="rejectRequest('Robert Johnson', 'John Crypto')">
-                        <i class="material-icons" style="font-size: 18px;">cancel</i>
-                        Reject
-                    </button>
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="action" value="approve">
+                        <input type="hidden" name="user" value="Robert Johnson">
+                        <input type="hidden" name="trader" value="John Crypto">
+                        <input type="hidden" name="amount" value="2500">
+                        <button type="submit" class="btn-approve">
+                            <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                            Approve
+                        </button>
+                    </form>
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="action" value="reject">
+                        <input type="hidden" name="user" value="Robert Johnson">
+                        <input type="hidden" name="trader" value="John Crypto">
+                        <button type="submit" class="btn-reject">
+                            <i class="material-icons" style="font-size: 18px;">cancel</i>
+                            Reject
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -206,76 +239,4 @@
 
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_scripts %}
-<script>
-    function approveRequest(user, trader, amount) {
-        if (confirm(`Approve copy request?\n\nUser: ${user}\nTrader: ${trader}\nAllocation: $${amount.toLocaleString()}\n\nThis will start copy trading immediately.`)) {
-            alert(`Request approved! ${user} is now copying ${trader} with $${amount.toLocaleString()} allocation. (Demo)`);
-            location.reload();
-        }
-    }
-
-    function rejectRequest(user, trader) {
-        const reason = prompt(`Reject copy request from ${user} for ${trader}?\n\nEnter rejection reason (user will be notified):`);
-        if (reason) {
-            alert(`Request rejected. Reason: "${reason}"\nUser notified via email. (Demo)`);
-            location.reload();
-        }
-    }
-
-    // Mobile Sidebar Toggle
-    (function() {
-        let overlay = document.querySelector('.sidebar-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-        }
-
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.dlabnav');
-
-        if (hamburger && sidebar) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('is-active');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', function() {
-                hamburger.classList.remove('is-active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            sidebar.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 768) {
-                        setTimeout(function() {
-                            hamburger.classList.remove('is-active');
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }, 300);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    hamburger.classList.remove('is-active');
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    })();
-
-</script>
-{% endblock extra_scripts %}
+{% endblock %}

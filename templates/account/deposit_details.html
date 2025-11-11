@@ -1,213 +1,225 @@
-{% extends 'account/base.html' %}
+{%extends "account/base.html" %}
 {% load static %}
+
+{% block title %}Deposit Details | Norvia.io{% endblock %}
+
+{% block body_class %}page-depositdetails{% endblock %}
+
 {% block content %}
 <div class="content-body default-height">
-    <!-- row -->
     <div class="container-fluid">
         <!-- Row -->
         <div class="row">
-            <div class="col-xl-12">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="page-titles">
-                            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                  <li class="breadcrumb-item"><a href="dashboard_new.html">Dashboard</a></li>
-                                  <li class="breadcrumb-item"><a href="deposit.html">Deposit</a></li>
-                                  <li class="breadcrumb-item active" aria-current="page">Payment Details</li>
-                                </ol>
-                              </nav>
-                        </div>
+        <div class="col-xl-12">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="page-titles">
+                        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                              <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+                              <li class="breadcrumb-item"><a href="{% url 'deposit' %}">Deposit</a></li>
+                              <li class="breadcrumb-item active" aria-current="page">Payment Details</li>
+                            </ol>
+                          </nav>
                     </div>
                 </div>
+            </div>
 
-                <!-- Main Content -->
-                <div class="row justify-content-center">
-                    <div class="col-xl-10 col-lg-12">
+            <!-- Main Content -->
+            <div class="row justify-content-center">
+                <div class="col-xl-10 col-lg-12">
 
-                        <!-- Instruction Header -->
-                        <div class="instruction-header">
-                            <div class="amount-display">SEND $100.00</div>
-                            <div class="currency-info">WORTH OF TETHER (USDT)</div>
-                            <div class="instruction-text">
-                                TO THE WALLET ADDRESS BELOW OR SCAN THE QR CODE WITH YOUR WALLET APP
+                    <!-- Instruction Header -->
+                    <div class="instruction-header">
+                        <div class="amount-display">SEND ${{deposit.grand_total}}</div>
+                        <div class="currency-info">
+                            {% if deposit.currency %}
+                            WORTH OF {{deposit.gateway.name}}
+                            {% endif %}
+                        </div>
+                        <div class="instruction-text">
+                            {% if deposit.currency %}
+                            TO THE WALLET ADDRESS BELOW OR SCAN THE QR CODE WITH YOUR WALLET APP
+                            {% else %}
+                            TO THE EMAIL ADDRESS/MOBILE NUMBER BELOW
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Warning Card -->
+                     {% if deposit.currency %}
+                    <div class="warning-card">
+                        <p>
+                            Please send only <span class="highlight">{{deposit.currency.currency}} ({{deposit.currency.abbr|upper}}) {{deposit.network|upper}}</span> to this address.<br>
+                            Sending any other token may result in permanent loss.
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Payment Details Container -->
+                    <div class="payment-details-container">
+
+                        <!-- Wallet Address and QR Code -->
+                        <div class="address-qr-wrapper">
+                            <!-- Wallet Address Section -->
+                            <div class="address-section">
+                                <div class="address-label">{% if deposit.currency %}Wallet{% else %}Email{% endif %} Address</div>
+                                <div class="address-display" id="walletAddress">
+                                    {% if deposit.currency %}
+                                    {{deposit.currency.address}}
+                                    {% else %}
+                                    {{deposit.gateway.email}}
+                                    {% endif %}
+                                </div>
+                                <button class="copy-button" onclick="copyAddress()">
+                                    <i class="material-icons">content_copy</i>
+                                    Copy Address
+                                </button>
+                            </div>
+
+                            <!-- QR Code Section -->
+                             {% if deposit.currency %}
+                            <div class="qr-section">
+                                <div class="qr-code-placeholder">
+                                    <!-- <i class="material-icons">qr_code_2</i> -->
+                                    <img src="{{deposit.currency.qrcode.url}}" alt="QR code" width="150">
+                                </div>
+                                <div class="qr-label">Scan with your wallet app</div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Transaction Info -->
+                        <div style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #e5e7eb;">
+                            <div class="transaction-info-row">
+                                <span class="info-label">Transaction ID</span>
+                                <span class="info-value">#TXN{{deposit.transaction_no}}</span>
+                            </div>
+                            <div class="transaction-info-row">
+                                <span class="info-label">Deposit To</span>
+                                <span class="info-value">
+                                    {% if deposit.deposit_to == 'trading' %}
+                                    Trading Wallet
+                                    {% else %}
+                                    Holding Wallet
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% if deposit.currency %}
+                            <div class="transaction-info-row">
+                                <span class="info-label">Network</span>
+                                <span class="info-value">{{deposit.network}} ({{deposit.currency.currency}})</span>
+                            </div>
+                            {% endif %}
+                            <div class="transaction-info-row">
+                                <span class="info-label">Network Fee</span>
+                                <span class="info-value">$
+                                    {% if deposit.currency %}
+                                    {{deposit.currency.transaction_fee}}
+                                    {% else %}
+                                    {{deposit.gateway.transaction_fee}}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="transaction-info-row">
+                                <span class="info-label"><strong>Total Amount</strong></span>
+                                <span class="info-value" style="color: var(--primary); font-size: 18px;"><strong>${{deposit.grand_total}}</strong></span>
                             </div>
                         </div>
 
-                        <!-- Warning Card -->
-                        <div class="warning-card">
-                            <p>
-                                Please send only <span class="highlight">Tether (USDT) TRC20</span> to this address.<br>
-                                Sending any other token may result in permanent loss.
-                            </p>
+                    </div>
+
+                    <!-- Admin Tag Message -->
+                    <div class="admin-tag-message">
+                        <p>
+                            <strong>Note:</strong> This is a sample admin message. The admin can customize this message to provide important information, warnings, or instructions to users regarding deposits. This message will be displayed on all deposit detail pages.
+                        </p>
+                    </div>
+
+                    <!-- Steps Card -->
+                    <div class="steps-card">
+                        <h6>
+                            <i class="material-icons">lightbulb</i>
+                            How to Complete Your Deposit
+                        </h6>
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-text">Copy the wallet address above or scan the QR code with your crypto wallet app</div>
                         </div>
-
-                        <!-- Payment Details Container -->
-                        <div class="payment-details-container">
-
-                            <!-- Wallet Address and QR Code -->
-                            <div class="address-qr-wrapper">
-                                <!-- Wallet Address Section -->
-                                <div class="address-section">
-                                    <div class="address-label">Wallet Address</div>
-                                    <div class="address-display" id="walletAddress">
-                                        TXhZrb4TeZepf2J4MmhVj3c8JdGvR7kN9P
-                                    </div>
-                                    <button class="copy-button" onclick="copyAddress()">
-                                        <i class="material-icons">content_copy</i>
-                                        Copy Address
-                                    </button>
-                                </div>
-
-                                <!-- QR Code Section -->
-                                <div class="qr-section">
-                                    <div class="qr-code-placeholder">
-                                        <i class="material-icons">qr_code_2</i>
-                                    </div>
-                                    <div class="qr-label">Scan with your wallet app</div>
-                                </div>
-                            </div>
-
-                            <!-- Transaction Info -->
-                            <div style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #e5e7eb;">
-                                <div class="transaction-info-row">
-                                    <span class="info-label">Transaction ID</span>
-                                    <span class="info-value">#TXN2025100001</span>
-                                </div>
-                                <div class="transaction-info-row">
-                                    <span class="info-label">Deposit To</span>
-                                    <span class="info-value">Trading Wallet</span>
-                                </div>
-                                <div class="transaction-info-row">
-                                    <span class="info-label">Network</span>
-                                    <span class="info-value">TRC20 (Tron)</span>
-                                </div>
-                                <div class="transaction-info-row">
-                                    <span class="info-label">Network Fee</span>
-                                    <span class="info-value">$1.00</span>
-                                </div>
-                                <div class="transaction-info-row">
-                                    <span class="info-label"><strong>Total Amount</strong></span>
-                                    <span class="info-value" style="color: var(--primary); font-size: 18px;"><strong>$101.00</strong></span>
-                                </div>
-                            </div>
-
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-text">Send the exact amount shown (${{deposit.grand_total}}) to the address</div>
                         </div>
-
-                        <!-- Admin Tag Message -->
-                        <div class="admin-tag-message">
-                            <p>
-                                <strong>Note:</strong> This is a sample admin message. The admin can customize this message to provide important information, warnings, or instructions to users regarding deposits. This message will be displayed on all deposit detail pages.
-                            </p>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-text">Make sure you select {{deposit.network|upper}} network in your wallet</div>
                         </div>
-
-                        <!-- Steps Card -->
-                        <div class="steps-card">
-                            <h6>
-                                <i class="material-icons">lightbulb</i>
-                                How to Complete Your Deposit
-                            </h6>
-                            <div class="step-item">
-                                <div class="step-number">1</div>
-                                <div class="step-text">Copy the wallet address above or scan the QR code with your crypto wallet app</div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">2</div>
-                                <div class="step-text">Send the exact amount shown ($101.00 USDT) to the address</div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">3</div>
-                                <div class="step-text">Make sure you select TRC20 network in your wallet</div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">4</div>
-                                <div class="step-text">Complete the payment within 30 minutes before the timer expires</div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">5</div>
-                                <div class="step-text">Your account will be credited automatically after blockchain confirmation (3-5 minutes)</div>
-                            </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-text">Complete the payment within 30 minutes before the timer expires</div>
                         </div>
-
-                        <!-- Timer Section -->
-                        <div class="timer-section">
-                            <div class="timer-label">Time Remaining</div>
-                            <div class="timer-display" id="timerDisplay">30:00</div>
-                            <div class="timer-warning">
-                                <i class="material-icons">schedule</i>
-                                Transaction will expire after timer ends
-                            </div>
+                        <div class="step-item">
+                            <div class="step-number">5</div>
+                            <div class="step-text">Your account will be credited automatically after blockchain confirmation (3-5 minutes)</div>
                         </div>
+                    </div>
 
+                    <!-- Timer Section -->
+                    <div class="timer-section">
+                        <div class="timer-label">Time Remaining</div>
+                        <div class="timer-display" id="timerDisplay">
+                            {% if deposit.status == 'cancelled' %}
+                            <span class="text-danger">CANCELLED</span>
+                            {% elif deposit.status == 'paid' %}
+                            <span class="text-success">PAID</span>
+                            {% else %}
+                            30:00
+                            {% endif %}
+                        </div>
+                        <div class="timer-warning">
+                            <i class="material-icons">schedule</i>
+                            Transaction will expire after timer ends
+                        </div>
+                    </div>
+
+                    {% if time_remaining != 0 %}
+                    <form action="" method="post">
+                        {% csrf_token %}
                         <!-- Action Buttons -->
                         <div class="action-buttons">
-                            <button class="btn btn-outline-danger" onclick="if(confirm('Are you sure you want to cancel this transaction?')) window.location.href='deposit.html'">
+                            <button class="btn btn-outline-danger" type="submit" name="cancel">
                                 <i class="material-icons">cancel</i>
                                 Cancel Transaction
                             </button>
-                            <button class="btn btn-primary" onclick="window.location.href='transaction-history.php'">
+                            <button class="btn btn-primary" type="submit" name="pay">
                                 <i class="material-icons">check_circle</i>
                                 I've Made Payment
                             </button>
                         </div>
+                    </form>
+                    {% endif %}
 
-                    </div>
                 </div>
+            </div>
 
             </div>
         </div>
     </div>
 </div>
-{% endblock content %}
+{% endblock %}
 
-{% block extra_scripts %}
+{% block page_scripts %}
 <script>
-    // 30-minute countdown timer
-    let timeRemaining = 30 * 60; // 30 minutes in seconds
-
-    function updateTimer() {
-        const minutes = Math.floor(timeRemaining / 60);
-        const seconds = timeRemaining % 60;
-
-        // Format with leading zeros
-        const displayMinutes = String(minutes).padStart(2, '0');
-        const displaySeconds = String(seconds).padStart(2, '0');
-
-        document.getElementById('timerDisplay').textContent = `${displayMinutes}:${displaySeconds}`;
-
-        // Change color when time is running out (less than 5 minutes)
-        if (timeRemaining <= 300) {
-            document.querySelector('.timer-display').style.color = '#ef4444';
-        }
-
-        // When timer expires
-        if (timeRemaining <= 0) {
-            clearInterval(timerInterval);
-            document.getElementById('timerDisplay').textContent = '00:00';
-            alert('Transaction expired! Please create a new deposit request.');
-            window.location.href = 'deposit.html';
-        }
-
-        timeRemaining--;
-    }
-
-    // Update timer every second
-    const timerInterval = setInterval(updateTimer, 1000);
-    updateTimer(); // Initial call
-
-    // Copy wallet address function
+    // Copy wallet address to clipboard with visual feedback
     function copyAddress() {
         const address = document.getElementById('walletAddress').textContent.trim();
 
-        // Copy to clipboard
         navigator.clipboard.writeText(address).then(function() {
-            // Change button text temporarily
             const btn = document.querySelector('.copy-button');
             const originalHTML = btn.innerHTML;
             btn.innerHTML = '<i class="material-icons">check</i>Copied!';
             btn.style.background = '#10b981';
 
-            // Reset after 2 seconds
             setTimeout(function() {
                 btn.innerHTML = originalHTML;
                 btn.style.background = '';
@@ -217,14 +229,18 @@
         });
     }
 
-    // Django backend will handle:
+    // TODO: Django backend will handle:
     // - Pass transaction details via template context
     // - Generate actual wallet address or get from admin settings
     // - Generate QR code image using Python QR library
+    // - Timer countdown (30 minutes) - handle server-side with expiry time
     // - Calculate network fees from admin configuration
     // - Monitor blockchain for payment
     // - Update transaction status in database
     // - Send email/push notifications to user
     // - Credit user wallet after confirmations
+    // - Cancel transaction should POST to Django backend
+    // - "I've Made Payment" button should POST to Django backend
 </script>
-{% endblock extra_scripts %}
+{% endblock %}
+

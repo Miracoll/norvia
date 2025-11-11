@@ -1,129 +1,162 @@
-{% extends 'account/main.html' %}
-{% block content %}
-<div class="auth-container">
-    <div class="auth-card">
-        <!-- Header -->
-        <div class="auth-header">
-            <div class="auth-logo">
-                <svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="url(#blue-gradient)"/>
-                    <defs>
-                        <linearGradient id="blue-gradient" x1="5" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse">
-                            <stop offset="0%" stop-color="#01A3FF"/>
-                            <stop offset="100%" stop-color="#0284c7"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <span class="auth-logo-text">Norvia.io</span>
-            </div>
-            <h1 class="auth-title">Create Your Account</h1>
-            <p class="auth-subtitle">Already have an account? <a href="{% url 'sign_in' %}">Sign In</a></p>
-        </div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Sign Up - Norvia.io | Advanced Trading Platform</title>
 
-        <!-- Body -->
-        <div class="auth-body">
-            <!-- Error Message (Hidden by default) -->
-            {% if messages %}
-            <div class="mt-3">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            </div>
-            {% endif %}
-            <form method="post">
-                {% csrf_token %}
-                <!-- Name Fields -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="firstName">First Name</label>
-                        <div class="form-input-wrapper">
-                            <input type="text" class="form-input" id="firstName" placeholder="John" name="first_name" required>
-                            <i class="material-icons form-icon">person</i>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="lastName">Last Name</label>
-                        <div class="form-input-wrapper">
-                            <input type="text" class="form-input" id="lastName" placeholder="Anderson" name="last_name" required>
-                            <i class="material-icons form-icon">person</i>
-                        </div>
-                    </div>
-                </div>
+	<!-- Favicon icon -->
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon.png' %}">
 
-                <!-- Email -->
-                <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
-                    <div class="form-input-wrapper">
-                        <input type="email" class="form-input" id="email" placeholder="john.anderson@email.com" name="email" required>
-                        <i class="material-icons form-icon">email</i>
-                    </div>
-                </div>
+	<!-- Material Icons -->
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 
-                <!-- Username -->
-                <div class="form-group">
-                    <label class="form-label" for="username">Username</label>
-                    <div class="form-input-wrapper">
-                        <input type="text" class="form-input" id="username" placeholder="johnanderson" name="username" required>
-                        <i class="material-icons form-icon">alternate_email</i>
-                    </div>
-                </div>
+	<!-- Custom Styles -->
+	<link href="{% static 'css/global.css' %}" rel="stylesheet">
+</head>
+<body class="page-signup">
+	<div class="auth-container">
+		<div class="auth-card">
+			<!-- Header -->
+			<div class="auth-header">
+				<div class="auth-logo">
+					<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="url(#blue-gradient)"/>
+						<defs>
+							<linearGradient id="blue-gradient" x1="5" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse">
+								<stop offset="0%" stop-color="#01A3FF"/>
+								<stop offset="100%" stop-color="#0284c7"/>
+							</linearGradient>
+						</defs>
+					</svg>
+					<span class="auth-logo-text">Norvia.io</span>
+				</div>
+				<h1 class="auth-title">Create Your Account</h1>
+				<p class="auth-subtitle">Already have an account? <a href="{% url 'sign_in' %}">Sign In</a></p>
+			</div>
 
-                <!-- Password -->
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="form-input-wrapper">
-                        <input type="password" class="form-input" id="password" placeholder="Create a strong password" name="password1" required>
-                        <i class="material-icons form-icon">lock</i>
-                        <i class="material-icons password-toggle" onclick="togglePassword('password')">visibility_off</i>
-                    </div>
-                </div>
+			<!-- Body -->
+			<div class="auth-body">
+				<!-- Error Message (Hidden by default) -->
+				<div class="error-message" id="errorMessage" style="display: none;">
+					<i class="material-icons">error</i>
+					<span id="errorText">Something went wrong. Please try again.</span>
+				</div>
 
-                <!-- Confirm Password -->
-                <div class="form-group">
-                    <label class="form-label" for="confirmPassword">Confirm Password</label>
-                    <div class="form-input-wrapper">
-                        <input type="password" class="form-input" id="confirmPassword" placeholder="Re-enter your password" name="password2" required>
-                        <i class="material-icons form-icon">lock</i>
-                        <i class="material-icons password-toggle" onclick="togglePassword('confirmPassword')">visibility_off</i>
-                    </div>
-                </div>
+				<form id="signupForm" method="post">
+					{% csrf_token %}
+					<!-- Name Fields -->
+					<div class="form-row">
+						<div class="form-group">
+							<label class="form-label" for="firstName">First Name</label>
+							<div class="form-input-wrapper">
+								<input type="text" class="form-input" id="firstName" name="firstName" placeholder="John" required>
+								<i class="material-icons form-icon">person</i>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="form-label" for="lastName">Last Name</label>
+							<div class="form-input-wrapper">
+								<input type="text" class="form-input" id="lastName" name="lastName" placeholder="Anderson" required>
+								<i class="material-icons form-icon">person</i>
+							</div>
+						</div>
+					</div>
 
-                <!-- Terms Checkbox -->
-                <div class="checkbox-group">
-                    <input type="checkbox" class="checkbox-input" id="terms" required>
-                    <label class="checkbox-label" for="terms">
-                        I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>
-                    </label>
-                </div>
+					<!-- Email -->
+					<div class="form-group">
+						<label class="form-label" for="email">Email Address</label>
+						<div class="form-input-wrapper">
+							<input type="email" class="form-input" id="email" name="email" placeholder="john.anderson@email.com" required>
+							<i class="material-icons form-icon">email</i>
+						</div>
+					</div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn-submit">
-                    <span>Create Account</span>
-                    <i class="material-icons">arrow_forward</i>
-                </button>
-            </form>
+					<!-- Username -->
+					<div class="form-group">
+						<label class="form-label" for="username">Username</label>
+						<div class="form-input-wrapper">
+							<input type="text" class="form-input" id="username" name="username" placeholder="johnanderson" required>
+							<i class="material-icons form-icon">alternate_email</i>
+						</div>
+					</div>
 
-            <!-- Divider -->
-            <div class="divider">
-                <span>Or continue with</span>
-            </div>
+					<!-- Password -->
+					<div class="form-group">
+						<label class="form-label" for="password">Password</label>
+						<div class="form-input-wrapper">
+							<input type="password" class="form-input" id="password" name="password" placeholder="Create a strong password" required>
+							<i class="material-icons form-icon">lock</i>
+							<i class="material-icons password-toggle">visibility_off</i>
+						</div>
+					</div>
 
-            <!-- Social Login -->
-            <div class="social-login">
-                <button type="button" class="btn-social" onclick="socialLogin('google')">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
-                    <span>Continue with Google</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock content %}
+					<!-- Confirm Password -->
+					<div class="form-group">
+						<label class="form-label" for="confirmPassword">Confirm Password</label>
+						<div class="form-input-wrapper">
+							<input type="password" class="form-input" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required>
+							<i class="material-icons form-icon">lock</i>
+							<i class="material-icons password-toggle">visibility_off</i>
+						</div>
+					</div>
+
+					<!-- Terms Checkbox -->
+					<div class="checkbox-group">
+						<input type="checkbox" class="checkbox-input" id="terms" name="terms" required>
+						<label class="checkbox-label" for="terms">
+							I agree to the <a href="{% url 'home' %}" target="_blank">Terms of Service</a> and <a href="{% url 'home' %}" target="_blank">Privacy Policy</a>
+						</label>
+					</div>
+
+					<!-- Submit Button -->
+					<button type="submit" class="btn-submit">
+						<span>Create Account</span>
+						<i class="material-icons">arrow_forward</i>
+					</button>
+				</form>
+
+				<!-- Divider -->
+				<div class="divider">
+					<span>Or continue with</span>
+				</div>
+
+				<!-- Social Login -->
+				<div class="social-login">
+					<button type="button" class="btn-social">
+						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+							<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+							<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+							<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+						</svg>
+						<span>Continue with Google</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function togglePassword(inputId) {
+			const input = document.getElementById(inputId);
+			const icon = input.parentElement.querySelector('.password-toggle');
+
+			if (input.type === 'password') {
+				input.type = 'text';
+				icon.textContent = 'visibility';
+			} else {
+				input.type = 'password';
+				icon.textContent = 'visibility_off';
+			}
+		}
+
+		function socialLogin(provider) {
+			console.log('Social login with:', provider);
+			alert(`${provider} login will be implemented by the backend developer`);
+		}
+	</script>
+</body>
+</html>

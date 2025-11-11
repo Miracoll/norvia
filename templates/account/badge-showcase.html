@@ -1,0 +1,371 @@
+{%extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Badge Showcase | Norvia.io{% endblock %}
+
+{% block body_class %}page-badgeshowcase{% endblock %}
+
+{% block content %}
+<div class="showcase-container">
+	<div class="page-header">
+		<h1>InferraAI Account Badge System</h1>
+		<p>Achievement-based badge tiers</p>
+	</div>
+
+	<!-- FREE TIER -->
+	<div class="tier-card free">
+		<div class="tier-content">
+			<div class="tier-header">
+				<div class="tier-info">
+					<h2>Free Account</h2>
+					<p class="tier-price">Default - All New Users</p>
+				</div>
+				<div class="badge-demo free-badge">
+					<i class="material-icons">account_circle</i>
+					<span>Free Account</span>
+				</div>
+			</div>
+
+			<!-- Upgrade Requirements -->
+			<div style="background: #f0f9ff; border: 2px solid #bfdbfe; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+				<h4 style="font-size: 14px; font-weight: 600; color: #1e40af; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+					<i class="material-icons" style="font-size: 18px;">info</i>
+					Requirements
+				</h4>
+				<p style="font-size: 13px; color: #1e3a8a; margin: 0;">
+					All new users start with Free Account
+				</p>
+			</div>
+
+			<div class="tier-features">
+				<h3>Features</h3>
+				<div class="feature-grid">
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Copy 1 Trader</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">$500 Max Allocation</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Basic Analytics</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Email Support</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">0.5% Trading Fee</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">$5 Withdrawal Fee</span>
+					</div>
+					<div class="feature-item disabled">
+						<i class="material-icons">cancel</i>
+						<span class="feature-text">Advanced Tools</span>
+					</div>
+					<div class="feature-item disabled">
+						<i class="material-icons">cancel</i>
+						<span class="feature-text">Priority Support</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Profile Demo -->
+			<div class="profile-demo" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">
+				<div class="profile-demo-content">
+					<div class="profile-demo-avatar"></div>
+					<div class="profile-demo-info">
+						<h4>John Smith</h4>
+						<p class="profile-demo-username">@johnsmith</p>
+						<div class="badge-demo free-badge">
+							<i class="material-icons">account_circle</i>
+							<span>Free Account</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- STANDARD TIER -->
+	<div class="tier-card standard">
+		<div class="tier-content">
+			<div class="tier-header">
+				<div class="tier-info">
+					<h2>Standard Account</h2>
+					<p class="tier-price">Achievement-Based Upgrade</p>
+				</div>
+				<div class="badge-demo standard-badge">
+					<i class="material-icons">verified</i>
+					<span>Standard Account</span>
+				</div>
+			</div>
+
+			<!-- Upgrade Requirements -->
+			<div style="background: #f0f9ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+				<h4 style="font-size: 14px; font-weight: 600; color: #1e40af; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+					<i class="material-icons" style="font-size: 18px;">info</i>
+					Requirements
+				</h4>
+				<p style="font-size: 13px; color: #1e3a8a; margin: 0; line-height: 1.6;">
+					<strong>Total Deposits: $1,000 - $5,000</strong>
+				</p>
+			</div>
+
+			<div class="tier-features">
+				<h3>Features</h3>
+				<div class="feature-grid">
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Copy 3 Traders</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">$2,500 Max Allocation</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Standard Analytics</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Priority Email Support</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">0.4% Trading Fee</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">$3 Withdrawal Fee</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Basic Risk Tools</span>
+					</div>
+					<div class="feature-item disabled">
+						<i class="material-icons">cancel</i>
+						<span class="feature-text">Unlimited Copying</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Profile Demo -->
+			<div class="profile-demo" style="background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);">
+				<div class="profile-demo-content">
+					<div class="profile-demo-avatar"></div>
+					<div class="profile-demo-info">
+						<h4>Sarah Johnson</h4>
+						<p class="profile-demo-username">@sarahjohnson</p>
+						<div class="badge-demo standard-badge">
+							<i class="material-icons">verified</i>
+							<span>Standard Account</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- PREMIUM TIER -->
+	<div class="tier-card premium">
+		<div class="tier-content">
+			<div class="tier-header">
+				<div class="tier-info">
+					<h2>Premium Account</h2>
+					<p class="tier-price">Achievement-Based Upgrade</p>
+				</div>
+				<div class="badge-demo premium-badge">
+					<i class="material-icons">workspace_premium</i>
+					<span>Premium Account</span>
+				</div>
+			</div>
+
+			<!-- Upgrade Requirements -->
+			<div style="background: #f5f3ff; border: 2px solid #a78bfa; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+				<h4 style="font-size: 14px; font-weight: 600; color: #6d28d9; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+					<i class="material-icons" style="font-size: 18px;">info</i>
+					Requirements
+				</h4>
+				<p style="font-size: 13px; color: #5b21b6; margin: 0; line-height: 1.6;">
+					<strong>Total Deposits: $5,000+</strong><br>
+					<strong>Trading Volume: $20,000+</strong>
+				</p>
+			</div>
+
+			<div class="tier-features">
+				<h3>Features</h3>
+				<div class="feature-grid">
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Unlimited Traders</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">$10,000 Max Allocation</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Advanced Analytics</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Live Chat Support</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">0.25% Trading Fee</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">$1 Withdrawal Fee</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Advanced Risk Tools</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Custom Strategies</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Profile Demo -->
+			<div class="profile-demo" style="background: linear-gradient(135deg, #01A3FF 0%, #0284c7 100%);">
+				<div class="profile-demo-content">
+					<div class="profile-demo-avatar"></div>
+					<div class="profile-demo-info">
+						<h4>John Anderson</h4>
+						<p class="profile-demo-username">@johnanderson</p>
+						<div class="badge-demo premium-badge">
+							<i class="material-icons">workspace_premium</i>
+							<span>Premium Account</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- VIP TIER -->
+	<div class="tier-card vip">
+		<div class="tier-content">
+			<div class="tier-header">
+				<div class="tier-info">
+					<h2>VIP Elite Account</h2>
+					<p class="tier-price">Achievement-Based Upgrade</p>
+				</div>
+				<div class="badge-demo vip-badge">
+					<i class="material-icons">military_tech</i>
+					<span>VIP Account</span>
+				</div>
+			</div>
+
+			<!-- Upgrade Requirements -->
+			<div style="background: #fffbeb; border: 2px solid #fbbf24; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+				<h4 style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+					<i class="material-icons" style="font-size: 18px;">info</i>
+					Requirements
+				</h4>
+				<p style="font-size: 13px; color: #78350f; margin: 0; line-height: 1.6;">
+					<strong>Total Deposits: $50,000+</strong>
+				</p>
+			</div>
+
+			<div class="tier-features">
+				<h3>Features</h3>
+				<div class="feature-grid">
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Unlimited Traders</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Unlimited Allocation</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Pro Analytics + API</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Dedicated Manager</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">0.1% Trading Fee</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Free Withdrawals</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Custom Risk Management</span>
+					</div>
+					<div class="feature-item">
+						<i class="material-icons">check_circle</i>
+						<span class="feature-text">Priority Execution</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Profile Demo -->
+			<div class="profile-demo" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+				<div class="profile-demo-content">
+					<div class="profile-demo-avatar"></div>
+					<div class="profile-demo-info" style="color: #78350f;">
+						<h4>Michael Chen</h4>
+						<p class="profile-demo-username" style="color: white;">@michaelchen</p>
+						<div class="badge-demo vip-badge">
+							<i class="material-icons">military_tech</i>
+							<span>VIP Account</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Badge Summary -->
+	<div style="background: white; border-radius: 16px; padding: 30px; margin-top: 40px; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);">
+		<h3 style="font-size: 24px; font-weight: 700; margin-bottom: 15px; color: #1a1a1a;">Badge Upgrade Thresholds</h3>
+		<p style="font-size: 15px; color: #6b7280; max-width: 800px; margin: 0 auto 30px; line-height: 1.6;">
+			Badges are automatically upgraded when users meet the deposit and trading requirements. Each tier unlocks better features and lower fees.
+		</p>
+
+		<div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 25px; border: 2px solid #bae6fd;">
+			<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center;">
+				<div>
+					<div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600;">FREE</div>
+					<div style="font-size: 16px; font-weight: 700; color: #0f172a;">$0</div>
+					<div style="font-size: 12px; color: #64748b;">Default</div>
+				</div>
+				<div>
+					<div style="font-size: 13px; color: #3b82f6; margin-bottom: 6px; font-weight: 600;">STANDARD</div>
+					<div style="font-size: 16px; font-weight: 700; color: #1e40af;">$1K - $5K</div>
+					<div style="font-size: 12px; color: #64748b;">Deposits</div>
+				</div>
+				<div>
+					<div style="font-size: 13px; color: #8b5cf6; margin-bottom: 6px; font-weight: 600;">PREMIUM</div>
+					<div style="font-size: 16px; font-weight: 700; color: #6d28d9;">$5K+ & $20K</div>
+					<div style="font-size: 12px; color: #64748b;">Deposits + Trades</div>
+				</div>
+				<div>
+					<div style="font-size: 13px; color: #f59e0b; margin-bottom: 6px; font-weight: 600;">VIP</div>
+					<div style="font-size: 16px; font-weight: 700; color: #92400e;">$50K+</div>
+					<div style="font-size: 12px; color: #64748b;">Deposits</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="vendor/global/global.min.js"></script>
+{% endblock %}

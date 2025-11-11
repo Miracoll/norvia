@@ -1,105 +1,104 @@
+{% extends "account/base.html" %}
 {% load static %}
 {% load humanize %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  	<!-- Title -->
-	<title>Dashboard | Norvia.io - Advanced Copy Trading Platform</title>
-	
-	<!-- Meta -->
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="author" content="Dexignlabs">
-	<meta name="robots" content="">
-	
-	<meta name="keywords" content="admin dashboard, admin template, analytics, bootstrap, bootstrap 5 admin template, finance admin, admin, modern, responsive admin dashboard, sales dashboard, sass, ui kit, web app, bootstrap5, admin panel, Crypto Trading, Cryptocurrency, Trading Platform, Financial Insights, Efficiency, Data Visualization, User-Friendly, User Interface, Investment, Financial Management, Trading Tools, Performance Metrics, Real-Time Data, Portfolio Optimization, bitcoin, share market">
-	
-	<meta name="description" content="Unlock the full potential of data through the FinLab Crypto Trading Admin Dashboard Template. Seamlessly optimize your cryptocurrency trading activities with this elegantly designed and user-friendly dashboard, meticulously crafted to elevate both your financial insights and operational efficiency.">
-	
-	<meta property="og:title" content="FinLab Crypto Trading Admin Dashboard Template | Dexignlabs">
-	<meta property="og:description" content="Unlock the full potential of data through the FinLab Crypto Trading Admin Dashboard Template. Seamlessly optimize your cryptocurrency trading activities with this elegantly designed and user-friendly dashboard, meticulously crafted to elevate both your financial insights and operational efficiency.">
-	<meta property="og:image" content="https://finlab.dexignlab.com/xhtml/social-image.png">
-	<meta name="format-detection" content="telephone=no">
-	
-	<meta name="twitter:title" content="FinLab Crypto Trading Admin Dashboard Template | Dexignlabs">
-	<meta name="twitter:description" content="Unlock the full potential of data through the FinLab Crypto Trading Admin Dashboard Template. Seamlessly optimize your cryptocurrency trading activities with this elegantly designed and user-friendly dashboard, meticulously crafted to elevate both your financial insights and operational efficiency.">
-	<meta name="twitter:image" content="https://finlab.dexignlab.com/xhtml/social-image.png">
-	<meta name="twitter:card" content="summary_large_image">
 
-	<!-- Mobile Specific -->
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<!-- FAVICONS ICON -->
-	
-	<link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
-	<link rel="stylesheet" href="{% static 'account/vendor/chartist/css/chartist.min.css' %}">
-	<link href="{% static 'account/vendor/wow-master/css/libs/animate.css' %}" rel="stylesheet">
-	<link href="{% static 'account/vendor/bootstrap-select/dist/css/bootstrap-select.min.css' %}" rel="stylesheet">
-	
-	<link href="{% static 'account/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
-	<!--swiper-slider-->
-	<link rel="stylesheet" href="{% static 'account/vendor/swiper/css/swiper-bundle.min.css' %}">
-	
-	<!-- Style css -->
-      <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link href="{% static 'account/css/style.css' %}" rel="stylesheet">
+{% block page_css %}
+<link href="{% static 'vendor/bootstrap-select/dist/css/bootstrap-select.min.css' %}" rel="stylesheet">
+{% endblock %}
 
-	<!-- Custom Fixes -->
-	
+{% block page_scripts %}
+<!-- Bootstrap Select -->
+<script src="{% static 'vendor/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
+<!-- Dashboard JavaScript -->
+<script src="{% static 'js/dashboard.js' %}"></script>
+<!-- Alert Display JavaScript -->
+<script src="{% static 'js/alert-display.js' %}"></script>
 
-	<link href="{% static 'account/css/global.css' %}" rel="stylesheet">
-</head>
-<body class="page-dashboard">
+<!-- Transfer Modal Functions -->
+<script>
+	// Transfer Modal Functions
+	let currentFromWallet = 'trading';
+	let currentToWallet = 'holding';
 
-    <!--**********************************
-        Main wrapper start
-    ***********************************-->
-    <div id="main-wrapper" class=" show">
-	
-        <!--**********************************
-            Nav header start
-        ***********************************-->
-        <div class="nav-header">
-            <a href="{% static 'home' %}" class="brand-logo">
-				<svg class="logo-abbr" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="url(#blue-gradient)"/>
-					<defs>
-						<linearGradient id="blue-gradient" x1="5" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse">
-							<stop offset="0%" stop-color="#01A3FF"/>
-							<stop offset="100%" stop-color="#0284c7"/>
-						</linearGradient>
-					</defs>
-				</svg>
-				<div class="brand-title">
-					<h2 class="logo-text" style="font-size: 22px; font-weight: 700; color: #2A353A; margin: 0;">Norvia.io</h2>
-				</div> 
+	// Swap wallets function
+	function swapWallets() {
+		// Swap the wallet values
+		const temp = currentFromWallet;
+		currentFromWallet = currentToWallet;
+		currentToWallet = temp;
 
-            </a>
-            <div class="nav-control">
-                <div class="hamburger">
-                    <span class="line"></span><span class="line"></span><span class="line"></span>
-					<svg width="20" height="20" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<rect x="22" y="11" width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect x="11" width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect x="22" width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect x="11" y="11" width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect x="11" y="22" width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect y="11" width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect x="22" y="22" width="4" height="4" rx="2" fill="#2A353A"/>
-						<rect y="22" width="4" height="4" rx="2" fill="#2A353A"/>
-					</svg>		
-                </div>
-            </div>
-        </div>
-        <!--**********************************
-            Nav header end
-        ***********************************-->
-		
-		{% include 'account/top_nav.html' %}
-        {% include 'account/side_nav.html' %}
-		
-		<!--**********************************
+		// Update display
+		updateWalletDisplay();
+	}
+
+	// Update wallet display
+	function updateWalletDisplay() {
+		const fromDisplay = document.getElementById('fromWalletDisplay');
+		const toDisplay = document.getElementById('toWalletDisplay');
+
+		fromDisplay.textContent = currentFromWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
+		toDisplay.textContent = currentToWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
+
+		// Update available balance
+		updateAvailableBalance();
+	}
+
+	// Set max amount function
+	function setMaxAmount() {
+		const maxBalance = walletData[currentFromWallet].deposit.usd;
+		document.getElementById('transferAmount').value = maxBalance.toFixed(2);
+	}
+
+	// Update available balance
+	function updateAvailableBalance() {
+		const balance = walletData[currentFromWallet].deposit.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+		document.getElementById('availableBalance').textContent = balance;
+	}
+
+	// Show success alert
+	function showTransferSuccess() {
+		// Django will handle showing success messages
+		alert('Transfer successful!');
+	}
+
+	function processTransfer() {
+		const amount = parseFloat(document.getElementById('transferAmount').value);
+
+		if (isNaN(amount) || amount <= 0) {
+			alert('Please enter a valid amount');
+			return;
+		}
+
+		const fromBalance = walletData[currentFromWallet].deposit.usd;
+		if (amount > fromBalance) {
+			alert('Insufficient balance');
+			return;
+		}
+
+		// Django will handle the actual transfer
+		// Close modal
+		const modal = bootstrap.Modal.getInstance(document.getElementById('transferModal'));
+		modal.hide();
+
+		// Show success alert
+		showTransferSuccess();
+
+		// Reset form
+		document.getElementById('transferAmount').value = '';
+	}
+
+	// Reset to default when modal opens
+	document.getElementById('transferModal')?.addEventListener('show.bs.modal', function() {
+		currentFromWallet = 'trading';
+		currentToWallet = 'holding';
+		updateWalletDisplay();
+		document.getElementById('transferAmount').value = '';
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+
             Content body start
         ***********************************-->
         <div class="content-body default-height">
@@ -133,8 +132,9 @@
 						<div class="row">
 							<div class="col-xl-12">
 								<!-- KYC Notification -->
-								 {% if not request.user.complete_kyc_verification %}
-								<div id="kycNotification" class="alert-banner kyc-banner" style="display: none;">
+								<!-- TODO: Django backend should pass 'show_kyc_notification' context variable -->
+								<!-- Example in views.py: context['show_kyc_notification'] = not request.user.kyc_verified -->
+								<div id="kycNotification" class="alert-banner kyc-banner" style="display: none;" data-show>
 									<div class="alert-banner-content">
 										<div class="alert-banner-icon">
 											<i class="material-icons">info</i>
@@ -151,7 +151,6 @@
 										</button>
 									</div>
 								</div>
-								{% endif %}
 
 								<!-- Admin Notification -->
 								<div id="adminNotification" class="alert-banner admin-banner" style="display: none;">
@@ -187,7 +186,7 @@
 															</div>
 															<div class="balance-toggle-group">
 																<button class="balance-toggle-btn active" id="tradingDepositBtn" onclick="showTradingBalance('deposit')">
-																	Deposited
+																	Deposit
 																</button>
 																<button class="balance-toggle-btn" id="tradingTradingBtn" onclick="showTradingBalance('trading')">
 																	Profit
@@ -196,14 +195,14 @@
 														</div>
 
 														<div class="balance-row">
-															<div class="balance-number" id="tradingBalanceDisplay">${{request.user.deposit|intcomma}}</div>
+															<div class="balance-number" id="tradingBalanceDisplay" data-deposit-usd="${{request.user.profit|intcomma}}" data-trading-usd="${{request.user.deposit|intcomma}}">${{request.user.profit|intcomma}}</div>
 															<button class="visibility-toggle-btn" onclick="toggleTradingBalance()">
 																<i class="material-icons" id="tradingEyeIcon">visibility_off</i>
 															</button>
 														</div>
 
 														<div class="btc-equiv" id="tradingBtcDisplay">
-															≈ <span id="tradingBtcValue">0.0832</span> BTC
+															≈ <span id="tradingBtcValue" data-deposit-btc="0.0832" data-trading-btc="0.0192">0.0832</span> BTC
 														</div>
 
 														<div class="swipe-hint">
@@ -224,7 +223,7 @@
 															</div>
 															<div class="balance-toggle-group">
 																<button class="balance-toggle-btn active" id="holdingDepositBtn" onclick="showHoldingBalance('deposit')">
-																	Deposited
+																	Deposit
 																</button>
 																<button class="balance-toggle-btn" id="holdingTradingBtn" onclick="showHoldingBalance('trading')">
 																	Profit
@@ -233,14 +232,14 @@
 														</div>
 
 														<div class="balance-row">
-															<div class="balance-number" id="holdingBalanceDisplay">${{request.user.balance|intcomma}}</div>
+															<div class="balance-number" id="holdingBalanceDisplay" data-deposit-usd="${{request.user.holding_profit|intcomma}}" data-trading-usd="${{request.user.holding_deposit|intcomma}}">${{request.user.holding_profit|intcomma}}</div>
 															<button class="visibility-toggle-btn" onclick="toggleHoldingBalance()">
 																<i class="material-icons" id="holdingEyeIcon">visibility_off</i>
 															</button>
 														</div>
 
 														<div class="btc-equiv" id="holdingBtcDisplay">
-															≈ <span id="holdingBtcValue">0.0279</span> BTC
+															≈ <span id="holdingBtcValue" data-deposit-btc="0.0279" data-trading-btc="0.0052">0.0279</span> BTC
 														</div>
 													</div>
 												</div>
@@ -251,14 +250,13 @@
 
 									<!-- Action Buttons Below Wallet (4 Column Grid - Bybit Style) -->
 									<div class="action-buttons-row" style="margin-top: 20px;">
-										<button class="action-button" onclick="window.location.href='{% url "deposit" %}'">
+										<button class="action-button" onclick="window.location.href='{% url 'deposit' %}'">
 											<div class="action-icon">
 												<i class="material-icons">add_circle</i>
 											</div>
 											<span>Deposit</span>
 										</button>
-										
-										<button class="action-button">
+										<button class="action-button" onclick="window.location.href='{% url 'withdraw' %}'">
 											<div class="action-icon">
 												<i class="material-icons">remove_circle</i>
 											</div>
@@ -270,7 +268,7 @@
 											</div>
 											<span>Transfer</span>
 										</button>
-										<button class="action-button" onclick="window.location.href='copy-traders.html'">
+										<button class="action-button" onclick="window.location.href='{% url 'copy_trader' %}'">
 											<div class="action-icon">
 												<i class="material-icons">group_add</i>
 											</div>
@@ -340,7 +338,7 @@
 										<div class="signal-value-compact">No Active Plan</div>
 									</div>
 									<div class="signal-action-compact">
-										<button class="signal-btn-compact" onclick="window.location.href='planning.html'">
+										<button class="signal-btn-compact" onclick="window.location.href='{% url 'planning' %}'">
 											<i class="material-icons">add_circle</i>
 											<span>Get Plan</span>
 										</button>
@@ -468,7 +466,7 @@
 									<div class="card-header border-0 pb-0">
 										<div class="d-flex justify-content-between align-items-center w-100">
 											<h4 class="card-title mb-0" style="font-size: 18px; font-weight: 700;">My Trades</h4>
-											<a href="trade-history.php" class="view-all-link">
+											<a href="#" class="view-all-link">
 												View All
 												<i class="material-icons" style="font-size: 16px;">arrow_forward</i>
 											</a>
@@ -648,7 +646,7 @@
 													<tr>
 														<td>
 															<div class="d-flex align-items-center">
-																<img src="{% static 'account/images/avatar/1.jpg' %}" class="rounded-circle me-2" width="40" height="40" alt="">
+																<img src="images/avatar/1.jpg" class="rounded-circle me-2" width="40" height="40" alt="">
 																<div>
 																	<h6 class="mb-0">John Trader</h6>
 																	<small class="text-muted">@johntrader</small>
@@ -666,7 +664,7 @@
 													<tr>
 														<td>
 															<div class="d-flex align-items-center">
-																<img src="{% static 'account/images/avatar/2.jpg' %}" class="rounded-circle me-2" width="40" height="40" alt="">
+																<img src="images/avatar/2.jpg" class="rounded-circle me-2" width="40" height="40" alt="">
 																<div>
 																	<h6 class="mb-0">Sarah Pro</h6>
 																	<small class="text-muted">@sarahpro</small>
@@ -684,7 +682,7 @@
 													<tr>
 														<td>
 															<div class="d-flex align-items-center">
-																<img src="{% static 'account/images/avatar/3.jpg' %}" class="rounded-circle me-2" width="40" height="40" alt="">
+																<img src="images/avatar/3.jpg" class="rounded-circle me-2" width="40" height="40" alt="">
 																<div>
 																	<h6 class="mb-0">Mike Expert</h6>
 																	<small class="text-muted">@mikeexpert</small>
@@ -713,9 +711,6 @@
 			</div>
 		</div>
 	</div>
-	<!--**********************************
-		Content body end
-	***********************************-->
 
 	<!-- Transfer Modal -->
 	<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
@@ -791,957 +786,4 @@
 		</div>
 	</div>
 
-<!--**********************************
-	Modal
-***********************************-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-		<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		</div>
-		<div class="modal-body">
-			<div class="input-group mb-3 d-block">
-			<label  class="form-label d-block">Enter Name</label>
-			<input type="text" class="form-control w-100" placeholder="Username" aria-label="Username">
-			</div>
-			<div class="input-group mb-3 d-block">
-			<label class="form-label d-block">Enter Position</label>
-			<input type="text" class="form-control w-100" placeholder="Username" aria-label="Username">
-			</div>
-		</div>
-		<div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-			<button type="button" class="btn btn-primary">Save changes</button>
-		</div>
-	</div>
-	</div>
-</div>
-
-<!--**********************************
-	Modal
-***********************************-->
-
-    <!--**********************************
-        Scripts
-    ***********************************-->
-
-	<script>
-		// Transfer Modal Functions
-		let currentFromWallet = 'trading';
-		let currentToWallet = 'holding';
-
-		// Swap wallets function
-		function swapWallets() {
-			// Swap the wallet values
-			const temp = currentFromWallet;
-			currentFromWallet = currentToWallet;
-			currentToWallet = temp;
-
-			// Update display
-			updateWalletDisplay();
-		}
-
-		// Update wallet display
-		function updateWalletDisplay() {
-			const fromDisplay = document.getElementById('fromWalletDisplay');
-			const toDisplay = document.getElementById('toWalletDisplay');
-
-			fromDisplay.textContent = currentFromWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
-			toDisplay.textContent = currentToWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
-
-			// Update available balance
-			updateAvailableBalance();
-		}
-
-		// Set max amount function
-		function setMaxAmount() {
-			const maxBalance = walletData[currentFromWallet].deposit.usd;
-			document.getElementById('transferAmount').value = maxBalance.toFixed(2);
-		}
-
-		// Update available balance
-		function updateAvailableBalance() {
-			const balance = walletData[currentFromWallet].deposit.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-			document.getElementById('availableBalance').textContent = balance;
-		}
-
-		// Show success alert
-		function showTransferSuccess() {
-			const alert = document.getElementById('transferSuccessAlert');
-			alert.style.display = 'flex';
-
-			// Fade out after 3 seconds
-			setTimeout(() => {
-				alert.style.animation = 'fadeOut 0.5s ease-out';
-				setTimeout(() => {
-					alert.style.display = 'none';
-					alert.style.animation = 'slideDown 0.3s ease-out';
-				}, 500);
-			}, 3000);
-		}
-
-		function processTransfer() {
-			const amount = parseFloat(document.getElementById('transferAmount').value);
-
-			if (isNaN(amount) || amount <= 0) {
-				alert('Please enter a valid amount');
-				return;
-			}
-
-			const fromBalance = walletData[currentFromWallet].deposit.usd;
-			if (amount > fromBalance) {
-				alert('Insufficient balance');
-				return;
-			}
-
-			
-			// Close modal
-			const modal = bootstrap.Modal.getInstance(document.getElementById('transferModal'));
-			modal.hide();
-
-			// Show success alert
-			showTransferSuccess();
-
-			// Reset form
-			document.getElementById('transferAmount').value = '';
-		}
-
-		// Reset to default when modal opens
-		document.getElementById('transferModal')?.addEventListener('show.bs.modal', function() {
-			currentFromWallet = 'trading';
-			currentToWallet = 'holding';
-			updateWalletDisplay();
-			document.getElementById('transferAmount').value = '';
-		});
-
-		// Copy Trading Circle Countdown Timer
-		function initCopyTradingCircle() {
-			// Set circle end date (example: 30 days from now)
-			// In production, this should come from backend/admin settings
-			const circleEndDate = new Date();
-			circleEndDate.setDate(circleEndDate.getDate() + 30); // 30 days circle
-
-			function updateCountdown() {
-				const now = new Date().getTime();
-				const distance = circleEndDate.getTime() - now;
-
-				if (distance < 0) {
-					// Countdown finished
-					document.getElementById('circle-days').textContent = '00';
-					document.getElementById('circle-hours').textContent = '00';
-					document.getElementById('circle-minutes').textContent = '00';
-					document.getElementById('circle-seconds').textContent = '00';
-					return;
-				}
-
-				// Calculate time units
-				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-				// Update display with leading zeros
-				document.getElementById('circle-days').textContent = String(days).padStart(2, '0');
-				document.getElementById('circle-hours').textContent = String(hours).padStart(2, '0');
-				document.getElementById('circle-minutes').textContent = String(minutes).padStart(2, '0');
-				document.getElementById('circle-seconds').textContent = String(seconds).padStart(2, '0');
-			}
-
-			// Update immediately and then every second
-			updateCountdown();
-			setInterval(updateCountdown, 1000);
-		}
-
-		// Initialize countdown when page loads
-		document.addEventListener('DOMContentLoaded', function() {
-			initCopyTradingCircle();
-		});
-
-		// Dismiss Trading Circle
-		function dismissTradingCircle() {
-			const circleRow = document.getElementById('copyTradingCircleRow');
-			if (circleRow) {
-				circleRow.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-				circleRow.style.opacity = '0';
-				circleRow.style.transform = 'translateY(-20px)';
-				setTimeout(() => {
-					circleRow.style.display = 'none';
-				}, 300);
-
-				// Store dismissal in localStorage
-				localStorage.setItem('tradingCircleDismissed', 'true');
-			}
-		}
-
-		// Check if trading circle was dismissed
-		document.addEventListener('DOMContentLoaded', function() {
-			const isDismissed = localStorage.getItem('tradingCircleDismissed');
-			if (isDismissed === 'true') {
-				const circleRow = document.getElementById('copyTradingCircleRow');
-				if (circleRow) {
-					circleRow.style.display = 'none';
-				}
-			}
-		});
-	</script>
-
-    <!-- Required vendors -->
-    <script src="{% static 'account/vendor/global/global.min.js' %}"></script>
-	<script src="{% static 'account/vendor/chart-js/chart.bundle.min.js' %}"></script>
-	<script src="{% static 'account/vendor/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
-	<!--datatables-->
-	<script src="{% static 'account/vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
-
-	<!-- Apex Chart -->
-	<script src="{% static 'account/vendor/apexchart/apexchart.js' %}"></script>
-	<script src="{% static 'account/vendor/chart-js/chart.bundle.min.js' %}"></script>
-
-	<!-- Chart piety plugin files -->
-    <script src="{% static 'account/vendor/peity/jquery.peity.min.js' %}"></script>
-	<!--swiper-slider-->
-	<script src="{% static 'account/vendor/swiper/js/swiper-bundle.min.js' %}"></script>
-	<script src="{% static 'account/vendor/wow-master/dist/wow.min.js' %}"></script>
-	<script src="{% static 'account/js/dashboard/crypto.js' %}"></script>
-    <script src="{% static 'account/js/custom.min.js' %}"></script>
-	<script src="{% static 'account/js/dlabnav-init.js' %}"></script>
-
-	<!-- Remove floating buttons and popups added by theme -->
-	<script>
-		// Track elements we've already processed to avoid re-processing
-		const processedElements = new WeakSet();
-
-		// Function to remove floating buttons and sale popups
-		function removeFloatingButtons() {
-			// Remove sale popups and banners
-			const saleElements = document.querySelectorAll('.dlab-sale-banner, .dzSaleBanner, #dzSaleBanner, .dlab-demo-panel, [class*="sale-banner"]');
-			saleElements.forEach(el => {
-				if (!processedElements.has(el)) {
-					processedElements.add(el);
-					el.remove();
-				}
-			});
-
-			// Remove chatbox toggle button if it exists
-			const chatboxToggle = document.querySelector('.chatbox-icon-toggle, .dlab-chatbox-toggle, [data-target=".chatbox"]');
-			if (chatboxToggle && !processedElements.has(chatboxToggle)) {
-				processedElements.add(chatboxToggle);
-				chatboxToggle.remove();
-			}
-
-			// Remove any other floating buttons
-			const floatingButtons = document.querySelectorAll('.add-menu-sidebar, .sidebar-right-trigger, .fixed-content-box, .DZ-bt-buy-now, .DZ-bt-support-now');
-			floatingButtons.forEach(btn => {
-				if (!processedElements.has(btn)) {
-					processedElements.add(btn);
-					btn.remove();
-				}
-			});
-
-			// Remove any direct body children that are sale popups (more targeted approach)
-			document.querySelectorAll('body > div').forEach(el => {
-				// Skip if already processed
-				if (processedElements.has(el)) {
-					return;
-				}
-
-				// Skip swiper-related elements
-				if (el.classList.contains('swiper-notification') ||
-					el.classList.contains('swiper-pagination') ||
-					el.closest('.swiper')) {
-					return;
-				}
-
-				// Skip main wrapper and essential elements
-				if (el.id === 'main-wrapper' ||
-					el.classList.contains('header') ||
-					el.classList.contains('dlabnav') ||
-					el.classList.contains('content-body') ||
-					el.classList.contains('footer')) {
-					return;
-				}
-
-				const style = window.getComputedStyle(el);
-
-				// Check if it's a sale/promotional popup by text content
-				if (el.textContent && (
-					el.textContent.includes('DIWALI') ||
-					el.textContent.includes('Diwali') ||
-					el.textContent.includes('DHAMAKA') ||
-					el.textContent.includes('GRAB SALE')
-				)) {
-					processedElements.add(el);
-					el.remove();
-					return;
-				}
-
-				// Remove fixed position elements with very high z-index (popups/overlays)
-				// but skip Swiper notification elements
-				if (style.position === 'fixed' && !el.classList.contains('swiper-notification')) {
-					const zIndex = parseInt(style.zIndex);
-					// Only remove if z-index is extremely high (typical for promotional popups)
-					if (zIndex > 9000) {
-						processedElements.add(el);
-						el.remove();
-					}
-				}
-			});
-		}
-
-		// Run immediately
-		removeFloatingButtons();
-
-		// Run after DOM is fully loaded
-		document.addEventListener('DOMContentLoaded', function() {
-			removeFloatingButtons();
-		});
-
-		// Run after short delays to catch dynamically added elements
-		setTimeout(removeFloatingButtons, 100);
-		setTimeout(removeFloatingButtons, 500);
-		setTimeout(removeFloatingButtons, 1000);
-		setTimeout(removeFloatingButtons, 2000);
-
-		// Watch for new elements being added with throttling
-		let observerTimeout;
-		const observer = new MutationObserver(function(mutations) {
-			// Throttle the observer to avoid excessive calls
-			clearTimeout(observerTimeout);
-			observerTimeout = setTimeout(() => {
-				mutations.forEach(function(mutation) {
-					if (mutation.addedNodes.length) {
-						mutation.addedNodes.forEach(node => {
-							// Only process element nodes
-							if (node.nodeType === 1) {
-								// Check if it's a sale/promo element
-								if (node.classList && (
-									node.classList.contains('dlab-sale-banner') ||
-									node.classList.contains('dzSaleBanner') ||
-									node.classList.contains('dlab-demo-panel') ||
-									node.id === 'dzSaleBanner'
-								)) {
-									node.remove();
-								}
-								// Check text content for promotional popup
-								else if (node.textContent && (
-									node.textContent.includes('DIWALI') ||
-									node.textContent.includes('DHAMAKA') ||
-									node.textContent.includes('GRAB SALE')
-								)) {
-									const style = window.getComputedStyle(node);
-									if (style.position === 'fixed') {
-										node.remove();
-									}
-								}
-							}
-						});
-					}
-				});
-			}, 100); // Throttle to 100ms
-		});
-
-		// Start observing
-		if (document.body) {
-			observer.observe(document.body, {
-				childList: true,
-				subtree: false // Only watch direct children of body
-			});
-		}
-	</script>
-
-	<!-- Notification Banner Management -->
-	<script>
-		// Dismiss notification and save to localStorage
-		function dismissNotification(type) {
-			const notification = document.getElementById(type + 'Notification');
-			if (notification) {
-				notification.style.animation = 'fadeOut 0.3s ease-out';
-				setTimeout(() => {
-					notification.style.display = 'none';
-					// Save dismissal to localStorage
-					localStorage.setItem('notification_' + type + '_dismissed', 'true');
-				}, 300);
-			}
-		}
-
-		// Check if user should see KYC notification
-		function checkKYCStatus() {
-			// Check if notification was dismissed
-			const dismissed = localStorage.getItem('notification_kyc_dismissed');
-			if (dismissed === 'true') {
-				return;
-			}
-
-			// Simulate checking KYC status (in real app, this would be from backend)
-			// For demo purposes, show notification for new users
-			const isKYCComplete = localStorage.getItem('kyc_complete') === 'true';
-
-			if (!isKYCComplete) {
-				const kycNotification = document.getElementById('kycNotification');
-				if (kycNotification) {
-					kycNotification.style.display = 'block';
-				}
-			}
-		}
-
-		// Show admin notification (called from admin panel or backend)
-		function showAdminNotification(title, message, icon = 'campaign', color = 'orange') {
-			const adminNotification = document.getElementById('adminNotification');
-			const titleEl = document.getElementById('adminNotificationTitle');
-			const messageEl = document.getElementById('adminNotificationMessage');
-			const iconEl = adminNotification.querySelector('.alert-banner-icon i');
-			const iconContainer = adminNotification.querySelector('.alert-banner-icon');
-
-			if (adminNotification && titleEl && messageEl) {
-				titleEl.textContent = title;
-				messageEl.textContent = message;
-
-				// Update icon
-				if (iconEl) {
-					iconEl.textContent = icon;
-				}
-
-				// Update color scheme
-				const colorSchemes = {
-					'red': {
-						background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
-						border: '#ef4444',
-						iconBg: 'rgba(239, 68, 68, 0.15)',
-						iconColor: '#ef4444'
-					},
-					'blue': {
-						background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
-						border: '#3b82f6',
-						iconBg: 'rgba(59, 130, 246, 0.15)',
-						iconColor: '#3b82f6'
-					},
-					'green': {
-						background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
-						border: '#10b981',
-						iconBg: 'rgba(16, 185, 129, 0.15)',
-						iconColor: '#10b981'
-					},
-					'yellow': {
-						background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-						border: '#f59e0b',
-						iconBg: 'rgba(245, 158, 11, 0.15)',
-						iconColor: '#f59e0b'
-					},
-					'purple': {
-						background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
-						border: '#8b5cf6',
-						iconBg: 'rgba(139, 92, 246, 0.15)',
-						iconColor: '#8b5cf6'
-					},
-					'orange': {
-						background: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)',
-						border: '#ff9800',
-						iconBg: 'rgba(255, 152, 0, 0.15)',
-						iconColor: '#ff9800'
-					},
-					'gray': {
-						background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
-						border: '#6b7280',
-						iconBg: 'rgba(107, 114, 128, 0.15)',
-						iconColor: '#6b7280'
-					}
-				};
-
-				const scheme = colorSchemes[color] || colorSchemes['orange'];
-				adminNotification.style.background = scheme.background;
-				adminNotification.style.borderLeft = `4px solid ${scheme.border}`;
-				if (iconContainer) {
-					iconContainer.style.background = scheme.iconBg;
-				}
-				if (iconEl) {
-					iconEl.style.color = scheme.iconColor;
-				}
-
-				adminNotification.style.display = 'block';
-
-				// Save to localStorage so it persists
-				localStorage.setItem('admin_notification_title', title);
-				localStorage.setItem('admin_notification_message', message);
-				localStorage.setItem('admin_notification_icon', icon);
-				localStorage.setItem('admin_notification_color', color);
-				localStorage.removeItem('notification_admin_dismissed');
-			}
-		}
-
-		// Check for existing admin notification
-		function checkAdminNotification() {
-			const dismissed = localStorage.getItem('notification_admin_dismissed');
-			if (dismissed === 'true') {
-				return;
-			}
-
-			const title = localStorage.getItem('admin_notification_title');
-			const message = localStorage.getItem('admin_notification_message');
-			const icon = localStorage.getItem('admin_notification_icon') || 'campaign';
-			const color = localStorage.getItem('admin_notification_color') || 'orange';
-
-			if (title && message) {
-				showAdminNotification(title, message, icon, color);
-			}
-		}
-
-		// Initialize notifications on page load
-		document.addEventListener('DOMContentLoaded', function() {
-			checkKYCStatus();
-			checkAdminNotification();
-		});
-
-		// Example: Simulate admin sending a notification (for testing)
-		// Uncomment the line below to test admin notification
-		// setTimeout(() => showAdminNotification('Platform Maintenance', 'Scheduled maintenance will occur on Sunday, 2:00 AM - 4:00 AM UTC. Please plan accordingly.'), 2000);
-	</script>
-
-	<!-- Theme Toggle Script -->
-	<script>
-		function toggleTheme() {
-			const body = document.body;
-			const mainWrapper = document.getElementById('main-wrapper');
-			const lightIcon = document.getElementById('theme-icon-light');
-			const darkIcon = document.getElementById('theme-icon-dark');
-
-			// Toggle between light and dark
-			if (body.getAttribute('data-theme-version') === 'dark') {
-				// Switch to light
-				body.setAttribute('data-theme-version', 'light');
-				mainWrapper.setAttribute('data-theme-version', 'light');
-				lightIcon.style.display = 'block';
-				darkIcon.style.display = 'none';
-				localStorage.setItem('theme', 'light');
-			} else {
-				// Switch to dark
-				body.setAttribute('data-theme-version', 'dark');
-				mainWrapper.setAttribute('data-theme-version', 'dark');
-				lightIcon.style.display = 'none';
-				darkIcon.style.display = 'block';
-				localStorage.setItem('theme', 'dark');
-			}
-		}
-
-		// Load saved theme on page load
-		document.addEventListener('DOMContentLoaded', function() {
-			const savedTheme = localStorage.getItem('theme') || 'light';
-			const body = document.body;
-			const mainWrapper = document.getElementById('main-wrapper');
-			const lightIcon = document.getElementById('theme-icon-light');
-			const darkIcon = document.getElementById('theme-icon-dark');
-
-			body.setAttribute('data-theme-version', savedTheme);
-			mainWrapper.setAttribute('data-theme-version', savedTheme);
-
-			if (savedTheme === 'dark') {
-				lightIcon.style.display = 'none';
-				darkIcon.style.display = 'block';
-			} else {
-				lightIcon.style.display = 'block';
-				darkIcon.style.display = 'none';
-			}
-		});
-	</script>
-
-
-	<!-- Signal Strength Management -->
-	<script>
-		// NOTE: Both signal states are displayed side-by-side for developer reference
-		// In production, you should hide one based on user's actual plan status
-		//
-		// Example implementation for production:
-		//
-		// const userSignalPlan = getUserSignalPlanFromBackend(); // 'none', 'bronze', 'silver', or 'gold'
-		//
-		// if (userSignalPlan === 'none') {
-		//     // Show inactive card, hide active card
-		//     document.querySelector('.signal-inactive').style.display = 'flex';
-		//     document.querySelector('.signal-active').style.display = 'none';
-		// } else {
-		//     // Show active card with appropriate boost level, hide inactive card
-		//     document.querySelector('.signal-inactive').style.display = 'none';
-		//     document.querySelector('.signal-active').style.display = 'flex';
-		//
-		//     const boostLevels = {
-		//         'bronze': '+6% Boost',
-		//         'silver': '+15% Boost',
-		//         'gold': '+25% Boost'
-		//     };
-		//     document.querySelector('.signal-active .signal-value-compact').textContent = boostLevels[userSignalPlan];
-		// }
-	</script>
-
-	<!-- Initialize Swiper and Wallet JavaScript -->
-	<script>
-		// Wallet data structure with deposit and trading balances
-		// Deposit = Total amount deposited by user
-		// Trading = Total profit/earnings from trading
-		const walletData = {
-			trading: {
-				deposit: { usd: 5430.50, btc: 0.0832 },  // Total deposited
-				trading: { usd: 1248.75, btc: 0.0192 }   // Trading profit/earnings
-			},
-			holding: {
-				deposit: { usd: 1820.30, btc: 0.0279 },  // Total deposited
-				trading: { usd: 340.80, btc: 0.0052 }    // Trading profit/earnings
-			}
-		};
-
-		let tradingBalanceType = 'deposit';
-		let holdingBalanceType = 'deposit';
-		let tradingBalanceVisible = true;
-		let holdingBalanceVisible = true;
-
-		// Trading Wallet Functions
-		function showTradingBalance(type) {
-			tradingBalanceType = type;
-			document.getElementById('tradingDepositBtn').classList.toggle('active', type === 'deposit');
-			document.getElementById('tradingTradingBtn').classList.toggle('active', type === 'trading');
-			updateTradingDisplay();
-		}
-
-		function toggleTradingBalance() {
-			tradingBalanceVisible = !tradingBalanceVisible;
-			document.getElementById('tradingEyeIcon').textContent = tradingBalanceVisible ? 'visibility_off' : 'visibility';
-			updateTradingDisplay();
-		}
-
-		function updateTradingDisplay() {
-			const balanceEl = document.getElementById('tradingBalanceDisplay');
-			const btcEl = document.getElementById('tradingBtcValue');
-			const balance = walletData.trading[tradingBalanceType];
-
-			if (tradingBalanceVisible) {
-				balanceEl.textContent = '$' + balance.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-				btcEl.textContent = balance.btc.toFixed(4);
-			} else {
-				balanceEl.textContent = '••••••';
-				btcEl.textContent = '••••••';
-			}
-		}
-
-		// Holding Wallet Functions
-		function showHoldingBalance(type) {
-			holdingBalanceType = type;
-			document.getElementById('holdingDepositBtn').classList.toggle('active', type === 'deposit');
-			document.getElementById('holdingTradingBtn').classList.toggle('active', type === 'trading');
-			updateHoldingDisplay();
-		}
-
-		function toggleHoldingBalance() {
-			holdingBalanceVisible = !holdingBalanceVisible;
-			document.getElementById('holdingEyeIcon').textContent = holdingBalanceVisible ? 'visibility_off' : 'visibility';
-			updateHoldingDisplay();
-		}
-
-		function updateHoldingDisplay() {
-			const balanceEl = document.getElementById('holdingBalanceDisplay');
-			const btcEl = document.getElementById('holdingBtcValue');
-			const balance = walletData.holding[holdingBalanceType];
-
-			if (holdingBalanceVisible) {
-				balanceEl.textContent = '$' + balance.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-				btcEl.textContent = balance.btc.toFixed(4);
-			} else {
-				balanceEl.textContent = '••••••';
-				btcEl.textContent = '••••••';
-			}
-		}
-
-		// Real-Time Market Data Functions
-		let currentCrypto = 'bitcoin';
-		let currentDays = 30;
-		let marketChart = null;
-
-		async function fetchMarketData(cryptoId) {
-			try {
-				// Show loading state
-				document.getElementById('market-cap').textContent = 'Loading...';
-				document.getElementById('btc-price').textContent = 'Loading...';
-				document.getElementById('btc-change').textContent = 'Loading...';
-				document.getElementById('btc-volume').textContent = 'Loading...';
-
-				const response = await fetch(`https://api.coingecko.com/api/v3/coins/${cryptoId}?localization=false&tickers=false&community_data=false&developer_data=false`, {
-					method: 'GET',
-					mode: 'cors',
-					headers: {
-						'Accept': 'application/json'
-					}
-				});
-
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
-
-				const data = await response.json();
-
-				// Validate that we have the required data
-				if (!data.market_data || !data.market_data.market_cap || !data.market_data.current_price) {
-					throw new Error('Invalid data structure received from API');
-				}
-
-				// Update Market Cap
-				const marketCap = data.market_data.market_cap.usd;
-				document.getElementById('market-cap').textContent = '$' + (marketCap / 1e9).toFixed(2) + 'B';
-
-				// Update Price
-				const price = data.market_data.current_price.usd;
-				document.getElementById('btc-price').textContent = '$' + price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-
-				// Update 24h Change
-				const change24h = data.market_data.price_change_percentage_24h;
-				const changeEl = document.getElementById('btc-change');
-				const changeSign = change24h >= 0 ? '+' : '';
-				changeEl.innerHTML = `${changeSign}${change24h.toFixed(2)}%`;
-				changeEl.style.color = change24h >= 0 ? '#16a34a' : '#ef4444';
-
-				// Update 24h Volume
-				const volume = data.market_data.total_volume.usd;
-				document.getElementById('btc-volume').textContent = '$' + (volume / 1e9).toFixed(2) + 'B';
-
-				// Update labels based on selected crypto
-				const symbol = data.symbol.toUpperCase();
-				document.getElementById('btc-price').previousElementSibling.textContent = `${symbol} Price`;
-
-				// Fetch and update chart
-				await updateMarketChart(cryptoId, data.name, currentDays);
-			} catch (error) {
-				console.error('Error fetching market data:', error);
-				console.error('Error details:', {
-					message: error.message,
-					cryptoId: cryptoId,
-					timestamp: new Date().toISOString()
-				});
-
-				// Show specific error messages
-				const errorMsg = error.message.includes('HTTP error') ? 'API Error' :
-				                 error.message.includes('Failed to fetch') ? 'Connection Error' :
-				                 'Error loading';
-
-				document.getElementById('market-cap').textContent = errorMsg;
-				document.getElementById('btc-price').textContent = errorMsg;
-				document.getElementById('btc-change').textContent = errorMsg;
-				document.getElementById('btc-volume').textContent = errorMsg;
-			}
-		}
-
-		async function updateMarketChart(cryptoId, cryptoName, days = 30) {
-			try {
-				// Fetch price data for selected period
-				const response = await fetch(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=${days}`, {
-					method: 'GET',
-					mode: 'cors',
-					headers: {
-						'Accept': 'application/json'
-					}
-				});
-
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
-
-				const data = await response.json();
-
-				// Validate data
-				if (!data.prices || !Array.isArray(data.prices)) {
-					throw new Error('Invalid chart data received');
-				}
-
-				// Format data for ApexCharts [timestamp, price]
-				const chartData = data.prices.map(item => [item[0], item[1].toFixed(2)]);
-
-				if (marketChart) {
-					// Update existing chart with new data and options
-					marketChart.updateOptions({
-						xaxis: {
-							type: 'datetime',
-							labels: {
-								style: {
-									colors: '#6c757d',
-									fontSize: '12px'
-								},
-								datetimeUTC: false,
-								format: days <= 7 ? 'dd MMM' : days <= 30 ? 'dd MMM' : days <= 90 ? 'MMM yyyy' : 'MMM yyyy'
-							}
-						}
-					});
-					marketChart.updateSeries([{
-						name: cryptoName,
-						data: chartData
-					}]);
-				} else {
-					// Create new chart
-					const options = {
-						series: [{
-							name: cryptoName,
-							data: chartData
-						}],
-						chart: {
-							type: 'area',
-							height: 350,
-							toolbar: {
-								show: false
-							},
-							zoom: {
-								enabled: false
-							}
-						},
-						colors: ['#01A3FF'],
-						dataLabels: {
-							enabled: false
-						},
-						stroke: {
-							width: 2,
-							curve: 'smooth'
-						},
-						fill: {
-							type: 'gradient',
-							gradient: {
-								shadeIntensity: 1,
-								opacityFrom: 0.4,
-								opacityTo: 0.1,
-								stops: [0, 100]
-							}
-						},
-						xaxis: {
-							type: 'datetime',
-							labels: {
-								style: {
-									colors: '#6c757d',
-									fontSize: '12px'
-								},
-								datetimeUTC: false,
-								format: days <= 7 ? 'dd MMM' : days <= 30 ? 'dd MMM' : days <= 90 ? 'MMM yyyy' : 'MMM yyyy'
-							}
-						},
-						yaxis: {
-							labels: {
-								style: {
-									colors: '#6c757d',
-									fontSize: '12px'
-								},
-								formatter: function(value) {
-									return '$' + value.toLocaleString();
-								}
-							}
-						},
-						tooltip: {
-							x: {
-								format: 'dd MMM yyyy'
-							},
-							y: {
-								formatter: function(value) {
-									return '$' + value.toLocaleString();
-								}
-							}
-						},
-						grid: {
-							borderColor: '#e5e7eb'
-						}
-					};
-
-					marketChart = new ApexCharts(document.querySelector("#activity1"), options);
-					marketChart.render();
-				}
-			} catch (error) {
-				console.error('Error updating chart:', error);
-			}
-		}
-
-		// Update market data every 60 seconds
-		function startMarketDataUpdates() {
-			fetchMarketData(currentCrypto);
-			setInterval(() => fetchMarketData(currentCrypto), 60000); // Update every 60 seconds
-		}
-
-		// Handle crypto selector and date range changes
-		document.addEventListener('DOMContentLoaded', function() {
-			// Crypto selector event
-			const cryptoSelector = document.getElementById('crypto-selector');
-			if (cryptoSelector) {
-				cryptoSelector.addEventListener('change', function() {
-					currentCrypto = this.value;
-					fetchMarketData(currentCrypto);
-				});
-			}
-
-			// Date range buttons event
-			const dateRangeButtons = document.querySelectorAll('.date-range-btn');
-			dateRangeButtons.forEach(button => {
-				button.addEventListener('click', function() {
-					// Remove active class from all buttons
-					dateRangeButtons.forEach(btn => btn.classList.remove('active'));
-
-					// Add active class to clicked button
-					this.classList.add('active');
-
-					// Update current days and refresh chart
-					currentDays = parseInt(this.getAttribute('data-days'));
-					updateMarketChart(currentCrypto, getCryptoName(currentCrypto), currentDays);
-				});
-			});
-
-			// Start fetching market data
-			startMarketDataUpdates();
-		});
-
-		// Helper function to get crypto display name
-		function getCryptoName(cryptoId) {
-			const names = {
-				'bitcoin': 'Bitcoin',
-				'ethereum': 'Ethereum',
-				'binancecoin': 'Binance Coin',
-				'solana': 'Solana',
-				'ripple': 'Ripple'
-			};
-			return names[cryptoId] || cryptoId;
-		}
-
-		// Initialize Swiper after DOM is loaded
-		document.addEventListener('DOMContentLoaded', function() {
-			// Initialize Swiper for wallet cards
-			const walletSwiper = new Swiper('.wallet-swiper', {
-				slidesPerView: 1,
-				spaceBetween: 0,
-				speed: 400,
-				effect: 'slide',
-				grabCursor: true,
-				touchRatio: 1,
-				touchAngle: 45,
-				threshold: 5,
-				resistanceRatio: 0.85,
-				pagination: {
-					el: '.swiper-pagination',
-					clickable: true,
-					dynamicBullets: false,
-				},
-				on: {
-					init: function () {
-						console.log('Wallet swiper initialized');
-					},
-					slideChange: function () {
-						console.log('Wallet changed to:', this.activeIndex === 0 ? 'Trading' : 'Holding');
-						// Hide swipe hint after first swipe
-						const swiperEl = document.querySelector('.wallet-swiper');
-						if (swiperEl) {
-							swiperEl.classList.add('swiped');
-						}
-					},
-					touchStart: function() {
-						console.log('Touch started on wallet swiper');
-					},
-					touchMove: function() {
-						// Hide hint when user starts swiping
-						const swiperEl = document.querySelector('.wallet-swiper');
-						if (swiperEl) {
-							swiperEl.classList.add('swiped');
-						}
-					}
-				},
-			});
-		});
-	</script>
-
-</body>
-</html>
+{% endblock %}

@@ -1,386 +1,116 @@
 {% extends 'manager/base.html' %}
 {% load static %}
+
 {% block content %}
 <div class="content-body">
-    <div class="container-fluid">
+  <div class="container-fluid">
 
-        <!-- Breadcrumb -->
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="page-titles">
-                    <nav style="--bs-breadcrumb-divider: '>';">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Plans</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">Plans Management</h1>
-            <button class="btn-add-plan" data-bs-toggle="modal" data-bs-target="#addPlanModal">
-                <i class="material-icons">add</i>
-                <span>Add New Plan</span>
-            </button>
-        </div>
-
-        <!-- Section: Trading Plans -->
-        <div class="plans-section">
-            <h2 class="section-title">
-                <i class="material-icons">trending_up</i>
-                Trading Plans
-            </h2>
-            <div class="plans-grid">
-                    <!-- TODO: Django will render trading plans from database -->
-
-                    <!-- Trading Plan: Gold -->
-                    <form method="POST" action="" class="plan-card">
-                        <input type="hidden" name="action" value="save_plan">
-                        <input type="hidden" name="plan_id" value="1">
-                        <input type="hidden" name="plan_type" value="trading">
-
-                        <span class="plan-tier-badge">Gold</span>
-
-                        <div class="plan-price-section">
-                            <input type="text" class="plan-price-input" name="price" value="$16,700.00" placeholder="Enter price">
-                        </div>
-
-                        <ul class="plan-features">
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="1-100 leverage" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="All-time functions" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Invitation to strategy webinars" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Access to premium trading signals" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Lower spreads & time-fast execution" placeholder="Feature">
-                            </li>
-                        </ul>
-
-                        <div class="plan-stats">
-                            <div class="stat-box">
-                                <div class="stat-label">Active Users</div>
-                                <div class="stat-value">45</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="stat-label">Total Revenue</div>
-                                <div class="stat-value">$751K</div>
-                            </div>
-                        </div>
-
-                        <div class="status-toggle">
-                            <input type="checkbox" name="active" value="1" id="trading-gold-active" checked />
-                            <label for="trading-gold-active" style="font-weight: 600; font-size: 13px; margin: 0; cursor: pointer;">Active & Visible to Users</label>
-                        </div>
-
-                        <div class="plan-actions">
-                            <button type="submit" class="btn-save">
-                                <i class="material-icons" style="font-size: 18px;">save</i>
-                                Save Changes
-                            </button>
-                            <button type="button" class="btn-delete" data-bs-toggle="modal" data-bs-target="#deletePlanModal">
-                                <i class="material-icons" style="font-size: 18px;">delete</i>
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Trading Plan: Silver -->
-                    <form method="POST" action="" class="plan-card">
-                        <input type="hidden" name="action" value="save_plan">
-                        <input type="hidden" name="plan_id" value="2">
-                        <input type="hidden" name="plan_type" value="trading">
-
-                        <span class="plan-tier-badge">Silver</span>
-
-                        <div class="plan-price-section">
-                            <input type="text" class="plan-price-input" name="price" value="$5,600.00" placeholder="Enter price">
-                        </div>
-
-                        <ul class="plan-features">
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="1-100 leverage" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="All-time functions" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Priority support (Level 2 live)" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Reduced spreads to favor execution" placeholder="Feature">
-                            </li>
-                        </ul>
-
-                        <div class="plan-stats">
-                            <div class="stat-box">
-                                <div class="stat-label">Active Users</div>
-                                <div class="stat-value">89</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="stat-label">Total Revenue</div>
-                                <div class="stat-value">$498K</div>
-                            </div>
-                        </div>
-
-                        <div class="status-toggle">
-                            <input type="checkbox" name="active" value="1" id="trading-silver-active" checked />
-                            <label for="trading-silver-active" style="font-weight: 600; font-size: 13px; margin: 0; cursor: pointer;">Active & Visible to Users</label>
-                        </div>
-
-                        <div class="plan-actions">
-                            <button type="submit" class="btn-save">
-                                <i class="material-icons" style="font-size: 18px;">save</i>
-                                Save Changes
-                            </button>
-                            <button type="button" class="btn-delete" data-bs-toggle="modal" data-bs-target="#deletePlanModal">
-                                <i class="material-icons" style="font-size: 18px;">delete</i>
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Trading Plan: Bronze -->
-                    <form method="POST" action="" class="plan-card">
-                        <input type="hidden" name="action" value="save_plan">
-                        <input type="hidden" name="plan_id" value="3">
-                        <input type="hidden" name="plan_type" value="trading">
-
-                        <span class="plan-tier-badge">Bronze</span>
-
-                        <div class="plan-price-section">
-                            <input type="text" class="plan-price-input" name="price" value="$1,700.00" placeholder="Enter price">
-                        </div>
-
-                        <ul class="plan-features">
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="1-50 leverage" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Free market analysis videos" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Access to web platform" placeholder="Feature">
-                            </li>
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="Standard customer support" placeholder="Feature">
-                            </li>
-                        </ul>
-
-                        <div class="plan-stats">
-                            <div class="stat-box">
-                                <div class="stat-label">Active Users</div>
-                                <div class="stat-value">234</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="stat-label">Total Revenue</div>
-                                <div class="stat-value">$398K</div>
-                            </div>
-                        </div>
-
-                        <div class="status-toggle">
-                            <input type="checkbox" name="active" value="1" id="trading-bronze-active" checked />
-                            <label for="trading-bronze-active" style="font-weight: 600; font-size: 13px; margin: 0; cursor: pointer;">Active & Visible to Users</label>
-                        </div>
-
-                        <div class="plan-actions">
-                            <button type="submit" class="btn-save">
-                                <i class="material-icons" style="font-size: 18px;">save</i>
-                                Save Changes
-                            </button>
-                            <button type="button" class="btn-delete" data-bs-toggle="modal" data-bs-target="#deletePlanModal">
-                                <i class="material-icons" style="font-size: 18px;">delete</i>
-                            </button>
-                        </div>
-                    </form>
-
-            </div>
-        </div>
-
-        <!-- Section: Signals Plans -->
-        <div class="plans-section">
-            <h2 class="section-title">
-                <i class="material-icons">notifications_active</i>
-                Signals Plans
-            </h2>
-            <div class="plans-grid">
-                    <!-- TODO: Django will render signals plans from database -->
-
-                    <!-- Similar structure for Signals plans - shortened for brevity -->
-                    <form method="POST" action="" class="plan-card">
-                        <input type="hidden" name="action" value="save_plan">
-                        <input type="hidden" name="plan_id" value="4">
-                        <input type="hidden" name="plan_type" value="signals">
-                        <span class="plan-tier-badge">Gold</span>
-                        <div class="plan-price-section">
-                            <input type="text" class="plan-price-input" name="price" value="$4,000.00" placeholder="Enter price">
-                        </div>
-                        <ul class="plan-features">
-                            <li>
-                                <i class="material-icons feature-icon">check_circle</i>
-                                <input type="text" class="feature-input" name="features[]" value="+25% Signal Strength" placeholder="Feature">
-                            </li>
-                        </ul>
-                        <div class="plan-stats">
-                            <div class="stat-box"><div class="stat-label">Active Users</div><div class="stat-value">67</div></div>
-                            <div class="stat-box"><div class="stat-label">Total Revenue</div><div class="stat-value">$268K</div></div>
-                        </div>
-                        <div class="status-toggle">
-                            <input type="checkbox" name="active" value="1" id="signals-gold-active" checked />
-                            <label for="signals-gold-active" style="font-weight: 600; font-size: 13px; margin: 0; cursor: pointer;">Active & Visible to Users</label>
-                        </div>
-                        <div class="plan-actions">
-                            <button type="submit" class="btn-save"><i class="material-icons" style="font-size: 18px;">save</i>Save Changes</button>
-                            <button type="button" class="btn-delete" data-bs-toggle="modal" data-bs-target="#deletePlanModal"><i class="material-icons" style="font-size: 18px;">delete</i></button>
-                        </div>
-                    </form>
-
-            </div>
-        </div>
-
-        <!-- Section: Mining Plans -->
-        <div class="plans-section">
-            <h2 class="section-title">
-                <i class="material-icons">memory</i>
-                Mining Plans
-            </h2>
-            <div class="plans-grid">
-                    <!-- TODO: Django will render mining plans from database -->
-
-                    <form method="POST" action="" class="plan-card">
-                        <input type="hidden" name="action" value="save_plan">
-                        <input type="hidden" name="plan_id" value="5">
-                        <input type="hidden" name="plan_type" value="mining">
-                        <span class="plan-tier-badge">Gold</span>
-                        <div class="plan-price-section">
-                            <input type="text" class="plan-price-input" name="price" value="$2,500.00" placeholder="Enter price">
-                        </div>
-                        <ul class="plan-features">
-                            <li><i class="material-icons feature-icon">check_circle</i><input type="text" class="feature-input" name="features[]" value="1000 TH/s" placeholder="Feature"></li>
-                            <li><i class="material-icons feature-icon">check_circle</i><input type="text" class="feature-input" name="features[]" value="No Downtime" placeholder="Feature"></li>
-                            <li><i class="material-icons feature-icon">check_circle</i><input type="text" class="feature-input" name="features[]" value="~ 10 Antminer S19" placeholder="Feature"></li>
-                            <li><i class="material-icons feature-icon">check_circle</i><input type="text" class="feature-input" name="features[]" value="Duration: One Month" placeholder="Feature"></li>
-                            <li><i class="material-icons feature-icon">check_circle</i><input type="text" class="feature-input" name="features[]" value="No Electricity Cost" placeholder="Feature"></li>
-                        </ul>
-                        <div class="mining-dropdown-section">
-                            <label class="mining-dropdown-label">Mining Currency</label>
-                            <input type="text" class="mining-currency-input" name="mining_currency" value="Bitcoin" placeholder="Enter currency (e.g., Bitcoin, Ethereum)">
-                        </div>
-                        <div class="plan-stats">
-                            <div class="stat-box"><div class="stat-label">Active Miners</div><div class="stat-value">34</div></div>
-                            <div class="stat-box"><div class="stat-label">Total Invested</div><div class="stat-value">$85K</div></div>
-                        </div>
-                        <div class="status-toggle">
-                            <input type="checkbox" name="active" value="1" id="mining-gold-active" checked />
-                            <label for="mining-gold-active" style="font-weight: 600; font-size: 13px; margin: 0; cursor: pointer;">Active & Visible to Users</label>
-                        </div>
-                        <div class="plan-actions">
-                            <button type="submit" class="btn-save"><i class="material-icons" style="font-size: 18px;">save</i>Save Changes</button>
-                            <button type="button" class="btn-delete" data-bs-toggle="modal" data-bs-target="#deletePlanModal"><i class="material-icons" style="font-size: 18px;">delete</i></button>
-                        </div>
-                    </form>
-
-            </div>
-        </div>
-
-        <!-- Section: Staking Plans -->
-        <div class="plans-section">
-            <h2 class="section-title">
-                <i class="material-icons">account_balance</i>
-                Staking Plans
-            </h2>
-            <form method="POST" action="" class="staking-table-container">
-                    <input type="hidden" name="action" value="save_staking_plans">
-
-                    <table class="staking-table">
-                        <thead>
-                            <tr>
-                                <th>Duration</th>
-                                <th>Returns</th>
-                                <th style="width: 100px; text-align: center;">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stakingTableBody">
-                            <!-- TODO: Django will render staking plans from database -->
-                            <tr>
-                                <td><input type="text" class="staking-input" name="duration[]" value="30 Days - 5% Return"></td>
-                                <td><input type="text" class="staking-input" name="returns[]" value="5% Return"></td>
-                                <td style="text-align: center;">
-                                    <input type="checkbox" name="active[]" value="1" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--admin-primary);">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="staking-input" name="duration[]" value="60 Days - 10% Return"></td>
-                                <td><input type="text" class="staking-input" name="returns[]" value="10% Return"></td>
-                                <td style="text-align: center;">
-                                    <input type="checkbox" name="active[]" value="1" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--admin-primary);">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="staking-input" name="duration[]" value="90 Days - 15% Return"></td>
-                                <td><input type="text" class="staking-input" name="returns[]" value="15% Return"></td>
-                                <td style="text-align: center;">
-                                    <input type="checkbox" name="active[]" value="1" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--admin-primary);">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="staking-input" name="duration[]" value="180 Days - 20% Return"></td>
-                                <td><input type="text" class="staking-input" name="returns[]" value="20% Return"></td>
-                                <td style="text-align: center;">
-                                    <input type="checkbox" name="active[]" value="1" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--admin-primary);">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="staking-input" name="duration[]" value="365 Days - 25% Return"></td>
-                                <td><input type="text" class="staking-input" name="returns[]" value="25% Return"></td>
-                                <td style="text-align: center;">
-                                    <input type="checkbox" name="active[]" value="1" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--admin-primary);">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="staking-actions">
-                        <button type="submit" class="btn-staking-save">
-                            <i class="material-icons">save</i>
-                            Save All Staking Plans
-                        </button>
-                    </div>
-
-                    <div style="margin-top: 24px; padding: 16px; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px;">
-                        <div style="display: flex; gap: 12px; align-items: flex-start;">
-                            <i class="material-icons" style="color: #f59e0b;">info</i>
-                            <div>
-                                <strong style="display: block; margin-bottom: 4px; color: #92400e; font-size: 14px;">Stats Display</strong>
-                                <p style="margin: 0; font-size: 13px; color: #92400e;">Staking plans don't have price inputs since users stake their own funds. Stats shown on the user-side table will be managed dynamically by the backend.</p>
-                            </div>
-                        </div>
-                    </div>
-            </form>
-        </div>
-
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+      <h1 class="page-title">Plans Management</h1>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPlanModal">
+        <i class="material-icons">add</i> Add New Plan
+      </button>
     </div>
+
+    <!-- ============ ADD PLAN MODAL ============ -->
+    <div class="modal fade" id="addPlanModal" tabindex="-1" aria-labelledby="addPlanModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_plan">
+
+            <div class="modal-header">
+              <h5 class="modal-title" id="addPlanModalLabel">Add New Plan</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Plan Type</label>
+                <select name="plan_type" class="form-select" required>
+                  <option value="">-- Select Type --</option>
+                  <option value="trading">Trading</option>
+                  <option value="signals">Signals</option>
+                  <option value="mining">Mining</option>
+                  <option value="staking">Staking</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Plan Tier</label>
+                <input type="text" name="plan_tier" class="form-control" placeholder="e.g. Gold, Silver" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Plan Price ($)</label>
+                <input type="number" name="plan_price" step="0.01" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Features</label>
+                <textarea name="plan_features" class="form-control" rows="3"
+                  placeholder="Enter each feature on a new line"></textarea>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Add Plan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- ============ END MODAL ============ -->
+
+
+    <!-- ============ DYNAMIC PLAN CARDS ============ -->
+    {% for category in categories %}
+    <div class="plans-section mb-5">
+      <h2 class="section-title mb-3">{{ category.name }} Plans</h2>
+      <div class="row">
+        {% for plan in category.plans.all %}
+        <div class="col-md-4 mb-4">
+          <form method="POST" class="card shadow-sm border-0">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_plan">
+            <input type="hidden" name="plan_id" value="{{ plan.id }}">
+
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+              <strong>{{ plan.tier }}</strong>
+              <button type="submit" class="btn btn-sm btn-success">Save</button>
+            </div>
+
+            <div class="card-body">
+              <div class="mb-2">
+                <label>Price ($):</label>
+                <input type="number" name="price" value="{{ plan.price }}" class="form-control form-control-sm">
+              </div>
+
+              <label>Features:</label>
+              {% for feature in plan.get_features %}
+              <input type="text" name="features[]" value="{{ feature }}" class="form-control form-control-sm mb-2">
+              {% endfor %}
+            </div>
+
+            <div class="card-footer text-end">
+              <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_plan">
+                <input type="hidden" name="plan_id" value="{{ plan.id }}">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </form>
+        </div>
+        {% empty %}
+        <p class="text-muted">No {{ category.name }} plans added yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
-
-
-{% endblock content %}
+{% endblock %}

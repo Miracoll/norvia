@@ -1,0 +1,288 @@
+{%extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Copytrading Agreement | Norvia.io{% endblock %}
+
+{% block body_class %}page-ctagreement{% endblock %}
+
+{% block content %}
+<div class="content-body default-height">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xl-12">
+				<!-- Breadcrumb -->
+				<div class="page-titles">
+					<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+						<ol class="breadcrumb">
+						  <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+						  <li class="breadcrumb-item"><a href="{% url 'copy_trader' %}">Copy Trading</a></li>
+						  <li class="breadcrumb-item active" aria-current="page">Agreement</li>
+						</ol>
+					</nav>
+				</div>
+
+				<div class="agreement-container">
+					<!-- Agreement Content -->
+					<div class="agreement-content">
+						<!-- Header -->
+						<div class="agreement-header">
+							<h1>Copy Trading Agreement</h1>
+							<p class="subtitle">Please read this agreement carefully before using our copy trading service</p>
+							<p class="last-updated">Last Updated: January 15, 2025</p>
+						</div>
+
+						<!-- Risk Warning -->
+						<div class="warning-box">
+							<div class="warning-title">
+								<i class="material-icons">warning</i>
+								Important Risk Warning
+							</div>
+							<p>Copy trading involves substantial risk of loss. Past performance does not guarantee future results. Only invest funds you can afford to lose. Cryptocurrency and forex trading are highly volatile and may not be suitable for all investors.</p>
+						</div>
+
+						<!-- Section 1 -->
+						<div class="agreement-section">
+							<h2 class="section-title">1. Agreement Overview</h2>
+							<div class="section-content">
+								<p>This Copy Trading Agreement ("Agreement") is entered into between you ("User," "Copier," or "you") and Norvia.io ("Platform," "we," or "us"). By using the copy trading service, you acknowledge that you have read, understood, and agree to be bound by all terms and conditions outlined in this Agreement.</p>
+								<p>Copy trading allows you to automatically replicate trades executed by other traders ("Providers" or "Signal Providers") on our platform. While this service can be convenient, it carries significant financial risks that you must fully understand before participating.</p>
+							</div>
+						</div>
+
+						<!-- Section 2 -->
+						<div class="agreement-section">
+							<h2 class="section-title">2. Eligibility and Account Requirements</h2>
+							<div class="section-content">
+								<p>To use the copy trading service, you must:</p>
+								<ul>
+									<li>Be at least 18 years of age or the legal age of majority in your jurisdiction</li>
+									<li>Have completed identity verification (KYC) as required by the platform</li>
+									<li>Maintain sufficient funds in your trading account to support copied positions</li>
+									<li>Be legally permitted to engage in trading activities in your country of residence</li>
+									<li>Not be a resident of any restricted or prohibited jurisdiction</li>
+									<li>Accept all risks associated with leveraged trading and cryptocurrency markets</li>
+								</ul>
+							</div>
+						</div>
+
+						<!-- Section 3 -->
+						<div class="agreement-section">
+							<h2 class="section-title">3. How Copy Trading Works</h2>
+							<div class="section-content">
+								<p><strong>Starting to Copy:</strong> When you allocate funds to copy a Signal Provider, all new trades executed by that Provider will be automatically replicated in your account proportionally based on your allocated amount.</p>
+								<p><strong>Trade Execution:</strong> Copied trades will be executed in your account as soon as technically possible after the Provider opens a position. Due to market conditions, network latency, and liquidity factors, your execution prices may differ from the Provider's prices.</p>
+								<p><strong>Position Management:</strong> Existing open positions held by the Provider before you start copying will NOT be copied to your account. Only new positions opened after you initiate the copy relationship will be replicated.</p>
+								<p><strong>Stopping Copy Trading:</strong> You may discontinue copying a Provider at any time. However, positions already opened in your account will remain active and must be managed or closed manually, or will close automatically when the Provider closes their corresponding positions.</p>
+							</div>
+						</div>
+
+						<!-- Section 4 -->
+						<div class="agreement-section">
+							<h2 class="section-title">4. Fees and Charges</h2>
+							<div class="section-content">
+								<p>The following fees apply to copy trading activities:</p>
+								<ul>
+									<li><strong>Performance Fee:</strong> Signal Providers may charge a performance fee (typically 10-30%) calculated on net profits generated in your account. This fee is only charged when you close positions with a profit.</li>
+									<li><strong>Trading Commissions:</strong> Standard trading commissions and spreads apply to all copied trades as per the platform's fee schedule.</li>
+									<li><strong>Overnight Financing:</strong> Swap fees or rollover charges may apply to positions held overnight, depending on the asset class and market conditions.</li>
+									<li><strong>Subscription Fees:</strong> Some Premium Signal Providers may require a monthly or quarterly subscription fee, which will be clearly disclosed before you start copying.</li>
+								</ul>
+								<p>All fees are automatically calculated and deducted from your account. You can view detailed fee breakdowns in your account statements and transaction history.</p>
+							</div>
+						</div>
+
+						<!-- Section 5 -->
+						<div class="agreement-section">
+							<h2 class="section-title">5. Risk Disclosure and Acknowledgment</h2>
+							<div class="section-content">
+								<p>You explicitly acknowledge and accept the following risks:</p>
+								<ul>
+									<li><strong>Market Risk:</strong> Cryptocurrency and forex markets are extremely volatile. Prices can move dramatically in short periods, resulting in substantial gains or losses.</li>
+									<li><strong>Leverage Risk:</strong> Leveraged trading amplifies both profits and losses. You can lose more than your initial investment if positions move against you.</li>
+									<li><strong>Provider Performance Risk:</strong> Past performance of a Signal Provider is not indicative of future results. Profitable traders can experience losses, and losing traders may continue to lose.</li>
+									<li><strong>Execution Risk:</strong> Your trades may execute at different prices than the Provider's trades due to slippage, liquidity constraints, market volatility, or technical delays.</li>
+									<li><strong>Margin Call Risk:</strong> If your account equity falls below required margin levels, your positions may be automatically liquidated, resulting in realized losses.</li>
+									<li><strong>Technical Risk:</strong> System failures, internet connectivity issues, server downtime, or software bugs may prevent trades from being copied or executed properly.</li>
+									<li><strong>Currency Risk:</strong> If you trade assets denominated in different currencies, exchange rate fluctuations may affect your returns.</li>
+								</ul>
+							</div>
+						</div>
+
+						<!-- Section 6 -->
+						<div class="agreement-section">
+							<h2 class="section-title">6. Your Responsibilities as a Copier</h2>
+							<div class="section-content">
+								<p>As a user of the copy trading service, you agree to:</p>
+								<ol>
+									<li>Conduct thorough due diligence on any Signal Provider before copying their trades</li>
+									<li>Review the Provider's trading history, strategy, risk level, and performance metrics</li>
+									<li>Monitor your account balance, open positions, and margin levels regularly</li>
+									<li>Maintain adequate funds in your account to support copied positions and prevent forced liquidations</li>
+									<li>Understand that you are fully responsible for all trades executed in your account, whether profitable or not</li>
+									<li>Accept that the platform does not guarantee profitability or provide investment advice</li>
+									<li>Immediately report any suspected errors, fraudulent activity, or system malfunctions</li>
+									<li>Not hold the platform liable for losses incurred through copy trading</li>
+								</ol>
+							</div>
+						</div>
+
+						<!-- Section 7 -->
+						<div class="agreement-section">
+							<h2 class="section-title">7. Signal Provider Obligations</h2>
+							<div class="section-content">
+								<p>Signal Providers on our platform must:</p>
+								<ul>
+									<li>Trade their own capital and not engage in manipulative practices designed to deceive Copiers</li>
+									<li>Accurately represent their trading strategy, risk profile, and historical performance</li>
+									<li>Not guarantee specific returns or make misleading claims about future performance</li>
+									<li>Refrain from wash trading, churning, or artificially inflating performance statistics</li>
+									<li>Comply with all applicable regulations and platform policies</li>
+								</ul>
+								<p>The platform reserves the right to suspend or remove Signal Providers who violate these obligations or engage in fraudulent conduct.</p>
+							</div>
+						</div>
+
+						<!-- Section 8 -->
+						<div class="agreement-section">
+							<h2 class="section-title">8. Platform Rights and Limitations</h2>
+							<div class="section-content">
+								<p>Norvia.io reserves the right to:</p>
+								<ul>
+									<li>Modify, suspend, or terminate the copy trading service at any time with or without notice</li>
+									<li>Update fees, terms, features, or operational procedures with reasonable advance notification</li>
+									<li>Limit the number of Signal Providers you can copy simultaneously</li>
+									<li>Impose minimum or maximum allocation limits for copy trading</li>
+									<li>Restrict or remove Signal Providers who violate platform policies or exhibit suspicious activity</li>
+									<li>Temporarily pause copy trading during periods of extreme market volatility or technical issues</li>
+									<li>Require additional verification or documentation before allowing copy trading</li>
+								</ul>
+							</div>
+						</div>
+
+						<!-- Section 9 -->
+						<div class="agreement-section">
+							<h2 class="section-title">9. Limitation of Liability</h2>
+							<div class="section-content">
+								<p>To the maximum extent permitted by law, Norvia.io and its affiliates, officers, directors, employees, and partners shall not be held liable for:</p>
+								<ul>
+									<li>Any financial losses incurred through the use of copy trading services</li>
+									<li>The trading performance, decisions, or actions of Signal Providers</li>
+									<li>Technical failures, system outages, delays in trade execution, or connectivity issues</li>
+									<li>Losses resulting from market volatility, slippage, or unfavorable price movements</li>
+									<li>Unauthorized access to your account due to compromised credentials or inadequate security measures on your part</li>
+									<li>Indirect, incidental, special, consequential, or punitive damages arising from the use of our services</li>
+								</ul>
+								<p><strong>Important:</strong> Our total aggregate liability to you for all claims related to copy trading shall not exceed the total fees you paid to the platform in the 12 months preceding the claim.</p>
+							</div>
+						</div>
+
+						<!-- Section 10 -->
+						<div class="agreement-section">
+							<h2 class="section-title">10. Account Security and Responsibility</h2>
+							<div class="section-content">
+								<p>You are solely responsible for:</p>
+								<ul>
+									<li>Maintaining the confidentiality of your login credentials and account information</li>
+									<li>Enabling and maintaining two-factor authentication (2FA) for enhanced account security</li>
+									<li>Monitoring your account for unauthorized access or suspicious activity</li>
+									<li>Immediately notifying the platform of any security breaches or unauthorized transactions</li>
+									<li>Using secure devices and internet connections when accessing your account</li>
+									<li>Keeping your contact information (email, phone number) up to date for important notifications</li>
+								</ul>
+								<p>The platform will not be liable for losses resulting from unauthorized account access if you fail to adequately protect your credentials.</p>
+							</div>
+						</div>
+
+						<!-- Section 11 -->
+						<div class="agreement-section">
+							<h2 class="section-title">11. Termination of Service</h2>
+							<div class="section-content">
+								<p><strong>Termination by You:</strong> You may stop copying any Signal Provider at any time through your account dashboard. Open positions will remain in your account until you manually close them or until the Provider closes their corresponding positions.</p>
+								<p><strong>Termination by Platform:</strong> We reserve the right to terminate or suspend your access to copy trading services if you violate this Agreement, engage in fraudulent activity, fail to maintain adequate account balance, or for any other reason at our sole discretion.</p>
+								<p><strong>Effect of Termination:</strong> Upon termination of the copy trading service, all active copy relationships will be immediately discontinued. You will remain responsible for managing or closing all open positions in your account.</p>
+							</div>
+						</div>
+
+						<!-- Section 12 -->
+						<div class="agreement-section">
+							<h2 class="section-title">12. Modifications to Agreement</h2>
+							<div class="section-content">
+								<p>Norvia.io reserves the right to modify this Agreement at any time. Material changes will be communicated via email or platform notification. Your continued use of copy trading services after modifications take effect constitutes acceptance of the revised Agreement.</p>
+								<p>We recommend reviewing this Agreement periodically to stay informed of any updates or changes.</p>
+							</div>
+						</div>
+
+						<!-- Section 13 -->
+						<div class="agreement-section">
+							<h2 class="section-title">13. Governing Law and Dispute Resolution</h2>
+							<div class="section-content">
+								<p>This Agreement shall be governed by and construed in accordance with the laws of the jurisdiction in which Norvia.io operates, without regard to conflict of law principles.</p>
+								<p>Any disputes arising from this Agreement or your use of copy trading services shall be resolved through:</p>
+								<ol>
+									<li>Good faith negotiation directly with our support team</li>
+									<li>Mediation by a mutually agreed-upon third party if direct resolution is unsuccessful</li>
+									<li>Binding arbitration in accordance with applicable arbitration rules and laws</li>
+								</ol>
+								<p>You agree to waive the right to participate in class action lawsuits or class-wide arbitration related to copy trading services.</p>
+							</div>
+						</div>
+
+						<!-- Section 14 -->
+						<div class="agreement-section">
+							<h2 class="section-title">14. No Investment Advice</h2>
+							<div class="section-content">
+								<p><strong>Disclaimer:</strong> Norvia.io does not provide investment, financial, legal, or tax advice. The copy trading service is provided solely as a technological platform connecting users with Signal Providers.</p>
+								<p>Signal Providers are independent users and are not employees, agents, or representatives of Norvia.io. They are not licensed financial advisors, and their trading activities should not be construed as professional investment recommendations.</p>
+								<p>You should consult with qualified financial, legal, and tax professionals before making investment decisions. All trading decisions and their consequences are solely your responsibility.</p>
+							</div>
+						</div>
+
+						<!-- Section 15 -->
+						<div class="agreement-section">
+							<h2 class="section-title">15. Contact Information</h2>
+							<div class="section-content">
+								<p>If you have any questions about this Copy Trading Agreement or need assistance with copy trading services, please contact us:</p>
+								<ul>
+									<li><strong>Email:</strong> support@inferraai.com</li>
+									<li><strong>Support Portal:</strong> Create a support ticket through your account dashboard</li>
+									<li><strong>Live Chat:</strong> Available 24/7 within the platform</li>
+								</ul>
+							</div>
+						</div>
+
+						<!-- Final Acknowledgment -->
+						<div class="warning-box">
+							<div class="warning-title">
+								<i class="material-icons">check_circle</i>
+								Your Acknowledgment
+							</div>
+							<p>By clicking "I Agree" or by using the copy trading service, you confirm that you have read, understood, and agree to be bound by all terms and conditions of this Copy Trading Agreement. You acknowledge the substantial risks involved and accept full responsibility for your trading activities.</p>
+						</div>
+
+						<!-- Action Buttons -->
+						<div class="action-buttons">
+							<button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+								<i class="material-icons" style="vertical-align: middle; margin-right: 5px;">print</i>
+								Print Agreement
+							</button>
+							<a href="{% url 'copy_trader' %}" class="btn btn-primary">
+								<i class="material-icons" style="vertical-align: middle; margin-right: 5px;">arrow_back</i>
+								I Understand, Go Back
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+	// Update current year
+	document.querySelectorAll('.current-year').forEach(el => {
+		el.textContent = new Date().getFullYear();
+	});
+</script>
+{% endblock %}

@@ -1,0 +1,163 @@
+{%extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Plan Deposit Details{% endblock %}
+
+{% block body_class %}page-plandepositdet{% endblock %}
+
+{% block content %}
+<div class="content-body default-height">
+	<div class="container-fluid">
+		<div class="row">
+					<div class="col-xl-12">
+						<div class="row">
+							<div class="col-xl-12">
+								<div class="page-titles">
+									<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+										<ol class="breadcrumb">
+											<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+											<li class="breadcrumb-item"><a href="{% url 'planning' %}">Plans</a></li>
+											<li class="breadcrumb-item"><a href="javascript:history.back()">Payment Method</a></li>
+											<li class="breadcrumb-item active" aria-current="page">Payment Details</li>
+										</ol>
+									</nav>
+								</div>
+							</div>
+						</div>
+
+						<!-- Plan Information Banner -->
+						<div class="plan-info-banner">
+							<span class="plan-badge" id="planCategory">Signal Plan</span>
+							<div class="plan-info-header">
+								<h2 class="plan-name"><span id="planTier">Gold</span> Plan</h2>
+								<div class="plan-price-display">$<span id="planPrice">4,000.00</span></div>
+							</div>
+						</div>
+
+						<!-- Payment Details Card -->
+						<div class="card">
+							<div class="card-body">
+								<div class="row justify-content-center">
+									<div class="col-xl-8 col-lg-10">
+										<h4 class="card-title mb-4" style="font-size: 22px; font-weight: 700;">Complete Your Payment</h4>
+
+										<!-- Info Alert -->
+										<div class="info-alert">
+											<i class="material-icons">info</i>
+											<div class="info-alert-text">
+												<strong>Important Instructions</strong>
+												<p>Please send the exact amount to the wallet address below. After payment, upload your proof of payment.</p>
+											</div>
+										</div>
+
+										<!-- Payment Summary -->
+										<div class="payment-detail-box">
+											<div class="payment-detail-row">
+												<span class="payment-detail-label">Plan Name</span>
+												<span class="payment-detail-value" id="planNameDisplay">Gold Signal Plan</span>
+											</div>
+											<div class="payment-detail-row">
+												<span class="payment-detail-label">Amount to Pay</span>
+												<span class="payment-detail-value">$<span id="amountDisplay">4,000.00</span></span>
+											</div>
+											<div class="payment-detail-row">
+												<span class="payment-detail-label">Payment Method</span>
+												<span class="payment-detail-value" id="paymentMethodDisplay">Bitcoin (BTC) - TRC20</span>
+											</div>
+										</div>
+
+										<!-- Wallet Address Section -->
+										<div class="wallet-address-box">
+											<div class="wallet-label">
+												<i class="material-icons">account_balance_wallet</i>
+												<span>Wallet Address</span>
+											</div>
+											<div class="wallet-address-container">
+												<div class="wallet-address-text" id="walletAddress">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
+												<button class="copy-button">
+													<i class="material-icons">content_copy</i>
+													<span>Copy</span>
+												</button>
+											</div>
+										</div>
+
+										<!-- QR Code Section -->
+										<div class="qr-code-section">
+											<div class="qr-code-label">
+												<i class="material-icons">qr_code_2</i>
+												<span>Scan QR Code</span>
+											</div>
+											<div class="qr-code-placeholder">
+												<i class="material-icons">qr_code_scanner</i>
+												<p class="qr-code-hint">QR Code will appear here</p>
+											</div>
+											<p class="qr-code-hint">Scan this code with your wallet app to pay</p>
+										</div>
+
+										<!-- Upload Proof Section -->
+										<div class="upload-section">
+											<div class="upload-label">
+												<i class="material-icons">upload_file</i>
+												<span>Upload Payment Proof</span>
+											</div>
+											<div class="upload-box">
+												<i class="material-icons">cloud_upload</i>
+												<p><strong>Click to upload payment proof</strong></p>
+												<p class="upload-hint">Supported formats: JPG, PNG, PDF (Max 5MB)</p>
+												<input type="file" id="proofUpload" style="display: none;" accept="image/*,.pdf" onchange="handleFileUpload(event)">
+											</div>
+											<div id="uploadedFileName" class="uploaded-file-display">
+												<i class="material-icons">check_circle</i>
+												<span class="uploaded-file-name" id="fileName"></span>
+											</div>
+										</div>
+
+										<!-- Submit Button -->
+										<button class="submit-button">
+											<i class="material-icons">done_all</i>
+											<span>Complete Purchase</span>
+										</button>
+
+									</div>
+								</div>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+// Copy wallet address to clipboard with visual feedback
+document.querySelector('.copy-button').addEventListener('click', function() {
+	const address = document.getElementById('walletAddress').textContent.trim();
+	const btn = this;
+	const originalHTML = btn.innerHTML;
+
+	navigator.clipboard.writeText(address).then(function() {
+		btn.innerHTML = '<i class="material-icons">check</i><span>Copied!</span>';
+		btn.style.background = '#10b981';
+
+		setTimeout(function() {
+			btn.innerHTML = originalHTML;
+			btn.style.background = '';
+		}, 2000);
+	}).catch(function(err) {
+		alert('Failed to copy address. Please copy manually.');
+	});
+});
+
+// TODO: Django backend will handle:
+// - Get plan details from database (name, price, tier, features)
+// - Generate wallet address or get from admin settings
+// - Generate QR code image using Python QR library
+// - Store plan purchase transaction
+// - Monitor blockchain for payment
+// - Activate plan after payment confirmation
+// - Send email notification
+</script>
+{% endblock %}
+
