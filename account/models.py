@@ -416,3 +416,55 @@ class TraderApplication(models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.email})"
+    
+class CopyRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='copy_requests')
+    trader = models.ForeignKey(Trader, on_delete=models.CASCADE, related_name='requests')
+    allocation = models.FloatField(default=0.0)
+    percentage = models.PositiveIntegerField(default=0)
+    user_balance = models.FloatField(default=0.0)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username} → {self.trader.full_name} ({self.status})"
+    
+class ManualTrade(models.Model):
+    MARKET_CHOICES = [
+        ('crypto', 'Crypto'),
+        ('stocks', 'Stocks'),
+    ]
+    DIRECTION_CHOICES = [
+        ('buy', 'Buy'),
+        ('sell', 'Sell'),
+    ]
+    OUTCOME_CHOICES = [
+        ('profit', 'Profit'),
+        ('loss', 'Loss'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='manual_trades')
+    trader = models.ForeignKey(Trader, on_delete=models.SET_NULL, null=True, blank=True, related_name='copied_trades')
+
+    market_type = models.CharField(max_length=20, choices=MARKET_CHOICES)
+    asset = models.CharField(max_length=50)
+    direction = models.CharField(max_length=10, choices=DIRECTION_CHOICES)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    duration = models.PositiveIntegerField(help_text="Duration in minutes")
+    outcome = models.CharField(max_length=10, choices=OUTCOME_CHOICES)
+    outcome_amount = models.DecimalField(max_digits=12, decimal_places=2)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.asset} ({self.direction.upper()})"
+
+    @property
+    def result_summary(self):
+        return f"{self.outcome.capitalize()} of ${self.outcome_amount}"

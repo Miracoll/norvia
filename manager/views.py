@@ -5,13 +5,14 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.core.files.base import ContentFile
 from django.contrib import messages
+from django.db.models import Q
 import qrcode
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Sum
 
-from account.models import Currency, Deposit, KYCVerification, Notification, PaymentGateway, Plan, PlanCategory, Trader, User, Withdraw
+from account.models import CopyRequest, Currency, Deposit, KYCVerification, ManualTrade, Notification, PaymentGateway, Plan, PlanCategory, Trader, TraderApplication, User, Withdraw
 from manager.forms import TraderForm
 
 # Create your views here.
@@ -747,16 +748,93 @@ def trader_add(request):
     return render(request, 'manager/trader_add.html', context)
 
 def trader_applications(request):
-    context = {
-        'header_title': 'Trader Applications',
-        'body_class': 'page-admin-traderapps'
+    # --- Handle Approve / Reject Actions ---
+    if request.method == "POST":
+        action = request.POST.get("action")
+        app_id = request.POST.get("application_id")
+        try:
+            application = TraderApplication.objects.get(id=app_id)
+        except TraderApplication.DoesNotExist:
+            messages.error(request, "Application not found.")
+            return redirect("admin_trader_applications")
+
+        if action == "approve_application":
+            # TODO: Add application to trader list
+            application.status = "approved"
+            messages.success(request, f"{application.full_name}'s application has been approved ✅")
+        elif action == "reject_application":
+            application.status = "rejected"
+            messages.warning(request, f"{application.full_name}'s application has been rejected ❌")
+        application.save()
+        return redirect("admin_trader_applications")
+
+    # --- Filters ---
+    status = request.GET.get("status")
+    experience = request.GET.get("experience")
+    search = request.GET.get("search")
+
+    applications = TraderApplication.objects.all().order_by("-submitted_at")
+
+    if status:
+        applications = applications.filter(status=status)
+    if experience:
+        applications = applications.filter(experience=experience)
+    if search:
+        applications = applications.filter(
+            Q(full_name__icontains=search) | Q(email__icontains=search)
+        )
+
+    # --- Stats ---
+    stats = {
+        "pending": TraderApplication.objects.filter(status="pending").count(),
+        "under_review": TraderApplication.objects.filter(status="under-review").count(),
+        "approved": TraderApplication.objects.filter(status="approved").count(),
+        "rejected": TraderApplication.objects.filter(status="rejected").count(),
     }
-    return render(request, 'manager/trader_application.html', context)
+
+    context = {
+        "header_title": "Trader Applications",
+        "body_class": "page-admin-traderapps",
+        "applications": applications,
+        "stats": stats,
+    }
+    return render(request, "manager/trader_application.html", context)
 
 def copy_requests(request):
+    # Handle approval/rejection
+    if request.method == "POST":
+        action = request.POST.get('action')
+        request_id = request.POST.get('request_id')
+        copy_request = CopyRequest.objects.get(id=request_id)
+
+        if action == 'approve':
+            copy_request.status = 'approved'
+            messages.success(request, f"Copy request from {copy_request.user.username} approved.")
+        elif action == 'reject':
+            copy_request.status = 'rejected'
+            messages.warning(request, f"Copy request from {copy_request.user.username} rejected.")
+        copy_request.save()
+        return redirect('copy_requests')
+
+    # Fetch all pending requests
+    pending_requests = CopyRequest.objects.filter(status='pending')
+
+    # Calculate summary stats
+    today = timezone.now().date()
+    approved_today = CopyRequest.objects.filter(status='approved', created_at__date=today).count()
+    rejected_today = CopyRequest.objects.filter(status='rejected', created_at__date=today).count()
+    active_copy_trades = CopyRequest.objects.filter(status='approved').count()
+
     context = {
         'header_title': 'Copy Trading Requests',
-        'body_class': 'page-admin-copyrequests'
+        'body_class': 'page-admin-copyrequests',
+        'pending_requests': pending_requests,
+        'stats': {
+            'pending': pending_requests.count(),
+            'approved_today': approved_today,
+            'rejected_today': rejected_today,
+            'active': active_copy_trades
+        }
     }
     return render(request, 'manager/copy_request.html', context)
 
@@ -765,6 +843,50 @@ def take_trade(request):
         'header_title': 'Take Trade',
         'body_class': 'page-take-trade'
     }
+
+    if request.method == 'POST' and request.POST.get('action') == 'execute_trade':
+        try:
+            user_id = request.POST.get('user_id')
+            trader_id = request.POST.get('trader_id')
+            market_type = request.POST.get('market_type')
+            asset = request.POST.get('asset')
+            direction = request.POST.get('direction')
+            amount = request.POST.get('amount')
+            duration = request.POST.get('duration')
+            outcome = request.POST.get('outcome')
+            outcome_amount = request.POST.get('outcome_amount')
+
+            # --- Get related objects ---
+            user = User.objects.get(id=user_id)
+            trader = Trader.objects.get(username=trader_id)
+
+            # --- Create trade record ---
+            ManualTrade.objects.create(
+                user=user,
+                trader=trader,
+                market_type=market_type,
+                asset=asset,
+                direction=direction,
+                amount=amount,
+                duration=duration,
+                outcome=outcome,
+                outcome_amount=outcome_amount,
+            )
+
+            messages.success(request, f"Trade executed successfully for {user.username}.")
+            return redirect('take_trade')  # You can change redirect as needed
+
+        except User.DoesNotExist:
+            messages.error(request, "Invalid user selected.")
+        except Trader.DoesNotExist:
+            messages.error(request, "Invalid trader selected.")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+
+    # Load dropdown data
+    context['users'] = User.objects.all()
+    context['traders'] = Trader.objects.all()
+
     return render(request, 'manager/take_trade.html', context)
 
 def become_trader(request):

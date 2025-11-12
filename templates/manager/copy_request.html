@@ -8,9 +8,9 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="page-titles">
-                    <nav style="--bs-breadcrumb-divider: '>';">
+                    <nav style="--bs-breadcrumb-divider: '>'; ">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Copy Requests</li>
                         </ol>
                     </nav>
@@ -20,223 +20,100 @@
 
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">Pending Copy Requests (6)</h1>
+            <h1 class="page-title">Pending Copy Requests ({{ stats.pending }})</h1>
         </div>
 
         <!-- Stats Mini Cards -->
         <div class="stats-row">
             <div class="stat-mini">
                 <div class="stat-mini-label">Pending Requests</div>
-                <div class="stat-mini-value" style="color: #f59e0b;">6</div>
+                <div class="stat-mini-value" style="color: #f59e0b;">{{ stats.pending }}</div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Approved Today</div>
-                <div class="stat-mini-value" style="color: #10b981;">12</div>
+                <div class="stat-mini-value" style="color: #10b981;">{{ stats.approved_today }}</div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Rejected Today</div>
-                <div class="stat-mini-value" style="color: #ef4444;">2</div>
+                <div class="stat-mini-value" style="color: #ef4444;">{{ stats.rejected_today }}</div>
             </div>
             <div class="stat-mini">
                 <div class="stat-mini-label">Active Copy Trades</div>
-                <div class="stat-mini-value">2,847</div>
+                <div class="stat-mini-value">{{ stats.active }}</div>
             </div>
         </div>
 
         <!-- Requests Grid -->
         <div class="requests-grid">
+            {% if pending_requests %}
+                {% for req in pending_requests %}
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    {{ req.user.first_name|slice:":1" }}{{ req.user.last_name|slice:":1" }}
+                                </div>
+                                <div class="user-details">
+                                    <h4>{{ req.user.get_full_name|default:req.user.username }}</h4>
+                                    <p>#USR-{{ req.user.id }} • {{ req.user.email }}</p>
+                                </div>
+                            </div>
+                            <div class="request-time">
+                                <i class="material-icons" style="font-size: 14px;">schedule</i>
+                                {{ req.created_at|timesince }} ago
+                            </div>
+                        </div>
 
-            <!-- Request Card 1 -->
-            <div class="request-card">
-                <div class="request-header">
-                    <div class="user-info">
-                        <div class="user-avatar">JD</div>
-                        <div class="user-details">
-                            <h4>John Doe</h4>
-                            <p>#USR-10245 • john@example.com</p>
+                        <div class="trader-section">
+                            <div class="trader-label">Wants to Copy</div>
+                            <div class="trader-name">
+                                {{ req.trader.full_name }}
+                                <i class="material-icons verified-icon">verified</i>
+                            </div>
+                        </div>
+
+                        <div class="allocation-info">
+                            <div class="info-box">
+                                <div class="info-label">Allocation</div>
+                                <div class="info-value amount">${{ req.allocation|floatformat:2 }}</div>
+                            </div>
+                            <div class="info-box">
+                                <div class="info-label">Percentage</div>
+                                <div class="info-value">{{ req.percentage }}%</div>
+                            </div>
+                        </div>
+
+                        <div class="user-balance">
+                            <span class="balance-label">User's Trading Balance</span>
+                            <span class="balance-value">${{ req.user_balance|floatformat:2 }}</span>
+                        </div>
+
+                        <div class="request-actions">
+                            <form method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="approve">
+                                <input type="hidden" name="request_id" value="{{ req.id }}">
+                                <button type="submit" class="btn-approve">
+                                    <i class="material-icons" style="font-size: 18px;">check_circle</i>
+                                    Approve
+                                </button>
+                            </form>
+                            <form method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="reject">
+                                <input type="hidden" name="request_id" value="{{ req.id }}">
+                                <button type="submit" class="btn-reject">
+                                    <i class="material-icons" style="font-size: 18px;">cancel</i>
+                                    Reject
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <div class="request-time">
-                        <i class="material-icons" style="font-size: 14px;">schedule</i>
-                        2h ago
-                    </div>
-                </div>
-
-                <div class="trader-section">
-                    <div class="trader-label">Wants to Copy</div>
-                    <div class="trader-name">
-                        Sarah Master
-                        <i class="material-icons verified-icon">verified</i>
-                    </div>
-                </div>
-
-                <div class="allocation-info">
-                    <div class="info-box">
-                        <div class="info-label">Allocation</div>
-                        <div class="info-value amount">$1,500.00</div>
-                    </div>
-                    <div class="info-box">
-                        <div class="info-label">Percentage</div>
-                        <div class="info-value">30%</div>
-                    </div>
-                </div>
-
-                <div class="user-balance">
-                    <span class="balance-label">User's Trading Balance</span>
-                    <span class="balance-value">$5,000.00</span>
-                </div>
-
-                <div class="request-actions">
-                    <form method="POST" action="" style="display: inline;">
-                        <input type="hidden" name="action" value="approve">
-                        <input type="hidden" name="user" value="John Doe">
-                        <input type="hidden" name="trader" value="Sarah Master">
-                        <input type="hidden" name="amount" value="1500">
-                        <button type="submit" class="btn-approve">
-                            <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                            Approve
-                        </button>
-                    </form>
-                    <form method="POST" action="" style="display: inline;">
-                        <input type="hidden" name="action" value="reject">
-                        <input type="hidden" name="user" value="John Doe">
-                        <input type="hidden" name="trader" value="Sarah Master">
-                        <button type="submit" class="btn-reject">
-                            <i class="material-icons" style="font-size: 18px;">cancel</i>
-                            Reject
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Request Card 2 -->
-            <div class="request-card">
-                <div class="request-header">
-                    <div class="user-info">
-                        <div class="user-avatar">EW</div>
-                        <div class="user-details">
-                            <h4>Emma Wilson</h4>
-                            <p>#USR-10242 • emma@example.com</p>
-                        </div>
-                    </div>
-                    <div class="request-time">
-                        <i class="material-icons" style="font-size: 14px;">schedule</i>
-                        4h ago
-                    </div>
-                </div>
-
-                <div class="trader-section">
-                    <div class="trader-label">Wants to Copy</div>
-                    <div class="trader-name">
-                        Mike Pro
-                        <i class="material-icons verified-icon">verified</i>
-                    </div>
-                </div>
-
-                <div class="allocation-info">
-                    <div class="info-box">
-                        <div class="info-label">Allocation</div>
-                        <div class="info-value amount">$800.00</div>
-                    </div>
-                    <div class="info-box">
-                        <div class="info-label">Percentage</div>
-                        <div class="info-value">50%</div>
-                    </div>
-                </div>
-
-                <div class="user-balance">
-                    <span class="balance-label">User's Trading Balance</span>
-                    <span class="balance-value">$1,600.00</span>
-                </div>
-
-                <div class="request-actions">
-                    <form method="POST" action="" style="display: inline;">
-                        <input type="hidden" name="action" value="approve">
-                        <input type="hidden" name="user" value="Emma Wilson">
-                        <input type="hidden" name="trader" value="Mike Pro">
-                        <input type="hidden" name="amount" value="800">
-                        <button type="submit" class="btn-approve">
-                            <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                            Approve
-                        </button>
-                    </form>
-                    <form method="POST" action="" style="display: inline;">
-                        <input type="hidden" name="action" value="reject">
-                        <input type="hidden" name="user" value="Emma Wilson">
-                        <input type="hidden" name="trader" value="Mike Pro">
-                        <button type="submit" class="btn-reject">
-                            <i class="material-icons" style="font-size: 18px;">cancel</i>
-                            Reject
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Request Card 3 -->
-            <div class="request-card">
-                <div class="request-header">
-                    <div class="user-info">
-                        <div class="user-avatar">RJ</div>
-                        <div class="user-details">
-                            <h4>Robert Johnson</h4>
-                            <p>#USR-10241 • robert@example.com</p>
-                        </div>
-                    </div>
-                    <div class="request-time">
-                        <i class="material-icons" style="font-size: 14px;">schedule</i>
-                        6h ago
-                    </div>
-                </div>
-
-                <div class="trader-section">
-                    <div class="trader-label">Wants to Copy</div>
-                    <div class="trader-name">
-                        John Crypto
-                        <i class="material-icons verified-icon">verified</i>
-                    </div>
-                </div>
-
-                <div class="allocation-info">
-                    <div class="info-box">
-                        <div class="info-label">Allocation</div>
-                        <div class="info-value amount">$2,500.00</div>
-                    </div>
-                    <div class="info-box">
-                        <div class="info-label">Percentage</div>
-                        <div class="info-value">100%</div>
-                    </div>
-                </div>
-
-                <div class="user-balance">
-                    <span class="balance-label">User's Trading Balance</span>
-                    <span class="balance-value">$2,500.00</span>
-                </div>
-
-                <div class="request-actions">
-                    <form method="POST" action="" style="display: inline;">
-                        <input type="hidden" name="action" value="approve">
-                        <input type="hidden" name="user" value="Robert Johnson">
-                        <input type="hidden" name="trader" value="John Crypto">
-                        <input type="hidden" name="amount" value="2500">
-                        <button type="submit" class="btn-approve">
-                            <i class="material-icons" style="font-size: 18px;">check_circle</i>
-                            Approve
-                        </button>
-                    </form>
-                    <form method="POST" action="" style="display: inline;">
-                        <input type="hidden" name="action" value="reject">
-                        <input type="hidden" name="user" value="Robert Johnson">
-                        <input type="hidden" name="trader" value="John Crypto">
-                        <button type="submit" class="btn-reject">
-                            <i class="material-icons" style="font-size: 18px;">cancel</i>
-                            Reject
-                        </button>
-                    </form>
-                </div>
-            </div>
-
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">No pending requests at the moment.</p>
+            {% endif %}
         </div>
-
     </div>
 </div>
 {% endblock %}

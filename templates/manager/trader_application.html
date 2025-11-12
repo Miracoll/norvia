@@ -6,28 +6,24 @@
         <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">Trader Applications</h1>
-            <a href="platform-settings.html" class="btn-action btn-view">
-                <i class="material-icons" style="font-size: 18px;">settings</i>
-                Application Settings
-            </a>
         </div>
 
         <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card pending">
-                <div class="stat-value">12</div>
+                <div class="stat-value">{{ stats.pending }}</div>
                 <div class="stat-label">Pending Review</div>
             </div>
             <div class="stat-card under-review">
-                <div class="stat-value">5</div>
+                <div class="stat-value">{{ stats.under_review }}</div>
                 <div class="stat-label">Under Review</div>
             </div>
             <div class="stat-card approved">
-                <div class="stat-value">48</div>
+                <div class="stat-value">{{ stats.approved }}</div>
                 <div class="stat-label">Approved</div>
             </div>
             <div class="stat-card rejected">
-                <div class="stat-value">8</div>
+                <div class="stat-value">{{ stats.rejected }}</div>
                 <div class="stat-label">Rejected</div>
             </div>
         </div>
@@ -37,32 +33,21 @@
             <div class="filters-grid">
                 <div class="filter-group">
                     <label>Status</label>
-                    <select name="status" id="statusFilter">
+                    <select name="status">
                         <option value="">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="under-review">Under Review</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
+                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="under-review" {% if request.GET.status == 'under-review' %}selected{% endif %}>Under Review</option>
+                        <option value="approved" {% if request.GET.status == 'approved' %}selected{% endif %}>Approved</option>
+                        <option value="rejected" {% if request.GET.status == 'rejected' %}selected{% endif %}>Rejected</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>Experience Level</label>
-                    <select name="experience" id="experienceFilter">
-                        <option value="">All Levels</option>
-                        <option value="1">Less than 1 year</option>
-                        <option value="2">1-2 years</option>
-                        <option value="3">3-5 years</option>
-                        <option value="5">5-10 years</option>
-                        <option value="10">More than 10 years</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Date Range</label>
-                    <input type="date" name="date" id="dateFilter">
+                    <label>Experience</label>
+                    <input type="text" name="experience" value="{{ request.GET.experience }}" placeholder="e.g. 3-5 years">
                 </div>
                 <div class="filter-group">
                     <label>Search</label>
-                    <input type="text" name="search" id="searchFilter" placeholder="Search by name or email...">
+                    <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search by name or email...">
                 </div>
             </div>
             <button type="submit" class="btn-action btn-view" style="margin-top: 12px;">
@@ -89,83 +74,34 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="applicationsTableBody">
+                    <tbody>
+                        {% for app in applications %}
                         <tr>
                             <td>
-                                <div style="font-weight: 600;">John Anderson</div>
-                                <div style="font-size: 12px; color: #6b7280;">USR-45612</div>
+                                <div style="font-weight: 600;">{{ app.full_name }}</div>
+                                <div style="font-size: 12px; color: #6b7280;">{{ app.user.username|upper }}</div>
                             </td>
-                            <td>john.anderson@email.com</td>
-                            <td>5-10 years</td>
-                            <td>$100,000 - $500,000</td>
-                            <td>Jan 15, 2025</td>
-                            <td><span class="status-badge pending">Pending</span></td>
+                            <td>{{ app.email }}</td>
+                            <td>{{ app.experience }}</td>
+                            <td>{{ app.volume }}</td>
+                            <td>{{ app.submitted_at|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="status-badge {{ app.status|lower }}">{{ app.status|title }}</span>
+                            </td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="#application-1" class="btn-action btn-view">
+                                    <a href="#application-{{ app.id }}" class="btn-action btn-view">
                                         <i class="material-icons" style="font-size: 16px;">visibility</i>
                                         View
                                     </a>
                                 </div>
                             </td>
                         </tr>
+                        {% empty %}
                         <tr>
-                            <td>
-                                <div style="font-weight: 600;">Sarah Mitchell</div>
-                                <div style="font-size: 12px; color: #6b7280;">USR-78934</div>
-                            </td>
-                            <td>sarah.mitchell@email.com</td>
-                            <td>3-5 years</td>
-                            <td>$50,000 - $100,000</td>
-                            <td>Jan 14, 2025</td>
-                            <td><span class="status-badge under-review">Under Review</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a href="#application-2" class="btn-action btn-view">
-                                        <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                        View
-                                    </a>
-                                </div>
-                            </td>
+                            <td colspan="7" style="text-align:center;">No applications found.</td>
                         </tr>
-                        <tr>
-                            <td>
-                                <div style="font-weight: 600;">Michael Chen</div>
-                                <div style="font-size: 12px; color: #6b7280;">USR-23456</div>
-                            </td>
-                            <td>michael.chen@email.com</td>
-                            <td>More than 10 years</td>
-                            <td>More than $500,000</td>
-                            <td>Jan 13, 2025</td>
-                            <td><span class="status-badge approved">Approved</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a href="#application-3" class="btn-action btn-view">
-                                        <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                        View
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="font-weight: 600;">Emily Roberts</div>
-                                <div style="font-size: 12px; color: #6b7280;">USR-89012</div>
-                            </td>
-                            <td>emily.roberts@email.com</td>
-                            <td>1-2 years</td>
-                            <td>$10,000 - $50,000</td>
-                            <td>Jan 12, 2025</td>
-                            <td><span class="status-badge rejected">Rejected</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a href="#application-4" class="btn-action btn-view">
-                                        <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                        View
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -173,7 +109,9 @@
     </div>
 </div>
 
-<div class="modal" id="application-1">
+<!-- Application Modals -->
+{% for app in applications %}
+<div class="modal" id="application-{{ app.id }}">
     <div class="modal-overlay"></div>
     <div class="modal-content">
         <div class="modal-header">
@@ -184,232 +122,64 @@
         </div>
         <div class="modal-body">
             <div class="applicant-info">
-                <h4>John Anderson</h4>
-                <p class="applicant-email">john.anderson@email.com</p>
-                <p class="applicant-id">USR-45612</p>
+                <h4>{{ app.full_name }}</h4>
+                <p class="applicant-email">{{ app.email }}</p>
+                <p class="applicant-id">{{ app.user.username|upper }}</p>
             </div>
 
             <div class="detail-row">
                 <div class="detail-item">
                     <span class="detail-label">Experience</span>
-                    <span class="detail-value">5-10 years</span>
+                    <span class="detail-value">{{ app.experience }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Trading Volume</span>
-                    <span class="detail-value">$100,000 - $500,000</span>
+                    <span class="detail-value">{{ app.volume }}</span>
                 </div>
             </div>
 
             <div class="detail-row">
                 <div class="detail-item">
                     <span class="detail-label">Applied Date</span>
-                    <span class="detail-value">Jan 15, 2025</span>
+                    <span class="detail-value">{{ app.submitted_at|date:"M d, Y" }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Status</span>
-                    <span class="detail-value"><span class="status-badge pending">Pending</span></span>
+                    <span class="detail-value"><span class="status-badge {{ app.status }}">{{ app.status|title }}</span></span>
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Win Rate</span>
+                    <span class="detail-value">{{ app.win_rate }}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Risk Level</span>
+                    <span class="detail-value">{{ app.risk_level }}</span>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
             <a href="#" class="btn-modal btn-secondary">Close</a>
-            <form method="POST" action="" style="display: inline;">
+            <form method="POST" action="" style="display:inline;">
+                {% csrf_token %}
                 <input type="hidden" name="action" value="reject_application">
-                <input type="hidden" name="application_id" value="1">
+                <input type="hidden" name="application_id" value="{{ app.id }}">
                 <button type="submit" class="btn-modal btn-reject">
-                    <i class="material-icons" style="font-size: 16px;">close</i>
-                    Reject
+                    <i class="material-icons" style="font-size:16px;">close</i> Reject
                 </button>
             </form>
-            <form method="POST" action="" style="display: inline;">
+            <form method="POST" action="" style="display:inline;">
+                {% csrf_token %}
                 <input type="hidden" name="action" value="approve_application">
-                <input type="hidden" name="application_id" value="1">
+                <input type="hidden" name="application_id" value="{{ app.id }}">
                 <button type="submit" class="btn-modal btn-approve">
-                    <i class="material-icons" style="font-size: 16px;">check</i>
-                    Approve
+                    <i class="material-icons" style="font-size:16px;">check</i> Approve
                 </button>
             </form>
         </div>
     </div>
 </div>
-
-<div class="modal" id="application-2">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Application Details</h3>
-            <a href="#" class="modal-close">
-                <i class="material-icons">close</i>
-            </a>
-        </div>
-        <div class="modal-body">
-            <div class="applicant-info">
-                <h4>Sarah Mitchell</h4>
-                <p class="applicant-email">sarah.mitchell@email.com</p>
-                <p class="applicant-id">USR-78934</p>
-            </div>
-
-            <div class="detail-row">
-                <div class="detail-item">
-                    <span class="detail-label">Experience</span>
-                    <span class="detail-value">3-5 years</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Trading Volume</span>
-                    <span class="detail-value">$50,000 - $100,000</span>
-                </div>
-            </div>
-
-            <div class="detail-row">
-                <div class="detail-item">
-                    <span class="detail-label">Applied Date</span>
-                    <span class="detail-value">Jan 14, 2025</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Status</span>
-                    <span class="detail-value"><span class="status-badge under-review">Under Review</span></span>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn-modal btn-secondary">Close</a>
-            <form method="POST" action="" style="display: inline;">
-                <input type="hidden" name="action" value="reject_application">
-                <input type="hidden" name="application_id" value="2">
-                <button type="submit" class="btn-modal btn-reject">
-                    <i class="material-icons" style="font-size: 16px;">close</i>
-                    Reject
-                </button>
-            </form>
-            <form method="POST" action="" style="display: inline;">
-                <input type="hidden" name="action" value="approve_application">
-                <input type="hidden" name="application_id" value="2">
-                <button type="submit" class="btn-modal btn-approve">
-                    <i class="material-icons" style="font-size: 16px;">check</i>
-                    Approve
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="application-3">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Application Details</h3>
-            <a href="#" class="modal-close">
-                <i class="material-icons">close</i>
-            </a>
-        </div>
-        <div class="modal-body">
-            <div class="applicant-info">
-                <h4>Michael Chen</h4>
-                <p class="applicant-email">michael.chen@email.com</p>
-                <p class="applicant-id">USR-23456</p>
-            </div>
-
-            <div class="detail-row">
-                <div class="detail-item">
-                    <span class="detail-label">Experience</span>
-                    <span class="detail-value">More than 10 years</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Trading Volume</span>
-                    <span class="detail-value">More than $500,000</span>
-                </div>
-            </div>
-
-            <div class="detail-row">
-                <div class="detail-item">
-                    <span class="detail-label">Applied Date</span>
-                    <span class="detail-value">Jan 13, 2025</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Status</span>
-                    <span class="detail-value"><span class="status-badge approved">Approved</span></span>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn-modal btn-secondary">Close</a>
-            <form method="POST" action="" style="display: inline;">
-                <input type="hidden" name="action" value="reject_application">
-                <input type="hidden" name="application_id" value="3">
-                <button type="submit" class="btn-modal btn-reject">
-                    <i class="material-icons" style="font-size: 16px;">close</i>
-                    Reject
-                </button>
-            </form>
-            <form method="POST" action="" style="display: inline;">
-                <input type="hidden" name="action" value="approve_application">
-                <input type="hidden" name="application_id" value="3">
-                <button type="submit" class="btn-modal btn-approve">
-                    <i class="material-icons" style="font-size: 16px;">check</i>
-                    Approve
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="application-4">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Application Details</h3>
-            <a href="#" class="modal-close">
-                <i class="material-icons">close</i>
-            </a>
-        </div>
-        <div class="modal-body">
-            <div class="applicant-info">
-                <h4>Emily Roberts</h4>
-                <p class="applicant-email">emily.roberts@email.com</p>
-                <p class="applicant-id">USR-89012</p>
-            </div>
-
-            <div class="detail-row">
-                <div class="detail-item">
-                    <span class="detail-label">Experience</span>
-                    <span class="detail-value">1-2 years</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Trading Volume</span>
-                    <span class="detail-value">$10,000 - $50,000</span>
-                </div>
-            </div>
-
-            <div class="detail-row">
-                <div class="detail-item">
-                    <span class="detail-label">Applied Date</span>
-                    <span class="detail-value">Jan 12, 2025</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Status</span>
-                    <span class="detail-value"><span class="status-badge rejected">Rejected</span></span>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn-modal btn-secondary">Close</a>
-            <form method="POST" action="" style="display: inline;">
-                <input type="hidden" name="action" value="reject_application">
-                <input type="hidden" name="application_id" value="4">
-                <button type="submit" class="btn-modal btn-reject">
-                    <i class="material-icons" style="font-size: 16px;">close</i>
-                    Reject
-                </button>
-            </form>
-            <form method="POST" action="" style="display: inline;">
-                <input type="hidden" name="action" value="approve_application">
-                <input type="hidden" name="application_id" value="4">
-                <button type="submit" class="btn-modal btn-approve">
-                    <i class="material-icons" style="font-size: 16px;">check</i>
-                    Approve
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
+{% endfor %}
 {% endblock %}
