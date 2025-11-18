@@ -4,8 +4,10 @@ from account import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path("stop-copying/<uuid:pk>/", views.stop_copying, name="stop_copying"),
     path('crypto-market/', views.crypto_market, name='crypto_market'),
     path('stock-market/', views.stock_market, name='stock_market'),
+    path('place-trade/', views.place_trade, name='place_trade'),
     path('copy-trader/', views.copy_trader, name='copy_trader'),
     path('become-trader/', views.become_trader, name='become_trader'),
     path('deposit/', views.deposit, name='deposit'),
@@ -21,7 +23,7 @@ urlpatterns = [
     path('settings/', views.settings, name='settings'),
     path('sign-in/', views.sign_in, name='sign_in'),
     path('logout/', views.logout_view, name='logout'),
-    path('forget-password/', views.forget_password, name='forget_password'),
+    # path('forget-password/', views.forget_password, name='forget_password'),
     path('sign-up-step-1/', views.sign_up_step_1, name='sign_up_step_1'),
     path('sign-up-step-2/', views.sign_up_step_2, name='sign_up_step_2'),
     path('sign-up-step-3/', views.sign_up_step_3, name='sign_up_step_3'),

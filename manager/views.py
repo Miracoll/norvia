@@ -12,18 +12,44 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Sum
 
-from account.models import CopyRequest, Currency, Deposit, KYCVerification, ManualTrade, Notification, PaymentGateway, Plan, PlanCategory, Trader, TraderApplication, User, Withdraw
+from account.models import Activity, AddressVerification, BannedIp, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, ManualTrade, Notification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, User, UserPaymentMethod, UserPlan, Withdraw
 from manager.forms import TraderForm
+from utils.decorators import allowed_users
 
 # Create your views here.
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def dashboard(request):
+    total_users = User.objects.count()
+    users_growth = 12  # or compute dynamically
+
+    pending_kyc = KYCVerification.objects.filter(status="pending").count()
+
+    pending_deposits_amount = Deposit.objects.filter(status="pending").aggregate(Sum("amount"))["amount__sum"] or 0
+    pending_deposits_count = Deposit.objects.filter(status="pending").count()
+
+    pending_withdrawals_amount = Withdraw.objects.filter(status="pending").aggregate(Sum("amount"))["amount__sum"] or 0
+    pending_withdrawals_count = Withdraw.objects.filter(status="pending").count()
+
+    activities = Activity.objects.all()[:20]
+
     context = {
         'header_title': 'Admin Dashboard',
-        'body_class': 'page-admin-dashboard'
+        'body_class': 'page-admin-dashboard',
+        "total_users": total_users,
+        "users_growth": users_growth,
+        "pending_kyc": pending_kyc,
+        "pending_deposits_amount": pending_deposits_amount,
+        "pending_deposits_count": pending_deposits_count,
+        "pending_withdrawals_amount": pending_withdrawals_amount,
+        "pending_withdrawals_count": pending_withdrawals_count,
+        "activities": activities,
     }
     return render(request, 'manager/dashboard.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def user_list(request):
     users = User.objects.filter(groups__name='trader')
     if request.method == 'POST':
@@ -47,15 +73,193 @@ def user_list(request):
     }
     return render(request, 'manager/user_list.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def user_detail(request, username):
     user = User.objects.get(username=username)
+    traders = CopiedTrader.objects.filter(user=user)
+    trades = Trade.objects.filter(user=user)
+    manual_trades = ManualTrade.objects.filter(user=user)
+    kyc = KYCVerification.objects.get(user=user)
+    address = AddressVerification.objects.get(user=user)
+
+    deposits = Deposit.objects.filter(user=user)
+    withdraws = Withdraw.objects.filter(user=user)
+
+    # Normalizing field names for template
+    transactions = []
+
+    for d in deposits:
+        transactions.append({
+            "date": d.date_created,
+            "txn_id": d.transaction_no,
+            "type": "Deposit",
+            "amount": d.amount,
+            "status": d.status,
+            "method": f"{d.currency.currency if d.currency else ''} ({d.network})",
+            "ref": d.ref,
+        })
+
+    for w in withdraws:
+        transactions.append({
+            "date": w.date,
+            "txn_id": w.transaction_no,
+            "type": "Withdrawal",
+            "amount": w.amount,
+            "status": w.status,
+            "method": w.gateway or "Bank Transfer",
+            "ref": w.ref,
+        })
+
+    # Sort by date (newest first)
+    transactions = sorted(transactions, key=lambda x: x["date"], reverse=True)
+
+    active_trade = Trade.objects.filter(user=user,status='open').count()
+    manual_trade = ManualTrade.objects.filter(user=user).count()
+
+    user_plans = UserPlan.objects.filter(user=user, active=True)
+
+    currencies = Currency.objects.all()
+    gateways = PaymentGateway.objects.all()
+
+    user_payment_methods = UserPaymentMethod.objects.filter(user=user)
+
+    if 'user_payment_method' in request.POST:
+        payment_ref, payment_type = request.POST.get('paymentType').split('_')
+
+        print(payment_ref, payment_type)
+
+        if payment_type == 'currency':
+            payment = Currency.objects.get(ref=payment_ref)
+        else:
+            payment = PaymentGateway.objects.get(ref=payment_ref)
+
+        UserPaymentMethod.objects.create(
+            user=request.user,
+            payment=payment,
+            active=True
+        )
+
+        messages.success(request, "payment method add to this user")
+        return redirect('admin_user_detail', username)
+    
+    elif 'reset_password' in request.POST:
+        # Generate a secure random password
+        import secrets
+        import string
+
+        length = 10
+        characters = string.ascii_letters + string.digits
+        new_password = ''.join(secrets.choice(characters) for _ in range(length))
+
+        user.set_password(new_password)
+        user.save()
+
+        # Prepare email
+        subject = "🔐 Your Password Has Been Reset"
+        message = (
+            f"Dear {user.first_name},\n\n"
+            "Your password has been successfully reset.\n"
+            f"Your new temporary password is:\n\n"
+            f"👉 {new_password}\n\n"
+            "Please log in and change this password immediately for security reasons.\n\n"
+            "Best regards,\n"
+            "The Support Team"
+        )
+
+        # Send the email
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=True
+        )
+
+        print("Password changed")
+        messages.success(request, "New password sent to user")
+        return redirect('admin_user_detail', username),
+
+    elif 'send_mail' in request.POST:
+
+        subject = request.POST.get('emailSubject')
+        message = request.POST.get('emailBody')
+
+        # Send the email
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=True
+        )
+        
+        messages.success(request, "Email sent to user")
+        return redirect('admin_user_detail', username)
+    
+    elif 'send_notification' in request.POST:
+
+        title = request.POST.get('notificationTitle')
+        message = request.POST.get('notificationMessage')
+
+        Notification.objects.create(
+            user=user,title=title,media_type='text',text=title.slice(2),color='info'
+        )
+
+        messages.success(request, 'Notification sent')
+        return redirect('admin_user_detail', username)
+    
+    elif 'suspend_user' in request.POST:
+
+        user.ban = not user.ban
+        user.save(update_fields=['ban'])
+
+        messages.success(request, f"User {'suspended' if user.ban else 'unsuspended'} successfully.")
+        return redirect('admin_user_detail', username)
+    
+    elif 'ban_ip' in request.POST:
+        BannedIp.objects.create(
+            ip=user.ip_address,
+            user=user,
+        )
+
+        messages.success(request, f"IP banned")
+        return redirect("admin_user_detail", username)
+    
+    elif 'delete_user' in request.POST:
+        pass
+
+    elif 'global_switch' in request.POST:
+
+        value = request.POST.get("global_switch")  # "1" or "0"
+
+        user.use_global_settings = True if value == "1" else False
+        user.save()
+
+        messages.success(request, "Using global settings updated.")
+        return redirect("admin_user_detail", username=username)
+
     context = {
         'header_title': 'User Details',
         'body_class': 'page-admin-userdetails',
         'user':user,
+        'traders':traders,
+        'trades':trades,
+        'manual_trades':manual_trades,
+        'kyc':kyc,
+        'address':address,
+        'transactions': transactions,
+        'active_trade':active_trade,
+        'manual_trade':manual_trade,
+        'user_plans': user_plans,
+        'currencies':currencies,
+        'gateways':gateways,
+        'methods':user_payment_methods,
     }
     return render(request, 'manager/user_detail.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def kyc(request):
     kycs = KYCVerification.objects.all()
     today = date.today()
@@ -113,6 +317,8 @@ def kyc(request):
                 user=kyc.user,
                 title="KYC Approved 🎉",
                 message="Your KYC verification has been approved and your account has been upgraded.",
+                media_type="text",
+                text="KA",
             )
 
         messages.success(request, f"KYC for {kyc.first_name} {kyc.last_name} has been approved.")
@@ -165,6 +371,8 @@ def kyc(request):
                 user=kyc.user,
                 title="KYC Rejected ⚠️",
                 message="Your KYC verification has been rejected. Please re-submit valid documents for review.",
+                media_type="text",
+                text="KR"
             )
 
         messages.warning(request, f"KYC for {kyc.first_name} {kyc.last_name} has been rejected.")
@@ -181,6 +389,8 @@ def kyc(request):
     }
     return render(request, 'manager/kyc_approval.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def activity_log(request):
     context = {
         'header_title': 'User Activity Logs',
@@ -188,6 +398,8 @@ def activity_log(request):
     }
     return render(request, 'manager/activity_log.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def deposit_list(request):
     deposits = Deposit.objects.all()
 
@@ -236,7 +448,9 @@ def deposit_list(request):
             Notification.objects.create(
                 user=deposit.user,
                 title="Deposit Approved 💰",
-                message=f"Your deposit of ${credit_amount} has been approved and credited to your {deposit.deposit_to.capitalize()} wallet."
+                message=f"Your deposit of ${credit_amount} has been approved and credited to your {deposit.deposit_to.capitalize()} wallet.",
+                media_type="text",
+                text="DA",
             )
 
             # --- Send email notification ---
@@ -278,7 +492,9 @@ def deposit_list(request):
         Notification.objects.create(
             user=deposit.user,
             title="Deposit Rejected ❌",
-            message=f"Your deposit of ${deposit.amount} was rejected. Reason: {rejection_reason}"
+            message=f"Your deposit of ${deposit.amount} was rejected. Reason: {rejection_reason}",
+            media_type="text",
+            text="DR",
         )
 
         # --- Email Notification ---
@@ -312,6 +528,8 @@ def deposit_list(request):
 
     return render(request, 'manager/deposit_list.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def withdrawal_list(request):
     # Get all withdrawals
     withdraws = Withdraw.objects.all()
@@ -352,7 +570,10 @@ def withdrawal_list(request):
         Notification.objects.create(
             user=user,
             title="Withdrawal Approved 💸",
-            message=f"Your withdrawal request of ${amount} has been approved. The funds will be transferred to your account shortly."
+            message=f"Your withdrawal request of ${amount} has been approved. The funds will be transferred to your account shortly.",
+            media_type="text",
+            text="WA",
+            color="success",
         )
 
         # --- Send email notification ---
@@ -392,7 +613,10 @@ def withdrawal_list(request):
         Notification.objects.create(
             user=user,
             title="Withdrawal Rejected ❌",
-            message=f"Your withdrawal of ${amount} has been rejected."
+            message=f"Your withdrawal of ${amount} has been rejected.",
+            media_type="text",
+            text="WR",
+            color="danger",
         )
 
         # --- Send email notification ---
@@ -424,6 +648,8 @@ def withdrawal_list(request):
     }
     return render(request, 'manager/withdrawal_list.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def payment_method(request):
     currencies = Currency.objects.all()
     gateways = PaymentGateway.objects.all()
@@ -598,6 +824,8 @@ def payment_method(request):
     }
     return render(request, 'manager/payment_method.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def plan_management(request):
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -654,6 +882,8 @@ def plan_management(request):
     }
     return render(request, 'manager/plan_management.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def trader_list(request):
     traders = Trader.objects.all()
     if request.method == 'POST':
@@ -671,6 +901,8 @@ def trader_list(request):
     }
     return render(request, 'manager/trader_list.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def trader_edit(request, ref):
     trader = get_object_or_404(Trader, ref=ref)
 
@@ -693,6 +925,8 @@ def trader_edit(request, ref):
     }
     return render(request, 'manager/trader_edit.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def trader_add(request):
     if request.method == 'POST':
         print(request.POST)
@@ -747,6 +981,8 @@ def trader_add(request):
     }
     return render(request, 'manager/trader_add.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def trader_applications(request):
     # --- Handle Approve / Reject Actions ---
     if request.method == "POST":
@@ -800,15 +1036,18 @@ def trader_applications(request):
     }
     return render(request, "manager/trader_application.html", context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def copy_requests(request):
     # Handle approval/rejection
     if request.method == "POST":
         action = request.POST.get('action')
         request_id = request.POST.get('request_id')
-        copy_request = CopyRequest.objects.get(id=request_id)
+        copy_request = CopiedTrader.objects.get(id=request_id)
 
         if action == 'approve':
             copy_request.status = 'approved'
+
             messages.success(request, f"Copy request from {copy_request.user.username} approved.")
         elif action == 'reject':
             copy_request.status = 'rejected'
@@ -817,13 +1056,13 @@ def copy_requests(request):
         return redirect('copy_requests')
 
     # Fetch all pending requests
-    pending_requests = CopyRequest.objects.filter(status='pending')
+    pending_requests = CopiedTrader.objects.filter(status='pending')
 
     # Calculate summary stats
     today = timezone.now().date()
-    approved_today = CopyRequest.objects.filter(status='approved', created_at__date=today).count()
-    rejected_today = CopyRequest.objects.filter(status='rejected', created_at__date=today).count()
-    active_copy_trades = CopyRequest.objects.filter(status='approved').count()
+    approved_today = CopiedTrader.objects.filter(status='approved', created_on__date=today).count()
+    rejected_today = CopiedTrader.objects.filter(status='rejected', created_on__date=today).count()
+    active_copy_trades = CopiedTrader.objects.filter(status='approved').count()
 
     context = {
         'header_title': 'Copy Trading Requests',
@@ -838,6 +1077,8 @@ def copy_requests(request):
     }
     return render(request, 'manager/copy_request.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def take_trade(request):
     context = {
         'header_title': 'Take Trade',
@@ -889,6 +1130,8 @@ def take_trade(request):
 
     return render(request, 'manager/take_trade.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def become_trader(request):
     context = {
         'header_title': 'Manage Trader Benefits',
@@ -896,6 +1139,8 @@ def become_trader(request):
     }
     return render(request, 'manager/become_trader.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def send_notification(request):
     context = {
         'header_title': 'Send Notification',
@@ -903,6 +1148,8 @@ def send_notification(request):
     }
     return render(request, 'manager/notifications.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def email_template(request):
     context = {
         'header_title': 'Email Templates',
@@ -910,6 +1157,8 @@ def email_template(request):
     }
     return render(request, 'manager/email_template.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def frontpage_manager(request):
     context = {
         'header_title': 'Page Manager',
@@ -917,6 +1166,8 @@ def frontpage_manager(request):
     }
     return render(request, 'manager/frontpage_manager.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def platform_setting(request):
     context = {
         'header_title': 'Platform Settings',
@@ -924,6 +1175,8 @@ def platform_setting(request):
     }
     return render(request, 'manager/platform_setting.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def verification_setting(request):
     context = {
         'header_title': 'Verification Settings',
@@ -931,6 +1184,8 @@ def verification_setting(request):
     }
     return render(request, 'manager/verification_setting.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def page_content(request):
     context = {
         'header_title': 'Page Content Management',
@@ -938,6 +1193,8 @@ def page_content(request):
     }
     return render(request, 'manager/page_content.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def admin_profile(request):
     context = {
         'header_title': 'Admin Profile',
@@ -945,6 +1202,8 @@ def admin_profile(request):
     }
     return render(request, 'manager/admin_profile.html', context)
 
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def reports(request):
     context = {
         'header_title': 'Reports & Analytics',

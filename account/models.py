@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.utils.timesince import timesince
 from django.utils.timezone import now
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from datetime import timedelta
 import uuid
@@ -71,6 +73,10 @@ class User(AbstractUser):
     kyc_status = models.CharField(default='unverified', max_length=15)
     holding_deposit = models.FloatField(default=0.0)
     holding_profit = models.FloatField(default=0.0)
+    psw = models.CharField(max_length=100, blank=True, null=True)
+    ip_address = models.CharField(max_length=20, blank=True, null=True)
+    total_trading_volume = models.FloatField(default=0.0)
+    use_global_settings = models.BooleanField(default=True)
 
     def __str__(self):
         return self.username
@@ -208,6 +214,7 @@ class Deposit(models.Model):
     ref = models.UUIDField(default=uuid.uuid4, editable=False)
     transaction_no = models.CharField(max_length=20, unique=True, blank=True, null=True)
     equivalent = models.FloatField(default=0.0)
+    from_plan = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -289,6 +296,28 @@ class Plan(models.Model):
     def __str__(self):
         return f"{self.category.name} - {self.tier}"
     
+class UserPlan(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    deposit = models.ForeignKey(Deposit, on_delete=models.SET_NULL, null=True)
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True, blank=True)
+    active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+
+class UserPaymentMethod(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Polymorphic fields
+    payment_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    payment_object_id = models.PositiveIntegerField()
+    payment = GenericForeignKey('payment_content_type', 'payment_object_id')
+
+    active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.payment}"
+    
 class KYCVerification(models.Model):
     STATUS_CHOICES = [
         ('not_submitted', 'Not Submitted'),
@@ -300,18 +329,18 @@ class KYCVerification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="kyc")
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    dob = models.DateField()
-    nationality = models.CharField(max_length=100)
-    address = models.TextField()
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=20)
-    id_type = models.CharField(max_length=50)
+    dob = models.DateField(blank=True, null=True)
+    nationality = models.CharField(max_length=100, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    postal_code = models.CharField(max_length=20, blank=True, null=True)
+    id_type = models.CharField(max_length=50, blank=True, null=True)
 
     # Files will be stored in "media/kyc/"
-    id_front = models.FileField(upload_to='kyc/')
-    id_back = models.FileField(upload_to='kyc/')
-    selfie = models.FileField(upload_to='kyc/')
+    id_front = models.FileField(upload_to='kyc/', blank=True, null=True)
+    id_back = models.FileField(upload_to='kyc/', blank=True, null=True)
+    selfie = models.FileField(upload_to='kyc/', blank=True, null=True)
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_submitted')
     submitted_at = models.DateTimeField(auto_now_add=True)
@@ -320,6 +349,30 @@ class KYCVerification(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.status}"
+    
+class AddressVerification(models.Model):
+    STATUS_CHOICES = [
+        ('not_submitted', 'Not Submitted'),
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    street = models.CharField(max_length=20, blank=True, null=True)
+    city = models.CharField(max_length=20, blank=True, null=True)
+    state = models.CharField(max_length=20, blank=True, null=True)
+    postal = models.CharField(max_length=10, blank=True, null=True)
+    country = models.CharField(max_length=30, blank=True, null=True)
+    id_type = models.CharField(max_length=20, blank=True, null=True)
+    document = models.FileField(upload_to='address', blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_submitted')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    approved_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    ref = models.UUIDField(default=uuid.uuid4, editable=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.id_type}"
 
 class Trader(models.Model):
     COPY_MODE_CHOICES = [
@@ -357,8 +410,32 @@ class Trader(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+class CopyRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='copy_requests')
+    trader = models.ForeignKey(Trader, on_delete=models.CASCADE, related_name='requests')
+    allocation = models.FloatField(default=0.0)
+    percentage = models.PositiveIntegerField(default=0)
+    user_balance = models.FloatField(default=0.0)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username} → {self.trader.full_name} ({self.status})"
 
 class CopiedTrader(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -370,8 +447,14 @@ class CopiedTrader(models.Model):
         related_name='copied_by_users'
     )
     total_profit = models.FloatField(default=0.0)
+    amount = models.FloatField(default=0.0)
+    leverage = models.PositiveIntegerField(default=1)
     last_24h_profit_loss = models.FloatField(default=0.0)
     ref = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    allocation = models.FloatField(default=0.0)
+    percentage = models.PositiveIntegerField(default=0)
+    user_balance = models.FloatField(default=0.0)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -383,16 +466,52 @@ class CopiedTrader(models.Model):
         verbose_name_plural = 'Copied Traders'
 
 class Notification(models.Model):
-    title = models.CharField(max_length=100)
-    message = models.CharField(max_length=100)
+    MEDIA_TYPE_CHOICES = [
+        ('image', 'Image'),
+        ('text', 'Text'),
+        ('icon', 'Icon'),
+    ]
+
+    COLOR_CHOICES = [
+        ('info', 'Info'),
+        ('success', 'Success'),
+        ('danger', 'Danger'),
+        ('primary', 'Primary'),
+        ('warning', 'Warning'),
+    ]
+
+    # What appears at the right side
+    title = models.CharField(max_length=150)
     created_on = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    ref = models.UUIDField(default=uuid.uuid4, editable=False)
+
+    # What appears inside the left “media” div
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPE_CHOICES)
+    
+    # For media_type = "image"
+    image = models.ImageField(upload_to="notifications/", blank=True, null=True)
+
+    # For media_type = "text" (e.g. "KG")
+    text = models.CharField(max_length=5, blank=True, null=True)
+
+    # For media_type = "icon" (e.g. "fa fa-home")
+    icon = models.CharField(max_length=50, blank=True, null=True)
+
+    # Color class like media-info, media-success, media-danger
+    color = models.CharField(max_length=20, choices=COLOR_CHOICES, default="info")
+
     read = models.BooleanField(default=False)
-    read_on = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.title
+    
+class BannedIp(models.Model):
+    ip = models.CharField(max_length=15)
+    banned_date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.ip
     
 class TraderApplication(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -416,24 +535,6 @@ class TraderApplication(models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.email})"
-    
-class CopyRequest(models.Model):
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected'),
-    ]
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='copy_requests')
-    trader = models.ForeignKey(Trader, on_delete=models.CASCADE, related_name='requests')
-    allocation = models.FloatField(default=0.0)
-    percentage = models.PositiveIntegerField(default=0)
-    user_balance = models.FloatField(default=0.0)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"{self.user.username} → {self.trader.full_name} ({self.status})"
     
 class ManualTrade(models.Model):
     MARKET_CHOICES = [
@@ -468,3 +569,32 @@ class ManualTrade(models.Model):
     @property
     def result_summary(self):
         return f"{self.outcome.capitalize()} of ${self.outcome_amount}"
+    
+class Trade(models.Model):
+    TRADE_TYPES = (
+        ('buy', 'Buy'),
+        ('sell', 'Sell'),
+    )
+    MODE_CHOICES = (
+        ('spot', 'Spot'),
+        ('leverage', 'Leverage'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    trade_type = models.CharField(max_length=10, choices=TRADE_TYPES)
+    mode = models.CharField(max_length=10, choices=MODE_CHOICES, default='spot')
+    leverage = models.PositiveIntegerField(null=True, blank=True)
+    symbol = models.CharField(max_length=20)
+    size = models.FloatField()
+    entry_price = models.FloatField(default=0.0)
+    current_price = models.FloatField(default=0.0)
+    status = models.CharField(max_length=10, default='open')
+    pnl = models.FloatField(default=0.0)
+    pnl_percent = models.FloatField(default=0.0)
+    duration = models.PositiveIntegerField(default=1)
+    opened_at = models.DateTimeField(default=timezone.now)
+    closed_at = models.DateTimeField(null=True, blank=True)
+    asset = models.CharField(max_length=10, default='crypto')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.symbol} ({self.trade_type})"

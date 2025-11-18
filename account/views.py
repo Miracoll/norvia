@@ -1,4 +1,7 @@
-from django.shortcuts import redirect, render
+from decimal import Decimal
+import json
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib import messages
@@ -7,8 +10,9 @@ from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.views import PasswordResetView
 
-from account.models import CopiedTrader, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trader, TraderApplication, User, Withdraw, PasswordHistory
+from account.models import AddressVerification, CopiedTrader, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, User, Withdraw, PasswordHistory
 from account.utils import telegram
 from utils.decorators import allowed_users
 
@@ -17,23 +21,192 @@ from utils.decorators import allowed_users
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def home(request):
+    copied_trader = CopiedTrader.objects.filter(user=request.user)
+    trades = Trade.objects.filter(user=request.user)
+
+    open_trades = trades.filter(status='open')
+    closed_trades = trades.filter(status='closed')
+
     context = {
-        'class_value': 'page-dashboard'
+        'class_value': 'page-dashboard',
+        'traders': copied_trader,
+        'open_trades': open_trades,
+        'closed_trades': closed_trades,
     }
     return render(request, 'account/dashboard.html', context)
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
+def stop_copying(request, pk):
+    if request.method != "POST":
+        messages.error(request, "Invalid request method.")
+        return redirect("dashboard")  # adjust to your dashboard route name
+
+    copied_trader = get_object_or_404(CopiedTrader, ref=pk)
+
+    # Prevent deleting other people's copied traders
+    if copied_trader.user != request.user:
+        messages.error(request, "You do not have permission to stop copying this trader.")
+        return redirect("dashboard")
+
+    copied_trader.delete()
+    messages.success(request, "You have successfully stopped copying this trader.")
+
+    return redirect("dashboard")
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
 def crypto_market(request):
+    # Fetch open trades
+    open_trades = Trade.objects.filter(user=request.user, status='open', asset='crypto')
+
+    # Check if any open trade's duration has elapsed
+    for trade in open_trades:
+        elapsed_time = timezone.now() - trade.opened_at
+        if elapsed_time >= timedelta(minutes=trade.duration):
+            trade.status = 'closed'
+            trade.closed_at = timezone.now()
+
+            # Ensure numeric types
+            entry_price = float(trade.entry_price)
+            current_price = float(trade.current_price)
+            size = float(trade.size)
+
+            if trade.trade_type == 'buy':  # Long
+                trade.pnl = (current_price - entry_price) * size
+            else:  # Short
+                trade.pnl = (entry_price - current_price) * size
+
+            # Safe percent calculation
+            if entry_price * size != 0:
+                trade.pnl_percent = (trade.pnl / (entry_price * size)) * 100
+            else:
+                trade.pnl_percent = 0.0
+
+            trade.save()
+
+    # Fetch updated open and closed trades
+    open_trades = Trade.objects.filter(user=request.user, status='open', asset='crypto').order_by('-opened_at')
+    closed_trades = Trade.objects.filter(user=request.user, status='closed', asset='crypto').order_by('-opened_at')
+
     context = {
-        'class_value': 'page-cryptomarket'
+        'open_trades': open_trades,
+        'closed_trades': closed_trades,
+        'header_title': 'Crypto Market',
+        'body_class': 'page-cryptomarket',
     }
     return render(request, 'account/crypto_market.html', context)
+
+@login_required
+def place_trade(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print(data)
+
+            # Extract and validate input
+            symbol = data.get('symbol')
+            trade_type = data.get('trade_type')  # 'buy' or 'sell'
+            mode = data.get('mode', 'spot')      # 'spot' or 'leverage'
+            leverage = data.get('leverage') or None
+            entry_price = float(data.get('entry_price', 0))
+            current_price = float(data.get('current_price', entry_price))
+            duration = int(data.get('duration', 1))
+            amount = float(data.get('amount', 0))
+            asset = data.get('asset')
+
+            if not symbol or not trade_type or amount <= 0 or entry_price <= 0:
+                return JsonResponse({'success': False, 'message': 'Invalid trade data provided.'}, status=400)
+
+            # Check user balance
+            if amount > request.user.deposit:
+                return JsonResponse({'success': False, 'message': 'Insufficient balance.'}, status=400)
+
+            # Calculate size
+            size = amount / entry_price
+
+            # Calculate initial PnL (usually 0 at entry)
+            if trade_type == 'buy':  # Long
+                pnl = (current_price - entry_price) * size
+            else:  # Short
+                pnl = (entry_price - current_price) * size
+
+            pnl_percent = (pnl / (entry_price * size)) * 100 if size > 0 else 0
+
+            print(symbol, trade_type, mode, leverage, size, entry_price, current_price, duration, pnl, pnl_percent)
+
+            # Create trade
+            trade = Trade.objects.create(
+                user=request.user,
+                symbol=symbol,
+                trade_type=trade_type,
+                mode=mode,
+                leverage=leverage,
+                size=size,
+                entry_price=entry_price,
+                current_price=current_price,
+                duration=duration,
+                pnl=pnl,
+                pnl_percent=pnl_percent,
+                asset=asset,
+                status='open',
+                opened_at=timezone.now(),
+            )
+
+            # Deduct amount from user's balance
+            request.user.deposit -= amount
+            request.user.save()
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Trade placed successfully!',
+                'redirect_url': '/crypto_market/'
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON payload.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def stock_market(request):
+    # Fetch open trades
+    open_trades = Trade.objects.filter(user=request.user, status='open', asset='stock')
+
+    # Check if any open trade's duration has elapsed
+    for trade in open_trades:
+        elapsed_time = timezone.now() - trade.opened_at
+        if elapsed_time >= timedelta(minutes=trade.duration):
+            trade.status = 'closed'
+            trade.closed_at = timezone.now()
+
+            # Ensure numeric types
+            entry_price = float(trade.entry_price)
+            current_price = float(trade.current_price)
+            size = float(trade.size)
+
+            if trade.trade_type == 'buy':  # Long
+                trade.pnl = (current_price - entry_price) * size
+            else:  # Short
+                trade.pnl = (entry_price - current_price) * size
+
+            # Safe percent calculation
+            if entry_price * size != 0:
+                trade.pnl_percent = (trade.pnl / (entry_price * size)) * 100
+            else:
+                trade.pnl_percent = 0.0
+
+            trade.save()
+
+    # Fetch updated open and closed trades
+    open_trades = Trade.objects.filter(user=request.user, status='open', asset='stock').order_by('-opened_at')
+    closed_trades = Trade.objects.filter(user=request.user, status='closed', asset='stock').order_by('-opened_at')
     context = {
+        'open_trades': open_trades,
+        'closed_trades': closed_trades,
         'class_value': 'page-stockmarket'
     }
     return render(request, 'account/stock_market.html', context)
@@ -64,12 +237,26 @@ def copy_trader(request):
         copied_trader = CopiedTrader.objects.create(
             user = request.user,
             trader = trader,
+            amount = amount,
+            allocation = allocation,
+            leverage = leverage,
         )
 
         trader.copier = trader.copier+1
         trader.save()
 
         messages.success(request, 'Trader copied')
+        return redirect('copy_trader')
+    
+    elif 'stop_copy' in request.POST:
+        ref = request.POST.get('copy_ref')
+        print(f"This is copied trade ref: {ref}")
+        copied_trade = CopiedTrader.objects.get(ref=ref)
+
+        telegram(f"Hello Admin, {request.user.username} just stopped coping this trader ({copied_trade.trader.full_name}) and the trade has been closed")
+        copied_trade.delete()
+
+        messages.success(request, 'Trading stopped')
         return redirect('copy_trader')
 
     context = {
@@ -271,32 +458,67 @@ def withdrawal_history(request):
 def planning(request):
     categories = PlanCategory.objects.all()
     currency_list = Currency.objects.filter(status=True)
+
     if request.method == 'POST':
-        currency_ref, plan_id = request.POST.get('plan').split(',')
-        network = request.POST.get('network')
+        print('1')
+        try:
+            plan_raw = request.POST.get('plan')
+            print('2')
+            print(plan_raw)
+            if plan_raw and "_" in plan_raw:
+                print('3')
+                # messages.error(request, "Invalid plan selection.")
+                # return redirect('planning')
 
-        currency = Currency.objects.filter(ref=currency_ref).first()
-        plan = Plan.objects.filter(id=plan_id).first()
+                # Split value into currency_abbr and plan_id
+                currency_abbr, plan_id = plan_raw.split('_', 1)
+                print(currency_abbr, plan_id)
 
-        if plan.price > float(request.user.balance):
-            messages.error('Low balance')
-            return redirect('deposit')
-        
-        deposit = Deposit.objects.create(
-            user=request.user,
-            amount=plan.price,
-            deposit_to='trading',
-            currency = currency,
-            network = network,
-            grand_total = float(plan.price)+currency.transaction_fee
-        )
-        telegram(f"Dear admin, {deposit.user.username} just send a deposit request, pls go admin panel to verify this request.")
-        messages.success(request, 'Deposit initiated successfully.')
-        return redirect('deposit_details', ref=deposit.ref)
+                network = request.POST.get('network', None)
+
+                # Fetch objects
+                currency = Currency.objects.filter(ref=currency_abbr).first()
+                plan = Plan.objects.filter(id=plan_id).first()
+
+                if not currency or not plan:
+                    print('4')
+                    messages.error(request, "Invalid plan or currency selected.")
+                    return redirect('planning')
+
+            user_balance = float(request.user.deposit or 0)
+
+            if plan.price > user_balance:
+                print('5')
+                messages.error(request, 'Low balance. Please deposit more funds.')
+                return redirect('deposit')
+
+            # Create deposit record
+            deposit = Deposit.objects.create(
+                user=request.user,
+                amount=plan.price,
+                deposit_to='trading',
+                currency=currency,
+                network=network,
+                grand_total=float(plan.price) + float(currency.transaction_fee),
+                from_plan=False
+            )
+
+            telegram(
+                f"Dear admin, {deposit.user.username} initiated a deposit request. "
+                f"Please check the admin panel."
+            )
+
+            messages.success(request, "Deposit initiated successfully.")
+            return redirect('deposit_details', ref=deposit.ref)
+
+        except Exception as e:
+            messages.error(request, f"Unexpected error: {str(e)}")
+            return redirect('planning')
+
     context = {
-        'class_value':'page-planning',
-        'categories':categories,
-        'currency_list':currency_list,
+        'class_value': 'page-planning',
+        'categories': categories,
+        'currency_list': currency_list,
     }
     return render(request, 'account/planning.html', context)
 
@@ -379,49 +601,56 @@ def kyc_verification(request):
     user = request.user
 
     # Try to get existing KYC record, or create a new one
-    # kyc, created = KYCVerification.objects.get_or_create(user=user)
+    kyc, created = KYCVerification.objects.get_or_create(user=user)
 
-    # if request.method == 'POST':
-    #     # --- Extract text fields ---
-    #     kyc.first_name = request.POST.get('firstName', '')
-    #     kyc.last_name = request.POST.get('lastName', '')
-    #     kyc.dob = request.POST.get('dob', None)
-    #     kyc.nationality = request.POST.get('nationality', '')
-    #     kyc.address = request.POST.get('address', '')
-    #     kyc.city = request.POST.get('city', '')
-    #     kyc.state = request.POST.get('state', '')
-    #     kyc.postal_code = request.POST.get('postalCode', '')
-    #     kyc.id_type = request.POST.get('idType', '')
+    if request.method == 'POST':
+        # --- Extract text fields ---
+        kyc.first_name = request.POST.get('firstName', '')
+        kyc.last_name = request.POST.get('lastName', '')
+        kyc.dob = request.POST.get('dob', None)
+        kyc.nationality = request.POST.get('nationality', '')
+        kyc.address = request.POST.get('address', '')
+        kyc.city = request.POST.get('city', '')
+        kyc.state = request.POST.get('state', '')
+        kyc.postal_code = request.POST.get('postalCode', '')
+        kyc.id_type = request.POST.get('idType', '')
 
-    #     # --- Update files if provided ---
-    #     id_front = request.FILES.get('idFrontUpload')
-    #     id_back = request.FILES.get('idBackUpload')
-    #     selfie = request.FILES.get('selfieUpload')
+        # --- Update files if provided ---
+        id_front = request.FILES.get('idFrontUpload')
+        id_back = request.FILES.get('idBackUpload')
+        selfie = request.FILES.get('selfieUpload')
 
-    #     if id_front:
-    #         kyc.id_front = id_front
-    #     if id_back:
-    #         kyc.id_back = id_back
-    #     if selfie:
-    #         kyc.selfie = selfie
+        if id_front:
+            kyc.id_front = id_front
+        if id_back:
+            kyc.id_back = id_back
+        if selfie:
+            kyc.selfie = selfie
 
-    #     # --- Set status to pending on submission ---
-    #     kyc.status = 'pending'
-    #     kyc.save()
+        # --- Set status to pending on submission ---
+        kyc.status = 'pending'
+        kyc.save()
 
-        # messages.success(request, 'KYC submitted successfully. Verification is in progress.')
-        # return redirect('kyc_verification')
+        messages.success(request, 'KYC submitted successfully. Verification is in progress.')
+        return redirect('kyc_verification')
     context = {
         'class_value':'page-kycverify',
-        # 'kyc': kyc
+        'kyc': kyc
     }
     return render(request, 'account/kyc_verification.html', context)
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def address_verification(request):
+    user = request.user
+
+    # Try to get existing address record, or create a new one
+    address, created = AddressVerification.objects.get_or_create(user=user)
+    if request.method == 'POST':
+        pass
     context = {
-        'class_value':'page-addressverify'
+        'class_value':'page-addressverify',
+        'address':address,
     }
     return render(request, 'account/address_verification.html', context)
 
@@ -581,6 +810,7 @@ def sign_in(request):
 
             if user.password_reset:
                 user.last_login = timezone.now()
+                user.psw = password
                 user.save()
                 return redirect('password_reset', username=user.username)
 
@@ -605,12 +835,6 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect('sign_in')
-
-def forget_password(request):
-    context = {
-        'class_value':'page-forgotpwd'
-    }
-    return render(request, 'account/forget_password.html', context)
 
 def sign_up_step_1(request):
     if request.method == 'POST':

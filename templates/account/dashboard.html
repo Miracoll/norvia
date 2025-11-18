@@ -491,131 +491,70 @@
 
 										<!-- Tabs Content -->
 										<div class="tab-content" style="margin-top: 20px;">
-											<!-- Open Trades Tab -->
+
+											<!-- Open Trades -->
 											<div class="tab-pane fade show active" id="open-trades" role="tabpanel">
-												<!-- Active Trade 1 -->
-												<div class="trade-card profit">
+										
+												{% for trade in open_trades %}
+												<div class="trade-card {% if trade.pnl >= 0 %}profit{% else %}loss{% endif %}">
 													<div class="trade-header">
-														<div class="trade-pair">BTC/USDT</div>
+														<div class="trade-pair">{{ trade.symbol|upper }}</div>
 														<div class="trade-status active">Active</div>
 													</div>
+										
 													<div class="trade-info">
-														<span>Entry: $64,250</span>
-														<span>Current: $65,120</span>
+														<span>Entry: ${{ trade.entry_price }}</span>
+														<span>Current: ${{ trade.current_price }}</span>
 													</div>
+										
 													<div class="trade-info">
-														<span>Trader: @johntrader</span>
-														<span>Size: 0.05 BTC</span>
+														<span>Type: {{ trade.trade_type|title }}</span>
+														<span>Size: {{ trade.size }}</span>
 													</div>
-													<div class="trade-pnl profit">+$43.50 (+1.35%)</div>
+										
+													<div class="trade-pnl {% if trade.pnl >= 0 %}profit{% else %}loss{% endif %}">
+														{% if trade.pnl >= 0 %}+{% endif %}${{ trade.pnl }} 
+														({% if trade.pnl_percent >= 0 %}+{% endif %}{{ trade.pnl_percent }}%)
+													</div>
 												</div>
-
-												<!-- Active Trade 2 -->
-												<div class="trade-card loss">
-													<div class="trade-header">
-														<div class="trade-pair">ETH/USDT</div>
-														<div class="trade-status active">Active</div>
-													</div>
-													<div class="trade-info">
-														<span>Entry: $3,420</span>
-														<span>Current: $3,385</span>
-													</div>
-													<div class="trade-info">
-														<span>Trader: @mikeexpert</span>
-														<span>Size: 0.8 ETH</span>
-													</div>
-													<div class="trade-pnl loss">-$28.00 (-1.02%)</div>
-												</div>
-
-												<!-- Active Trade 3 -->
-												<div class="trade-card profit">
-													<div class="trade-header">
-														<div class="trade-pair">SOL/USDT</div>
-														<div class="trade-status active">Active</div>
-													</div>
-													<div class="trade-info">
-														<span>Entry: $145.20</span>
-														<span>Current: $148.50</span>
-													</div>
-													<div class="trade-info">
-														<span>Trader: @sarahpro</span>
-														<span>Size: 5 SOL</span>
-													</div>
-													<div class="trade-pnl profit">+$16.50 (+2.27%)</div>
-												</div>
+												{% empty %}
+												<p>No open trades available.</p>
+												{% endfor %}
+										
 											</div>
-
-											<!-- Closed Trades Tab -->
+										
+											<!-- Closed Trades -->
 											<div class="tab-pane fade" id="closed-trades" role="tabpanel">
-												<!-- Closed Trade 1 -->
-												<div class="trade-card profit">
+										
+												{% for trade in closed_trades %}
+												<div class="trade-card {% if trade.pnl >= 0 %}profit{% else %}loss{% endif %}">
 													<div class="trade-header">
-														<div class="trade-pair">SOL/USDT</div>
+														<div class="trade-pair">{{ trade.symbol|upper }}</div>
 														<div class="trade-status">Closed</div>
 													</div>
+										
 													<div class="trade-info">
-														<span>Entry: $142.30</span>
-														<span>Exit: $145.80</span>
+														<span>Entry: ${{ trade.entry_price }}</span>
+														<span>Exit: ${{ trade.current_price }}</span>
 													</div>
+										
 													<div class="trade-info">
-														<span>Trader: @sarahpro</span>
-														<span>2 hours ago</span>
+														<span>Type: {{ trade.trade_type|title }}</span>
+														<span>{{ trade.closed_at|timesince }} ago</span>
 													</div>
-													<div class="trade-pnl profit">+$87.50 (+2.46%)</div>
+										
+													<div class="trade-pnl {% if trade.pnl >= 0 %}profit{% else %}loss{% endif %}">
+														{% if trade.pnl >= 0 %}+{% endif %}${{ trade.pnl }}
+														({% if trade.pnl_percent >= 0 %}+{% endif %}{{ trade.pnl_percent }}%)
+													</div>
 												</div>
-
-												<!-- Closed Trade 2 -->
-												<div class="trade-card profit">
-													<div class="trade-header">
-														<div class="trade-pair">ADA/USDT</div>
-														<div class="trade-status">Closed</div>
-													</div>
-													<div class="trade-info">
-														<span>Entry: $0.58</span>
-														<span>Exit: $0.61</span>
-													</div>
-													<div class="trade-info">
-														<span>Trader: @johntrader</span>
-														<span>5 hours ago</span>
-													</div>
-													<div class="trade-pnl profit">+$120.00 (+5.17%)</div>
-												</div>
-
-												<!-- Closed Trade 3 -->
-												<div class="trade-card loss">
-													<div class="trade-header">
-														<div class="trade-pair">XRP/USDT</div>
-														<div class="trade-status">Closed</div>
-													</div>
-													<div class="trade-info">
-														<span>Entry: $0.52</span>
-														<span>Exit: $0.50</span>
-													</div>
-													<div class="trade-info">
-														<span>Trader: @mikeexpert</span>
-														<span>1 day ago</span>
-													</div>
-													<div class="trade-pnl loss">-$40.00 (-3.85%)</div>
-												</div>
-
-												<!-- Closed Trade 4 -->
-												<div class="trade-card profit">
-													<div class="trade-header">
-														<div class="trade-pair">MATIC/USDT</div>
-														<div class="trade-status">Closed</div>
-													</div>
-													<div class="trade-info">
-														<span>Entry: $0.85</span>
-														<span>Exit: $0.92</span>
-													</div>
-													<div class="trade-info">
-														<span>Trader: @cryptoking</span>
-														<span>2 days ago</span>
-													</div>
-													<div class="trade-pnl profit">+$85.40 (+8.24%)</div>
-												</div>
+												{% empty %}
+												<p>No closed trades yet.</p>
+												{% endfor %}
+										
 											</div>
 										</div>
+										
 									</div>
 								</div>
 							</div>
@@ -642,63 +581,63 @@
 														<th>Action</th>
 													</tr>
 												</thead>
+											
 												<tbody>
+													{% for t in traders %}
 													<tr>
+														<!-- Trader Info -->
 														<td>
 															<div class="d-flex align-items-center">
-																<img src="images/avatar/1.jpg" class="rounded-circle me-2" width="40" height="40" alt="">
+																<img src="{{ t.trader.image.url }}" 
+																	 class="rounded-circle me-2" width="40" height="40" alt="">
 																<div>
-																	<h6 class="mb-0">John Trader</h6>
-																	<small class="text-muted">@johntrader</small>
+																	<h6 class="mb-0">{{ t.trader.full_name }}</h6>
+																	<small class="text-muted">@{{ t.trader.username }}</small>
 																</div>
 															</div>
 														</td>
-														<td><span class="badge badge-success">82%</span></td>
-														<td>20%</td>
-														<td class="text-success">+$45.80</td>
-														<td class="text-success">+$1,240.50</td>
+											
+														<!-- Win Rate -->
 														<td>
-															<button class="btn btn-danger btn-sm">Stop Copying</button>
+															<span class="badge {% if t.trader.win_rate >= 50 %}badge-success{% else %}badge-danger{% endif %}">
+																{{ t.trader.win_rate }}%
+															</span>
+														</td>
+											
+														<!-- Profit Share from Trader Model -->
+														<td>{{ t.trader.profit_share }}%</td>
+											
+														<!-- Last 24h PNL -->
+														<td class="{% if t.last_24h_profit_loss >= 0 %}text-success{% else %}text-danger{% endif %}">
+															{% if t.last_24h_profit_loss >= 0 %}+{% endif %}
+															${{ t.last_24h_profit_loss }}
+														</td>
+											
+														<!-- Total Profit -->
+														<td class="{% if t.total_profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+															{% if t.total_profit >= 0 %}+{% endif %}
+															${{ t.total_profit }}
+														</td>
+											
+														<!-- Action -->
+														<td>
+															<form method="POST" action="{% url 'stop_copying' t.ref %}">
+																{% csrf_token %}
+																<button class="btn btn-danger btn-sm" type="submit">Stop Copying</button>
+															</form>
 														</td>
 													</tr>
+											
+													{% empty %}
 													<tr>
-														<td>
-															<div class="d-flex align-items-center">
-																<img src="images/avatar/2.jpg" class="rounded-circle me-2" width="40" height="40" alt="">
-																<div>
-																	<h6 class="mb-0">Sarah Pro</h6>
-																	<small class="text-muted">@sarahpro</small>
-																</div>
-															</div>
-														</td>
-														<td><span class="badge badge-success">78%</span></td>
-														<td>15%</td>
-														<td class="text-success">+$32.20</td>
-														<td class="text-success">+$890.30</td>
-														<td>
-															<button class="btn btn-danger btn-sm">Stop Copying</button>
+														<td colspan="6" class="text-center text-muted py-3">
+															You are not copying any trader yet.
 														</td>
 													</tr>
-													<tr>
-														<td>
-															<div class="d-flex align-items-center">
-																<img src="images/avatar/3.jpg" class="rounded-circle me-2" width="40" height="40" alt="">
-																<div>
-																	<h6 class="mb-0">Mike Expert</h6>
-																	<small class="text-muted">@mikeexpert</small>
-																</div>
-															</div>
-														</td>
-														<td><span class="badge badge-success">85%</span></td>
-														<td>25%</td>
-														<td class="text-danger">-$12.50</td>
-														<td class="text-success">+$2,105.80</td>
-														<td>
-															<button class="btn btn-danger btn-sm">Stop Copying</button>
-														</td>
-													</tr>
+													{% endfor %}
 												</tbody>
 											</table>
+											
 										</div>
 									</div>
 								</div>

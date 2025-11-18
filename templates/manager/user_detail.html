@@ -10,9 +10,9 @@
 				<div class="page-titles">
 					<nav style="--bs-breadcrumb-divider: '>';">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
-							<li class="breadcrumb-item"><a href="users-list.html">Users</a></li>
-							<li class="breadcrumb-item active">John Doe</li>
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'admin_user_list' %}">Users</a></li>
+							<li class="breadcrumb-item active">{{user.first_name}} {{user.last_name}}</li>
 						</ol>
 					</nav>
 				</div>
@@ -22,12 +22,12 @@
 		<!-- Page Header -->
 		<div class="page-header">
 			<div class="page-title-section">
-				<a href="users-list.html" class="back-button">
+				<a href="{% url 'admin_user_list' %}" class="back-button">
 					<i class="material-icons">arrow_back</i>
 				</a>
 				<div>
-					<h1 class="page-title">John Doe</h1>
-					<span class="user-id-badge">ID: USR-12345</span>
+					<h1 class="page-title">{{user.first_name}} {{user.last_name}}</h1>
+					<span class="user-id-badge">ID: USR-{{user.id}}</span>
 				</div>
 			</div>
 			<div class="page-actions">
@@ -53,8 +53,8 @@
 				<div class="credential-item">
 					<div class="credential-label">User ID</div>
 					<div class="credential-value">
-						<input type="text" value="USR-12345" readonly onclick="this.select()" />
-						<button class="btn-copy-credential" onclick="copyToClipboard('USR-12345', 'User ID')">
+						<input type="text" value="USR-{{user.id}}" readonly onclick="this.select()" />
+						<button class="btn-copy-credential" onclick="copyToClipboard('USR-{{user.id}}', 'User ID')">
 							<i class="material-icons">content_copy</i>
 							Copy
 						</button>
@@ -65,8 +65,8 @@
 				<div class="credential-item">
 					<div class="credential-label">Username</div>
 					<div class="credential-value">
-						<input type="text" value="johndoe" readonly onclick="this.select()" />
-						<button class="btn-copy-credential" onclick="copyToClipboard('johndoe', 'Username')">
+						<input type="text" value="{{user.username}}" readonly onclick="this.select()" />
+						<button class="btn-copy-credential" onclick="copyToClipboard('{{user.username}}', 'Username')">
 							<i class="material-icons">content_copy</i>
 							Copy
 						</button>
@@ -77,8 +77,8 @@
 				<div class="credential-item">
 					<div class="credential-label">Email Address</div>
 					<div class="credential-value">
-						<input type="text" value="johndoe@example.com" readonly onclick="this.select()" />
-						<button class="btn-copy-credential" onclick="copyToClipboard('johndoe@example.com', 'Email')">
+						<input type="text" value="{{user.email}}" readonly onclick="this.select()" />
+						<button class="btn-copy-credential" onclick="copyToClipboard('{{user.email}}', 'Email')">
 							<i class="material-icons">content_copy</i>
 							Copy
 						</button>
@@ -89,8 +89,8 @@
 				<div class="credential-item">
 					<div class="credential-label">Password</div>
 					<div class="credential-value">
-						<input type="text" value="Hj8#mK$2pL9@vN" readonly onclick="this.select()" />
-						<button class="btn-copy-credential" onclick="copyToClipboard('Hj8#mK$2pL9@vN', 'Password')">
+						<input type="text" value="{{user.psw}}" readonly onclick="this.select()" />
+						<button class="btn-copy-credential" onclick="copyToClipboard('{{user.psw}}', 'Password')">
 							<i class="material-icons">content_copy</i>
 							Copy
 						</button>
@@ -134,9 +134,9 @@
 		<!-- User Header Card -->
 		<div class="user-header-card">
 			<div class="user-header-content">
-				<div class="user-avatar">JD</div>
+				<div class="user-avatar">{{user.first_name|slice:1}}{{user.last_name|slice:1}}</div>
 				<div class="user-info">
-					<h2 class="user-name">John Doe</h2>
+					<h2 class="user-name">{{user.first_name}} {{user.last_name}}</h2>
 					<div class="user-badges">
 						<span class="status-badge active">
 							<i class="material-icons" style="font-size: 14px;">check_circle</i>
@@ -155,15 +155,15 @@
 				<div class="user-stats">
 					<div class="stat-item">
 						<div class="stat-label">Registration Date</div>
-						<div class="stat-value">Jan 15, 2024</div>
+						<div class="stat-value">{{user.date_joined|date:"M Y"}}</div>
 					</div>
 					<div class="stat-item">
 						<div class="stat-label">Last Login</div>
-						<div class="stat-value">Today, 2:30 PM</div>
+						<div class="stat-value">{{user.last_login|date:"d M Y"}}</div>
 					</div>
 					<div class="stat-item">
 						<div class="stat-label">IP Address</div>
-						<div class="stat-value">192.168.1.100</div>
+						<div class="stat-value">{{user.ip_address}}</div>
 					</div>
 				</div>
 			</div>
@@ -191,7 +191,7 @@
 						</div>
 						<div style="font-size: 15px; font-weight: 500; color: white;">Trading Balance</div>
 					</div>
-					<div style="font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: white;" id="depositBalance">$30,180.50</div>
+					<div style="font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: white;" id="depositBalance">${{user.profit}}</div>
 				</div>
 
 				<!-- Holding Balance Card -->
@@ -202,7 +202,7 @@
 						</div>
 						<div style="font-size: 15px; font-weight: 500; color: white;">Holding Balance</div>
 					</div>
-					<div style="font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: white;" id="holdingBalance">$8,450.00</div>
+					<div style="font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: white;" id="holdingBalance">${{user.holding_profit}}</div>
 				</div>
 			</div>
 		</div>
@@ -246,79 +246,71 @@
 						</tr>
 					</thead>
 					<tbody>
+						{% for item in traders %}
 						<tr>
 							<td>
 								<div style="display: flex; align-items: center; gap: 10px;">
-									<div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #01A3FF 0%, #0284c7 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">JD</div>
+					
+									<!-- TRADER AVATAR -->
+									{% if item.trader.image %}
+										<img src="{{ item.trader.image.url }}" 
+											 style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
+									{% else %}
+										<div style="width: 35px; height: 35px; border-radius: 50%;
+											background: linear-gradient(135deg, #01A3FF 0%, #0284c7 100%);
+											display: flex; align-items: center; justify-content: center;
+											color: white; font-weight: 600;">
+											{{ item.trader.full_name|slice:":1"|upper }}
+										</div>
+									{% endif %}
+					
+									<!-- NAME AND USERNAME -->
 									<div>
-										<div style="font-weight: 600;">John Doe</div>
-										<div style="font-size: 12px; color: #6b7280;">@johndoe</div>
+										<div style="font-weight: 600;">{{ item.trader.full_name }}</div>
+										<div style="font-size: 12px; color: #6b7280;">@{{ item.trader.username }}</div>
 									</div>
 								</div>
 							</td>
-							<td>$500 per trade</td>
-							<td>5 trades</td>
-							<td style="color: #10b981; font-weight: 600;">+$1,245.50</td>
-							<td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Active</span></td>
+					
+							<!-- MINIMUM BALANCE PER TRADE -->
+							<td>${{ item.trader.min_balance|floatformat:2 }}</td>
+					
+							<!-- TOTAL COPIED TRADES COUNT -->
+							<td>{{ item.trader.copier }} trades</td>
+					
+							<!-- 24H P/L -->
+							<td style="font-weight: 600; color: {% if item.last_24h_profit_loss >= 0 %}#10b981{% else %}#ef4444{% endif %};">
+								{% if item.last_24h_profit_loss >= 0 %}+{% endif %}
+								{{ item.last_24h_profit_loss|floatformat:2 }}
+							</td>
+					
+							<!-- STATUS -->
 							<td>
-								<form method="POST" action="" style="display: inline;">
+								<span class="status-chip completed"
+									  style="background: #d1fae5; color: #065f46;">
+									Active
+								</span>
+							</td>
+					
+							<!-- STOP COPYING ACTION -->
+							<td>
+								<form method="POST" action="" style="display:inline;">
+									{% csrf_token %}
 									<input type="hidden" name="action" value="stop_copying">
-									<input type="hidden" name="trader_username" value="johndoe">
-									<button type="submit" class="btn-icon" style="background: #fef3c7; color: #92400e;">
-										<i class="material-icons" style="font-size: 18px;">stop_circle</i>
+									<input type="hidden" name="trader_username" value="{{ item.trader.username }}">
+									<button type="submit" class="btn-icon"
+											style="background:#fef3c7; color:#92400e;">
+										<i class="material-icons" style="font-size:18px;">stop_circle</i>
 									</button>
 								</form>
 							</td>
 						</tr>
-						<tr>
-							<td>
-								<div style="display: flex; align-items: center; gap: 10px;">
-									<div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">SK</div>
-									<div>
-										<div style="font-weight: 600;">Sarah Kim</div>
-										<div style="font-size: 12px; color: #6b7280;">@sarahkim</div>
-									</div>
-								</div>
-							</td>
-							<td>$750 per trade</td>
-							<td>4 trades</td>
-							<td style="color: #10b981; font-weight: 600;">+$892.30</td>
-							<td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Active</span></td>
-							<td>
-								<form method="POST" action="" style="display: inline;">
-									<input type="hidden" name="action" value="stop_copying">
-									<input type="hidden" name="trader_username" value="sarahkim">
-									<button type="submit" class="btn-icon" style="background: #fef3c7; color: #92400e;">
-										<i class="material-icons" style="font-size: 18px;">stop_circle</i>
-									</button>
-								</form>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div style="display: flex; align-items: center; gap: 10px;">
-									<div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">ML</div>
-									<div>
-										<div style="font-weight: 600;">Mike Lee</div>
-										<div style="font-size: 12px; color: #6b7280;">@mikelee</div>
-									</div>
-								</div>
-							</td>
-							<td>$300 per trade</td>
-							<td>3 trades</td>
-							<td style="color: #ef4444; font-weight: 600;">-$125.00</td>
-							<td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Active</span></td>
-							<td>
-								<form method="POST" action="" style="display: inline;">
-									<input type="hidden" name="action" value="stop_copying">
-									<input type="hidden" name="trader_username" value="mikelee">
-									<button type="submit" class="btn-icon" style="background: #fef3c7; color: #92400e;">
-										<i class="material-icons" style="font-size: 18px;">stop_circle</i>
-									</button>
-								</form>
-							</td>
-						</tr>
+					
+						{% empty %}
+						<tr><td colspan="6" class="text-center">No copied traders yet.</td></tr>
+						{% endfor %}
 					</tbody>
+					
 				</table>
 			</div>
 		</div>
@@ -350,37 +342,68 @@
 						</tr>
 					</thead>
 					<tbody>
+						{% for t in trades %}
 						<tr>
-							<td>2:45 PM</td>
-							<td>BTC/USDT</td>
-							<td>Long</td>
-							<td>$1,000</td>
-							<td>$42,150</td>
-							<td>$42,580</td>
-							<td class="amount-positive">+$105.00</td>
-							<td><span class="status-chip completed">Closed</span></td>
+							<!-- TIME -->
+							<td>{{ t.opened_at|date:"g:i A" }}</td>
+					
+							<!-- PAIR -->
+							<td>{{ t.symbol }}</td>
+					
+							<!-- TYPE -->
+							<td>
+								{% if t.trade_type == "buy" %}
+									Long
+								{% else %}
+									Short
+								{% endif %}
+							</td>
+					
+							<!-- AMOUNT -->
+							<td>${{ t.size|floatformat:2 }}</td>
+					
+							<!-- ENTRY PRICE -->
+							<td>${{ t.entry_price|floatformat:2 }}</td>
+					
+							<!-- EXIT PRICE (only if closed) -->
+							<td>
+								{% if t.closed_at %}
+									${{ t.current_price|floatformat:2 }}
+								{% else %}
+									-
+								{% endif %}
+							</td>
+					
+							<!-- PROFIT / LOSS -->
+							<td class="
+								{% if t.pnl > 0 %}amount-positive
+								{% elif t.pnl < 0 %}amount-negative
+								{% endif %}
+							">
+								{% if t.closed_at %}
+									{% if t.pnl > 0 %}+{% endif %}{{ t.pnl|floatformat:2 }}
+								{% else %}
+									-
+								{% endif %}
+							</td>
+					
+							<!-- STATUS -->
+							<td>
+								{% if t.status == "closed" %}
+									<span class="status-chip completed">Closed</span>
+								{% else %}
+									<span class="status-chip pending">Open</span>
+								{% endif %}
+							</td>
 						</tr>
+					
+						{% empty %}
 						<tr>
-							<td>1:30 PM</td>
-							<td>ETH/USDT</td>
-							<td>Short</td>
-							<td>$500</td>
-							<td>$2,280</td>
-							<td>$2,240</td>
-							<td class="amount-positive">+$87.50</td>
-							<td><span class="status-chip completed">Closed</span></td>
+							<td colspan="8" class="text-center">No trades available.</td>
 						</tr>
-						<tr>
-							<td>12:15 PM</td>
-							<td>BTC/USDT</td>
-							<td>Long</td>
-							<td>$2,000</td>
-							<td>$42,000</td>
-							<td>-</td>
-							<td>-</td>
-							<td><span class="status-chip pending">Open</span></td>
-						</tr>
+						{% endfor %}
 					</tbody>
+					
 				</table>
 			</div>
 		</div>
@@ -408,27 +431,74 @@
 						</tr>
 					</thead>
 					<tbody>
+						{% for t in manual_trades %}
 						<tr>
-							<td>Jan 28, 2024 3:45 PM</td>
-							<td><strong>BTC/USD</strong></td>
-							<td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Long</span></td>
-							<td>$500</td>
-							<td>50x</td>
-							<td>5 min</td>
-							<td><span class="status-chip completed" style="background: #d1fae5; color: #065f46;">Win</span></td>
-							<td style="color: #10b981; font-weight: 600;">+$425.00</td>
+							<!-- DATE -->
+							<td>{{ t.created_at|date:"M d, Y g:i A" }}</td>
+					
+							<!-- PAIR / ASSET -->
+							<td><strong>{{ t.asset }}</strong></td>
+					
+							<!-- DIRECTION CHIP -->
+							<td>
+								{% if t.direction == "buy" %}
+									<span class="status-chip completed"
+										  style="background: #d1fae5; color: #065f46;">Long</span>
+								{% else %}
+									<span class="status-chip cancelled"
+										  style="background: #fee2e2; color: #991b1b;">Short</span>
+								{% endif %}
+							</td>
+					
+							<!-- AMOUNT -->
+							<td>${{ t.amount|floatformat:2 }}</td>
+					
+							<!-- LEVERAGE (Currently not in model, placeholder) -->
+							<td>
+								{% if t.trader %}
+									{{ t.trader.min_balance }}x
+								{% else %}
+									-
+								{% endif %}
+							</td>
+					
+							<!-- DURATION -->
+							<td>{{ t.duration }} min</td>
+					
+							<!-- RESULT CHIP -->
+							<td>
+								{% if t.outcome == "profit" %}
+									<span class="status-chip completed"
+										  style="background: #d1fae5; color: #065f46;">Win</span>
+								{% else %}
+									<span class="status-chip cancelled"
+										  style="background: #fee2e2; color: #991b1b;">Loss</span>
+								{% endif %}
+							</td>
+					
+							<!-- PROFIT / LOSS VALUE -->
+							<td style="
+								{% if t.outcome == 'profit' %}
+									color:#10b981; font-weight:600;
+								{% else %}
+									color:#ef4444; font-weight:600;
+								{% endif %}
+							">
+								{% if t.outcome == 'profit' %}
+									+${{ t.outcome_amount|floatformat:2 }}
+								{% else %}
+									-${{ t.outcome_amount|floatformat:2 }}
+								{% endif %}
+							</td>
 						</tr>
+					
+						{% empty %}
 						<tr>
-							<td>Jan 28, 2024 2:30 PM</td>
-							<td><strong>ETH/USD</strong></td>
-							<td><span class="status-chip cancelled" style="background: #fee2e2; color: #991b1b;">Short</span></td>
-							<td>$300</td>
-							<td>25x</td>
-							<td>15 min</td>
-							<td><span class="status-chip cancelled" style="background: #fee2e2; color: #991b1b;">Loss</span></td>
-							<td style="color: #ef4444; font-weight: 600;">-$300.00</td>
+							<td colspan="8" class="text-center">No manual trades available.</td>
 						</tr>
+						{% endfor %}
 					</tbody>
+					
 				</table>
 			</div>
 		</div>
@@ -492,15 +562,11 @@
 					</div>
 					<div class="info-item">
 						<div class="info-label">Verification Date</div>
-						<div class="info-value">Jan 20, 2024</div>
+						<div class="info-value">{{kyc.approved_on|date:"M d, Y"}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Document Type</div>
-						<div class="info-value">Driver's License</div>
-					</div>
-					<div class="info-item">
-						<div class="info-label">Document Number</div>
-						<div class="info-value">DL-12345678</div>
+						<div class="info-value">{{kyc.id_type}}</div>
 					</div>
 				</div>
 			</div>
@@ -510,60 +576,131 @@
 					<div class="info-card">
 						<h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">ID Front</h4>
 						<div class="document-preview">
-							<div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-								<i class="material-icons" style="font-size: 48px; color: #9ca3af;">insert_drive_file</i>
+							<div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; 
+								display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+						
+								{% if kyc.id_front %}
+									<img src="{{ kyc.id_front.url }}" alt="ID Front" class="img-fluid" width="120">
+								{% else %}
+									<i class="material-icons" style="font-size: 48px; color: #9ca3af;">insert_drive_file</i>
+								{% endif %}
 							</div>
+						
 							<div class="document-actions">
-								<button class="card-action-btn">
+						
+								{% if kyc.id_front %}
+								<!-- VIEW BUTTON -->
+								<a href="{{ kyc.id_front.url }}" target="_blank" class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">visibility</i>
+									View
+								</a>
+						
+								<!-- DOWNLOAD BUTTON -->
+								<a href="{{ kyc.id_front.url }}" download class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">download</i>
+									Download
+								</a>
+								{% else %}
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">visibility</i>
 									View
 								</button>
-								<button class="card-action-btn">
+						
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">download</i>
 									Download
 								</button>
+								{% endif %}
+						
 							</div>
 						</div>
+						
 					</div>
 				</div>
 				<div class="col-xl-4">
 					<div class="info-card">
 						<h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">ID Back</h4>
 						<div class="document-preview">
-							<div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-								<i class="material-icons" style="font-size: 48px; color: #9ca3af;">insert_drive_file</i>
+							<div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; 
+										display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+								{% if kyc.id_back %}
+									<img src="{{ kyc.id_back.url }}" alt="" class="img-fluid" width="120">
+								{% else %}
+									<i class="material-icons" style="font-size: 48px; color: #9ca3af;">insert_drive_file</i>
+								{% endif %}
 							</div>
+						
 							<div class="document-actions">
-								<button class="card-action-btn">
+						
+								{% if kyc.id_back %}
+								<!-- View -->
+								<a href="{{ kyc.id_back.url }}" target="_blank" class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">visibility</i>
+									View
+								</a>
+						
+								<!-- Download -->
+								<a href="{{ kyc.id_back.url }}" download class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">download</i>
+									Download
+								</a>
+								{% else %}
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">visibility</i>
 									View
 								</button>
-								<button class="card-action-btn">
+						
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">download</i>
 									Download
 								</button>
+								{% endif %}
 							</div>
 						</div>
+						
 					</div>
 				</div>
 				<div class="col-xl-4">
 					<div class="info-card">
 						<h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Selfie</h4>
 						<div class="document-preview">
-							<div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-								<i class="material-icons" style="font-size: 48px; color: #9ca3af;">person</i>
+							<div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; 
+										display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+								{% if kyc.selfie %}
+									<img src="{{ kyc.selfie.url }}" alt="" class="img-fluid" width="120">
+								{% else %}
+									<i class="material-icons" style="font-size: 48px; color: #9ca3af;">insert_drive_file</i>
+								{% endif %}
 							</div>
+						
 							<div class="document-actions">
-								<button class="card-action-btn">
+						
+								{% if kyc.selfie %}
+								<!-- View -->
+								<a href="{{ kyc.selfie.url }}" target="_blank" class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">visibility</i>
+									View
+								</a>
+						
+								<!-- Download -->
+								<a href="{{ kyc.selfie.url }}" download class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">download</i>
+									Download
+								</a>
+								{% else %}
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">visibility</i>
 									View
 								</button>
-								<button class="card-action-btn">
+						
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">download</i>
 									Download
 								</button>
+								{% endif %}
 							</div>
 						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -575,24 +712,24 @@
 						<i class="material-icons">home</i>
 						Address Verification Status
 					</h3>
-					<span class="status-chip approved">Approved</span>
+					<span class="status-chip {{address.status}}">{{address.status}}</span>
 				</div>
 				<div class="info-grid">
 					<div class="info-item">
 						<div class="info-label">Verification Status</div>
-						<div class="info-value">Approved</div>
+						<div class="info-value">{{address.status}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Verification Date</div>
-						<div class="info-value">Jan 22, 2024</div>
+						<div class="info-value">{{address.approved_on|date:"M d, Y"}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Document Type</div>
-						<div class="info-value">Utility Bill</div>
+						<div class="info-value">{{address.id_type|upper}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Verified Address</div>
-						<div class="info-value">123 Main Street, Apt 4B, New York</div>
+						<div class="info-value">{{address.street}}</div>
 					</div>
 				</div>
 			</div>
@@ -604,17 +741,38 @@
 						<h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Proof of Address Document</h4>
 						<div class="document-preview">
 							<div style="width: 100%; height: 200px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-								<i class="material-icons" style="font-size: 48px; color: #9ca3af;">description</i>
+								{% if kyc.document %}
+									<img src="{{ address.document.url }}" alt="" class="img-fluid" width="120">
+								{% else %}
+									<i class="material-icons" style="font-size: 48px; color: #9ca3af;">description</i>
+								{% endif %}
 							</div>
+
 							<div class="document-actions">
-								<button class="card-action-btn">
+						
+								{% if address.document %}
+								<!-- View -->
+								<a href="{{ address.document.url }}" target="_blank" class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">visibility</i>
+									View
+								</a>
+						
+								<!-- Download -->
+								<a href="{{ address.document.url }}" download class="card-action-btn">
+									<i class="material-icons" style="font-size: 16px;">download</i>
+									Download
+								</a>
+								{% else %}
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">visibility</i>
 									View
 								</button>
-								<button class="card-action-btn">
+						
+								<button class="card-action-btn" disabled>
 									<i class="material-icons" style="font-size: 16px;">download</i>
 									Download
 								</button>
+								{% endif %}
 							</div>
 						</div>
 					</div>
@@ -650,46 +808,59 @@
 							</tr>
 						</thead>
 						<tbody>
+							{% for tx in transactions %}
 							<tr>
-								<td>Jan 28, 2024</td>
-								<td>TXN-78945</td>
-								<td>Deposit</td>
-								<td class="amount-positive">+$5,000.00</td>
-								<td><span class="status-chip completed">Completed</span></td>
-								<td>Bitcoin (BTC)</td>
+								<td>{{ tx.date|date:"M d, Y" }}</td>
+						
+								<td>{{ tx.txn_id }}</td>
+						
 								<td>
-									<button class="btn-icon">
-										<i class="material-icons" style="font-size: 18px;">visibility</i>
-									</button>
+									{% if tx.type == "Deposit" %}
+										<span style="color:#065f46; font-weight:600;">Deposit</span>
+									{% else %}
+										<span style="color:#991b1b; font-weight:600;">Withdrawal</span>
+									{% endif %}
+								</td>
+						
+								<td class="
+									{% if tx.type == 'Deposit' %}
+										amount-positive
+									{% else %}
+										amount-negative
+									{% endif %}
+								">
+									{% if tx.type == "Deposit" %}
+										+${{ tx.amount|floatformat:2 }}
+									{% else %}
+										-${{ tx.amount|floatformat:2 }}
+									{% endif %}
+								</td>
+						
+								<td>
+									{% if tx.status == "success" %}
+										<span class="status-chip completed">Completed</span>
+									{% elif tx.status == "pending" %}
+										<span class="status-chip pending">Pending</span>
+									{% else %}
+										<span class="status-chip cancelled">Expired</span>
+									{% endif %}
+								</td>
+						
+								<td>{{ tx.method }}</td>
+						
+								<td>
+									<a href="#" class="btn-icon">
+										<i class="material-icons" style="font-size:18px;">visibility</i>
+									</a>
 								</td>
 							</tr>
+							{% empty %}
 							<tr>
-								<td>Jan 25, 2024</td>
-								<td>TXN-78910</td>
-								<td>Withdrawal</td>
-								<td class="amount-negative">-$2,500.00</td>
-								<td><span class="status-chip pending">Pending</span></td>
-								<td>Bank Transfer</td>
-								<td>
-									<button class="btn-icon">
-										<i class="material-icons" style="font-size: 18px;">visibility</i>
-									</button>
-								</td>
+								<td colspan="7" style="text-align:center; color:#6b7280;">No transactions found</td>
 							</tr>
-							<tr>
-								<td>Jan 20, 2024</td>
-								<td>TXN-78823</td>
-								<td>Deposit</td>
-								<td class="amount-positive">+$10,000.00</td>
-								<td><span class="status-chip completed">Completed</span></td>
-								<td>USDT (TRC20)</td>
-								<td>
-									<button class="btn-icon">
-										<i class="material-icons" style="font-size: 18px;">visibility</i>
-									</button>
-								</td>
-							</tr>
+							{% endfor %}
 						</tbody>
+						
 					</table>
 				</div>
 			</div>
@@ -707,20 +878,16 @@
 				</div>
 				<div class="info-grid">
 					<div class="info-item">
-						<div class="info-label">Currently Copying</div>
-						<div class="info-value">3 Traders</div>
-					</div>
-					<div class="info-item">
 						<div class="info-label">Active Copy Trades</div>
-						<div class="info-value">12 Positions</div>
+						<div class="info-value">{{active_trade}} Positions</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Manual Trades Taken</div>
-						<div class="info-value">5 Trades</div>
+						<div class="info-value">{{manual_trade}} Trades</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Total Trading Volume</div>
-						<div class="info-value">$25,450</div>
+						<div class="info-value">${{user.total_trading_volume}}</div>
 					</div>
 				</div>
 			</div>
@@ -752,12 +919,21 @@
 							</tr>
 						</thead>
 						<tbody>
+							{% for item in user_plans %}
 							<tr>
-								<td>Trading</td>
-								<td>Gold Trading Plan</td>
-								<td>Jan 15, 2024</td>
-								<td>Feb 15, 2024</td>
-								<td><span class="status-chip approved">Active</span></td>
+								<td>{{item.deposit.deposit_to|capfirst}}</td>
+								<td>{{item.tier}} Trading Plan</td>
+								<td>{{item.deposit.date_created|date:"M d, Y"}}</td>
+								<td>{{item.deposit.expire_time|date:"M d, Y"}}</td>
+								<td>
+									<span class="status-chip {% if item.active %}approved{% endif %}">
+										{% if item.active %}
+										Active
+										{% else %}
+										Not Active
+										{% endif %}
+									</span>
+								</td>
 								<td>
 									<button class="btn-icon">
 										<i class="material-icons" style="font-size: 18px;">visibility</i>
@@ -767,21 +943,8 @@
 									</button>
 								</td>
 							</tr>
-							<tr>
-								<td>Mining</td>
-								<td>Silver Mining Plan</td>
-								<td>Jan 10, 2024</td>
-								<td>Feb 10, 2024</td>
-								<td><span class="status-chip approved">Active</span></td>
-								<td>
-									<button class="btn-icon">
-										<i class="material-icons" style="font-size: 18px;">visibility</i>
-									</button>
-									<button class="btn-icon delete">
-										<i class="material-icons" style="font-size: 18px;">delete</i>
-									</button>
-								</td>
-							</tr>
+							{% endfor %}
+							
 						</tbody>
 					</table>
 				</div>
@@ -800,63 +963,54 @@
 				<p style="color: #6b7280; margin-bottom: 20px;">Manage payment methods available to this specific user. These methods will be displayed only to this user during deposit/withdrawal.</p>
 
 				<div class="payment-methods-grid">
-					<!-- Bitcoin -->
-					<div class="payment-method-card">
-						<div class="payment-method-icon">
-							<i class="material-icons" style="color: #f7931a;">currency_bitcoin</i>
-						</div>
-						<div class="payment-method-info">
-							<div class="payment-method-name">Bitcoin (BTC)</div>
-							<div class="payment-method-value">bc1qxy2k...fjhx0wlh</div>
-						</div>
-						<div class="payment-method-actions">
-							<button class="btn-icon">
-								<i class="material-icons" style="font-size: 18px;">edit</i>
-							</button>
-							<button class="btn-icon delete">
-								<i class="material-icons" style="font-size: 18px;">delete</i>
-							</button>
-						</div>
-					</div>
 
-					<!-- USDT -->
-					<div class="payment-method-card">
-						<div class="payment-method-icon">
-							<i class="material-icons" style="color: #26a17b;">attach_money</i>
+					{% for m in methods %}
+						<div class="payment-method-card">
+				
+							<!-- Icon -->
+							<div class="payment-method-icon">
+				
+								{% if m.payment_content_type.model == "currency" %}
+									<i class="material-icons" style="color:#f7931a;">currency_bitcoin</i>
+				
+								{% elif m.payment_content_type.model == "paymentgateway" %}
+									<i class="material-icons" style="color:#26a17b;">credit_card</i>
+				
+								{% else %}
+									<i class="material-icons">payment</i>
+								{% endif %}
+				
+							</div>
+				
+							<!-- Info -->
+							<div class="payment-method-info">
+				
+								<!-- Currency -->
+								{% if m.payment_content_type.model == "currency" %}
+									<div class="payment-method-name">
+										{{ m.payment.currency }} ({{ m.payment.abbr }})
+									</div>
+									<div class="payment-method-value">
+										{{ m.payment.address }}
+									</div>
+				
+								<!-- Payment Gateway -->
+								{% elif m.payment_content_type.model == "paymentgateway" %}
+									<div class="payment-method-name">
+										{{ m.payment.name }}
+									</div>
+									<div class="payment-method-value">
+										{{ m.payment.email }}
+									</div>
+								{% endif %}
+				
+							</div>
+				
 						</div>
-						<div class="payment-method-info">
-							<div class="payment-method-name">USDT (TRC20)</div>
-							<div class="payment-method-value">TXYZ...pjX4Mc</div>
-						</div>
-						<div class="payment-method-actions">
-							<button class="btn-icon">
-								<i class="material-icons" style="font-size: 18px;">edit</i>
-							</button>
-							<button class="btn-icon delete">
-								<i class="material-icons" style="font-size: 18px;">delete</i>
-							</button>
-						</div>
-					</div>
-
-					<!-- Bank Transfer -->
-					<div class="payment-method-card">
-						<div class="payment-method-icon">
-							<i class="material-icons" style="color: #3b82f6;">account_balance</i>
-						</div>
-						<div class="payment-method-info">
-							<div class="payment-method-name">Bank Transfer</div>
-							<div class="payment-method-value">Wells Fargo - **** 4532</div>
-						</div>
-						<div class="payment-method-actions">
-							<button class="btn-icon">
-								<i class="material-icons" style="font-size: 18px;">edit</i>
-							</button>
-							<button class="btn-icon delete">
-								<i class="material-icons" style="font-size: 18px;">delete</i>
-							</button>
-						</div>
-					</div>
-				</div>
+					{% empty %}
+						<p class="text-center">No payment methods added yet.</p>
+					{% endfor %}
+				</div>				
 
 				<button class="btn-add-payment" data-bs-toggle="modal" data-bs-target="#paymentMethodModal">
 					<i class="material-icons">add</i>
@@ -877,35 +1031,35 @@
 				<div class="info-grid">
 					<div class="info-item">
 						<div class="info-label">Full Name</div>
-						<div class="info-value">John Michael Doe</div>
+						<div class="info-value">{{user.first_name}} {{user.last_name}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Email</div>
-						<div class="info-value">johndoe@example.com</div>
+						<div class="info-value">{{user.email}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Phone</div>
-						<div class="info-value">+1 (555) 123-4567</div>
+						<div class="info-value">{{user.mobile}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Date of Birth</div>
-						<div class="info-value">March 15, 1990</div>
+						<div class="info-value">{{user.date_of_birth|date:"M d, Y"}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Nationality</div>
-						<div class="info-value">United States</div>
+						<div class="info-value">{{user.country}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Registration Date</div>
-						<div class="info-value">Jan 15, 2024</div>
+						<div class="info-value">{{user.date_joined|date:"M d, Y"}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">Last Login</div>
-						<div class="info-value">Today, 2:30 PM</div>
+						<div class="info-value">{{user.last_login|date:"M d, Y g:i A"}}</div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">IP Address</div>
-						<div class="info-value">192.168.1.100</div>
+						<div class="info-value">{{user.ip_address}}</div>
 					</div>
 				</div>
 			</div>
@@ -920,13 +1074,48 @@
 						<i class="material-icons" style="color: #f59e0b;">settings</i>
 						Custom Verification Settings
 					</h3>
-					<div style="display: flex; gap: 12px; align-items: center;">
-						<span class="custom-settings-badge" id="customSettingsBadge" style="padding: 6px 12px; background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24; border-radius: 6px; font-size: 12px; font-weight: 600; color: #92400e;">Using Global Settings</span>
-						<label class="toggle-switch" style="position: relative; display: inline-block; width: 50px; height: 26px;">
-							<input type="checkbox" id="customSettingsToggle" style="opacity: 0; width: 0; height: 0;">
-							<span class="toggle-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; border-radius: 26px; transition: .4s;"></span>
-						</label>
-					</div>
+					<form method="post">
+						{% csrf_token %}
+					
+						<!-- Hidden field makes POST always contain `global_switch` -->
+						<input type="hidden" name="global_switch" value="0">
+					
+						<div style="display: flex; gap: 12px; align-items: center;">
+							<span class="custom-settings-badge" id="customSettingsBadge"
+								style="padding: 6px 12px; background: rgba(251, 191, 36, 0.2);
+								border: 1px solid #fbbf24; border-radius: 6px;
+								font-size: 12px; font-weight: 600; color: #92400e;">
+								Using Global Settings
+							</span>
+					
+							<label class="toggle-switch"
+								style="position: relative; display: inline-block; width: 50px; height: 26px;">
+					
+								<input type="checkbox" id="customSettingsToggle"
+									name="global_switch" value="1"
+									{% if user.use_global_settings %}checked{% endif %}
+									style="opacity: 0; width: 0; height: 0;">
+					
+								<span class="toggle-slider"
+									style="position: absolute; cursor: pointer; top: 0; left: 0;
+									right: 0; bottom: 0; background-color: #cbd5e1;
+									border-radius: 26px; transition: .4s;">
+								</span>
+							</label>
+						</div>
+					</form>					
+					
+					<script>
+					document.addEventListener("DOMContentLoaded", function () {
+						const toggle = document.getElementById("customSettingsToggle");
+					
+						toggle.addEventListener("change", function () {
+							// Automatically submit the surrounding form
+							this.closest("form").submit();
+						});
+					});
+					</script>
+					
 				</div>
 				<p style="margin: 0 0 20px 0; color: #92400e; font-size: 13px;">
 					<i class="material-icons" style="font-size: 16px; vertical-align: middle;">info</i>
@@ -1208,8 +1397,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<form method="POST" action="">
-				<input type="hidden" name="action" value="send_notification">
-				<input type="hidden" name="user_id" value="USR-12345">
+				{% csrf_token %}
 				<div class="modal-body">
 					<div class="mb-3">
 						<label class="form-label">Notification Title <span style="color: #ef4444;">*</span></label>
@@ -1221,42 +1409,10 @@
 						<textarea class="form-control" name="notificationMessage" rows="4" placeholder="Enter your message..." required></textarea>
 					</div>
 
-					<div class="row">
-						<div class="col-md-6 mb-3">
-							<label class="form-label">Icon</label>
-							<select class="form-select" name="notificationIcon">
-								<option value="campaign">Announcement</option>
-								<option value="warning">Warning</option>
-								<option value="info">Information</option>
-								<option value="check_circle">Success</option>
-								<option value="error">Error</option>
-								<option value="notifications">Bell</option>
-								<option value="verified">Verified</option>
-								<option value="security">Security</option>
-								<option value="update">Update</option>
-								<option value="celebration">Celebration</option>
-								<option value="stars">Stars</option>
-								<option value="monetization_on">Money</option>
-							</select>
-						</div>
-
-						<div class="col-md-6 mb-3">
-							<label class="form-label">Color</label>
-							<select class="form-select" name="notificationColor">
-								<option value="red">Red (Urgent)</option>
-								<option value="blue">Blue (Information)</option>
-								<option value="green">Green (Success)</option>
-								<option value="yellow">Yellow (Warning)</option>
-								<option value="purple">Purple (Announcement)</option>
-								<option value="orange">Orange (Alert)</option>
-								<option value="gray">Gray (Neutral)</option>
-							</select>
-						</div>
-					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-warning">
+					<button type="submit" class="btn btn-warning" name="send_notification">
 						<i class="material-icons" style="font-size: 18px; vertical-align: middle;">send</i>
 						Send Notification
 					</button>
@@ -1278,8 +1434,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<form method="POST" action="">
-				<input type="hidden" name="action" value="reset_password">
-				<input type="hidden" name="user_id" value="USR-12345">
+				{% csrf_token %}
 				<div class="modal-body">
 					<div class="alert alert-info" style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
 						<i class="material-icons">info</i>
@@ -1289,8 +1444,8 @@
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label">Send link to change user "John Michael Doe" password to <span style="color: #ef4444;">*</span></label>
-						<input type="email" class="form-control" name="resetEmail" placeholder="Enter email address" value="johndoe@example.com" required />
+						<label class="form-label">Send link to change user "{{user.first_name}} {{user.last_name}}" password to <span style="color: #ef4444;">*</span></label>
+						<input type="email" class="form-control" name="resetEmail" placeholder="Enter email address" value="{{user.email}}" required />
 						<div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
 							The password reset link will be sent to this email address
 						</div>
@@ -1298,7 +1453,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary">
+					<button type="submit" class="btn btn-primary" name="reset_password">
 						<i class="material-icons" style="font-size: 18px; vertical-align: middle;">send</i>
 						Send Reset Link
 					</button>
@@ -1320,39 +1475,20 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<form method="POST" action="">
-				<input type="hidden" name="action" value="add_payment_method">
-				<input type="hidden" name="user_id" value="USR-12345">
+				{% csrf_token %}
 				<div class="modal-body">
 					<!-- Payment Type -->
 					<div class="mb-3">
 						<label class="form-label">Payment Type <span style="color: #ef4444;">*</span></label>
 						<select class="form-select" name="paymentType" required>
 							<option value="">Select payment type...</option>
-							<option value="crypto">Cryptocurrency</option>
-							<option value="bank">Bank Transfer</option>
-							<option value="ewallet">E-Wallet</option>
+							{% for currency in currencies %}
+							<option value="{{currency.ref}}_currency">{{currency.currency}}</option>
+							{% endfor %}
+							{% for gateway in gateways %}
+							<option value="{{gateway.ref}}_gateway">{{gateway.name}}</option>
+							{% endfor %}
 						</select>
-					</div>
-
-					<!-- Payment Method Name -->
-					<div class="mb-3">
-						<label class="form-label">Method Name <span style="color: #ef4444;">*</span></label>
-						<input type="text" class="form-control" name="methodName" placeholder="e.g., Bitcoin Wallet, PayPal, Bank of America" required />
-					</div>
-
-					<!-- Account Details -->
-					<div class="mb-3">
-						<label class="form-label">Account Details <span style="color: #ef4444;">*</span></label>
-						<textarea class="form-control" name="accountDetails" rows="3" placeholder="Enter wallet address, account number, or other relevant details..." required></textarea>
-						<div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
-							Enter all necessary information for this payment method
-						</div>
-					</div>
-
-					<!-- Additional Information -->
-					<div class="mb-3">
-						<label class="form-label">Additional Information (Optional)</label>
-						<textarea class="form-control" name="additionalInfo" rows="2" placeholder="Any additional notes or instructions..."></textarea>
 					</div>
 
 					<div class="form-check">
@@ -1364,7 +1500,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary">
+					<button type="submit" class="btn btn-primary" name="user_payment_method">
 						<i class="material-icons" style="font-size: 18px; vertical-align: middle;">add</i>
 						Add Payment Method
 					</button>
@@ -1637,23 +1773,8 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<form method="POST" action="">
-				<input type="hidden" name="action" value="send_email">
-				<input type="hidden" name="user_id" value="USR-12345">
+				{% csrf_token %}
 				<div class="modal-body">
-					<!-- Email Template Selection -->
-					<div style="margin-bottom: 20px;">
-						<label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
-							Select Email Template
-						</label>
-						<select name="emailTemplate" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-							<option value="">Choose a template...</option>
-							<option value="welcome">Welcome Email</option>
-							<option value="verification">Account Verification</option>
-							<option value="warning">Account Warning</option>
-							<option value="custom">Custom Email</option>
-						</select>
-					</div>
-
 					<!-- Subject -->
 					<div style="margin-bottom: 20px;">
 						<label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">
@@ -1675,7 +1796,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none;">
+					<button type="submit" name="send_mail" class="btn btn-primary" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none;">
 						<i class="material-icons" style="font-size: 18px; vertical-align: middle;">send</i>
 						Send Email
 					</button>
