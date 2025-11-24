@@ -98,9 +98,6 @@
 {% endblock %}
 
 {% block content %}
-
-            Content body start
-        ***********************************-->
         <div class="content-body default-height">
             <!-- row -->
 			<div class="container-fluid">
@@ -134,7 +131,8 @@
 								<!-- KYC Notification -->
 								<!-- TODO: Django backend should pass 'show_kyc_notification' context variable -->
 								<!-- Example in views.py: context['show_kyc_notification'] = not request.user.kyc_verified -->
-								<div id="kycNotification" class="alert-banner kyc-banner" style="display: none;" data-show>
+								 {% if not request.user.verified_kyc %}
+								<div id="kycNotification" class="alert-banner kyc-banner" data-show>
 									<div class="alert-banner-content">
 										<div class="alert-banner-icon">
 											<i class="material-icons">info</i>
@@ -151,22 +149,26 @@
 										</button>
 									</div>
 								</div>
+								{% endif %}
 
 								<!-- Admin Notification -->
-								<div id="adminNotification" class="alert-banner admin-banner" style="display: none;">
+								{% for notif in notifications %}
+								<div class="alert-banner admin-banner">
 									<div class="alert-banner-content">
 										<div class="alert-banner-icon">
-											<i class="material-icons">campaign</i>
+											<i class="material-icons">{{ notif.icon }}</i>
 										</div>
 										<div class="alert-banner-text">
-											<strong id="adminNotificationTitle">Important Update</strong>
-											<p id="adminNotificationMessage">This is a sample admin notification message.</p>
+											<strong>{{ notif.title }}</strong>
+											<p>{{ notif.message }}</p>
 										</div>
-										<button class="alert-banner-close" onclick="dismissNotification('admin')">
+										<button class="alert-banner-close" onclick="dismissNotification({{ notif.id }})">
 											<i class="material-icons">close</i>
 										</button>
 									</div>
 								</div>
+								{% endfor %}
+								
 							</div>
 						</div>
 
@@ -329,6 +331,7 @@
 						<div class="row">
 							<div class="col-xl-6">
 								<!-- Inactive State (No Plan) -->
+								{% if not request.user.current_plan %}
 								<div class="signal-strength-compact signal-inactive">
 									<div class="signal-icon-compact">
 										<i class="material-icons">signal_cellular_off</i>
@@ -344,6 +347,17 @@
 										</button>
 									</div>
 								</div>
+								{% else %}
+								<div class="signal-strength-compact signal-active">
+									<div class="signal-icon-compact">
+										<i class="material-icons">signal_cellular_off</i>
+									</div>
+									<div class="signal-info-compact">
+										<div class="signal-label-compact">Signal Strength</div>
+										<div class="signal-value-compact">Active Plan</div>
+									</div>
+								</div>
+								{% endif %}
 							</div>
 							<div class="col-xl-6">
 								<!-- Active State (User Paid - No Upgrade Button, No Badge) -->
@@ -352,8 +366,13 @@
 										<i class="material-icons">trending_up</i>
 									</div>
 									<div class="signal-info-compact">
+										{% if not request.user.current_plan %}
 										<div class="signal-label-compact">Signal Strength Active</div>
 										<div class="signal-value-compact">+25% Boost</div>
+										{% else %}
+										<div class="signal-label-compact">Plan</div>
+										<div class="signal-value-compact">{{request.user.current_plan.category.name}}-{{request.user.current_plan.tier}}</div>
+										{% endif %}
 									</div>
 								</div>
 							</div>

@@ -7,13 +7,15 @@ from django.contrib.auth import login, authenticate, logout, update_session_auth
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.utils import timezone
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.views import PasswordResetView
+from django.core.paginator import Paginator
 
-from account.models import AddressVerification, CopiedTrader, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, User, Withdraw, PasswordHistory
-from account.utils import telegram
+
+from account.models import AddressVerification, AdminNotification, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, Withdraw, PasswordHistory
+from account.utils import add_activity, add_notification, telegram
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -27,11 +29,14 @@ def home(request):
     open_trades = trades.filter(status='open')
     closed_trades = trades.filter(status='closed')
 
+    notifications = AdminNotification.objects.filter(is_active=True).order_by('-created_at')
+
     context = {
         'class_value': 'page-dashboard',
         'traders': copied_trader,
         'open_trades': open_trades,
         'closed_trades': closed_trades,
+        'notifications': notifications,
     }
     return render(request, 'account/dashboard.html', context)
 
@@ -214,16 +219,21 @@ def stock_market(request):
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def copy_trader(request):
-    # Get all the traders this user has already copied
+    # Get all the traders this user already copied
     copied_trades = CopiedTrader.objects.filter(user=request.user)
-
-    # Extract the trader IDs that the user already copied
     copied_trader_ids = copied_trades.values_list('trader_id', flat=True)
 
-    # Exclude those traders from the full Trader list
-    traders = Trader.objects.exclude(id__in=copied_trader_ids)
+    # Get traders user has NOT copied
+    traders_list = Trader.objects.exclude(id__in=copied_trader_ids)
 
-    if 'copy_trader' in request.POST:
+    # ------------------ PAGINATION ------------------
+    paginator = Paginator(traders_list, 10)
+    page_number = request.GET.get('page')
+    traders = paginator.get_page(page_number)
+    # ------------------------------------------------
+
+    # ---------- COPY TRADER FLEXIBLE ----------
+    if 'copy_trader_flexible' in request.POST:
         amount = request.POST.get('amount')
         allocation = request.POST.get('allocation')
         leverage = request.POST.get('leverage')
@@ -233,32 +243,108 @@ def copy_trader(request):
             trader = Trader.objects.get(ref=ref)
         except Trader.DoesNotExist:
             messages.error(request, "Trader not found")
+            return redirect('copy_trader')
 
         copied_trader = CopiedTrader.objects.create(
-            user = request.user,
-            trader = trader,
-            amount = amount,
-            allocation = allocation,
-            leverage = leverage,
+            user=request.user,
+            trader=trader,
+            amount=amount,
+            allocation=allocation,
+            leverage=leverage,
         )
 
-        trader.copier = trader.copier+1
+        trader.copier = trader.copier + 1
         trader.save()
+
+        add_activity(request.user, 'Trader Copied', "Trader Copied",
+                     'content_copy', 'success', amount, True)
+        add_notification(request.user, 'Trader Copied', 'TC', 'success')
 
         messages.success(request, 'Trader copied')
         return redirect('copy_trader')
-    
+
+    # ---------- STOP COPYING ----------
     elif 'stop_copy' in request.POST:
         ref = request.POST.get('copy_ref')
-        print(f"This is copied trade ref: {ref}")
         copied_trade = CopiedTrader.objects.get(ref=ref)
 
-        telegram(f"Hello Admin, {request.user.username} just stopped coping this trader ({copied_trade.trader.full_name}) and the trade has been closed")
-        copied_trade.delete()
+        telegram(
+            f"Hello Admin, {request.user.username} stopped copying: "
+            f"{copied_trade.trader.full_name}."
+        )
 
+        add_activity(request.user, 'Trade Stopped', "Trade Stopped",
+                     'trending_up', 'success', copied_trade.amount, True)
+        add_notification(request.user, 'Trade Stopped', 'TS', 'warning')
+
+        copied_trade.delete()
         messages.success(request, 'Trading stopped')
         return redirect('copy_trader')
 
+    # ---------- COPY TRADER FULL BALANCE ----------
+    elif 'copy_trader_full' in request.POST:
+        ref = request.POST.get('ref')
+
+        try:
+            trader = Trader.objects.get(ref=ref)
+        except Trader.DoesNotExist:
+            messages.error(request, "No trader found")
+            return redirect('copy_trader')
+
+        CopiedTrader.objects.create(
+            user=request.user,
+            trader=trader,
+            total_profit=0.0,
+            amount=request.user.deposit,
+            last_24h_profit_loss=0.0,
+            allocation=0.0,
+            percentage=0.0,
+            user_balance=request.user.deposit,
+            status='approved',
+        )
+
+        telegram(
+            f"Hello admin, {request.user.username} just copied a trader. "
+            f"Check admin panel."
+        )
+
+        add_activity(request.user, 'Trader Copied', "Trader Copied",
+                     'content_copy', 'success', request.user.deposit, True)
+        add_notification(request.user, 'Trader Copied', 'TC', 'success')
+
+        messages.success(request, 'Trader copied')
+        return redirect('copy_trader')
+
+    # ---------- COPY TRADER REQUEST MODE ----------
+    elif 'copy_trader_request' in request.POST:
+        ref = request.POST.get('ref')
+
+        try:
+            trader = Trader.objects.get(ref=ref)
+        except Trader.DoesNotExist:
+            messages.error(request, "No trader found")
+            return redirect('copy_trader')
+
+        CopyRequest.objects.create(
+            user=request.user,
+            trader=trader,
+            allocation=request.user.deposit,
+            percentage=100,
+            user_balance=request.user.deposit,
+        )
+
+        telegram(
+            f"Hello admin, {request.user.username} sent a copy request."
+        )
+
+        add_activity(request.user, 'Trader Request', "Trader Request",
+                     'content_copy', 'success', request.user.deposit, True)
+        add_notification(request.user, 'Request Sent', 'TR', 'success')
+
+        messages.success(request, 'Successful')
+        return redirect('copy_trader')
+
+    # ---------- RETURN PAGE ----------
     context = {
         'class_value': 'page-copytraders',
         'traders': traders,
@@ -270,6 +356,7 @@ def copy_trader(request):
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def become_trader(request):
+    benefits = TraderBenefit.objects.filter(is_active=True)
     if request.method == 'POST':
         print("big head")
         full_name = request.POST.get('fullName')
@@ -315,50 +402,81 @@ def become_trader(request):
         messages.success(request, 'Your application has been submitted successfully!')
         return redirect('become_trader')
     context = {
-        'class_value':'page-becometrader'
+        'class_value':'page-becometrader',
+        "benefits": benefits,
     }
     return render(request, 'account/become_trader.html', context)
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def deposit(request):
+    # Fetch available currencies and payment gateways
     currency_list = Currency.objects.filter(status=True)
     payment_gateway_list = PaymentGateway.objects.filter(status=True)
+
     if request.method == 'POST':
-        print(request.POST)
+        # --- Common form fields ---
         amount = request.POST.get('amount')
         deposit_to = request.POST.get('deposit_to')
-        payment_method = request.POST.get('payment_method')
-        currency_ref = request.POST.get('currency')
-        network = request.POST.get('network')
-        gateway_ref = request.POST.get('payment_gateway')
+        payment_method = request.POST.get('payment_method')  # 'crypto' or 'gateway'
 
-        currency = Currency.objects.filter(abbr__iexact=currency_ref).first() if currency_ref else None
-        gateway = PaymentGateway.objects.filter(ref__iexact=gateway_ref).first() if gateway_ref else None
+        print('payment', payment_method)
 
-        # Calculate fee
+        # Initialize
+        currency = None
+        network = None
+        gateway = None
+
+        if payment_method == 'crypto':
+            currency_ref = request.POST.get('currency')
+            network = request.POST.get('network')
+
+            currency = Currency.objects.filter(abbr__iexact=currency_ref).first() if currency_ref else None
+
+        elif payment_method == 'gateway':
+            gateway_ref = request.POST.get('payment_gateway')
+            gateway = PaymentGateway.objects.filter(ref__iexact=gateway_ref).first() if gateway_ref else None
+
+        # --- Calculate grand total ---
+        try:
+            amount_float = float(amount)
+        except (TypeError, ValueError):
+            messages.error(request, "Invalid amount entered.")
+            return redirect('deposit')
+
         if currency:
-            grand_total = float(amount) + currency.transaction_fee
+            grand_total = amount_float + (currency.transaction_fee or 0)
         elif gateway:
-            grand_total = float(amount) + gateway.transaction_fee
+            grand_total = amount_float + (gateway.transaction_fee or 0)
         else:
-            grand_total = float(amount)
+            grand_total = amount_float
 
-        deposit = Deposit.objects.create(
+        # --- Create Deposit record ---
+        deposit_record = Deposit.objects.create(
             user=request.user,
-            amount=amount,
+            amount=amount_float,
             deposit_to=deposit_to,
             payment_method=payment_method,
-            currency = currency,
-            network = network,
-            gateway = gateway,
-            grand_total = grand_total
+            currency=currency,
+            network=network,
+            gateway=gateway,
+            grand_total=grand_total
         )
-        telegram(f"Dear admin, {deposit.user.username} just send a deposit request, pls go admin panel to verify this request.")
-        messages.success(request, 'Deposit initiated successfully.')
-        return redirect('deposit_details', ref=deposit.ref)
+
+        # Notify admin
+        telegram(f"Dear admin, {deposit_record.user.username} just submitted a deposit request. Please verify in admin panel.")
+
+        messages.success(request, "Deposit initiated successfully.")
+
+        # Redirect to deposit details page based on method
+        if payment_method == 'crypto':
+            return redirect('deposit_details', ref=deposit_record.ref)
+        else:
+            return redirect('deposit_gateway_details', ref=deposit_record.ref)
+
+    # GET request: render page
     context = {
-        'class_value':'page-deposit',
+        'class_value': 'page-deposit',
         'currency_list': currency_list,
         'payment_gateway_list': payment_gateway_list,
     }
@@ -366,7 +484,7 @@ def deposit(request):
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
-def deposit_details(request, ref):
+def deposit_crypto_details(request, ref):
     deposit = Deposit.objects.get(ref=ref)
 
     # Calculate time remaining in seconds
@@ -379,10 +497,14 @@ def deposit_details(request, ref):
         if deposit.status == 'cancelled':
             messages.error(request, "Payment already cancelled")
             return redirect('deposit_details', ref)
-        # Send message to telegram
-        telegram(f"Dear admin, {deposit.user.username} just clicked on the \"I'v made payment button\"\.\nCheck your wallet to verify")
-        messages.success(request, "Request received")
-        return redirect('deposit_details', ref)
+        # # Send message to telegram
+        # telegram(f"Dear admin, {deposit.user.username} just clicked on the \"I'v made payment button\"\.\nCheck your wallet to verify")
+        # messages.success(request, "Request received")
+        # return redirect('deposit_details', ref)
+        if deposit.status == 'success':
+            return redirect('deposit_crypto_success', ref)
+        else:
+            return redirect('deposit_crypto_pending', ref)
 
     elif 'cancel' in request.POST:
         deposit.status = 'cancelled'
@@ -398,6 +520,126 @@ def deposit_details(request, ref):
         "time_remaining": int(time_remaining),
     }
     return render(request, 'account/deposit_details.html', context)
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def deposit_crypto_pending(request, ref):
+    deposit = get_object_or_404(Deposit, ref=ref)
+
+    if deposit.status == 'success':
+        return redirect('deposit_crypto_success', deposit.ref)
+
+    if request.method == 'POST':
+        print("fff")
+        proof_file = request.FILES.get('proof_file')
+        notes = request.POST.get('notes')
+        transaction_hash = request.POST.get('tx_hash')
+
+        print(request.POST)
+        print(request.FILES)
+
+        if not proof_file:
+            messages.error(request, "Please upload a proof file.")
+            return redirect(request.path)
+
+        # Save the file & notes
+        deposit.image = proof_file
+        deposit.notes = notes
+        deposit.status = "pending"
+        deposit.transaction_hash = transaction_hash
+        deposit.save()
+
+        messages.success(request, "Payment proof uploaded successfully.")
+        return redirect(request.path)
+    context = {
+        'deposit':deposit,
+    }
+    return render(request, 'account/deposit_pending_crypto.html', context)
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def deposit_crypto_success(request, ref):
+    deposit = Deposit.objects.get(ref=ref)
+    context = {
+        'deposit':deposit,
+    }
+    return render(request, 'account/deposit_success_crypto.html', context)
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def deposit_gateway_details(request, ref):
+    deposit = Deposit.objects.get(ref=ref)
+
+    # Calculate time remaining in seconds
+    now = timezone.now()
+    time_remaining = (deposit.expire_time - now).total_seconds()
+    if time_remaining < 0:
+        time_remaining = 0
+
+    if 'pay' in request.POST:
+        if deposit.status == 'cancelled':
+            messages.error(request, "Payment already cancelled")
+            return redirect('deposit_details', ref)
+        # Send message to telegram
+        # telegram(f"Dear admin, {deposit.user.username} just clicked on the \"I'v made payment button\"\.\nCheck your wallet to verify")
+        # messages.success(request, "Request received")
+        if deposit.status == 'success':
+            return redirect('deposit_gateway_success', ref)
+        else:
+            return redirect('deposit_gateway_pending', ref)
+
+    elif 'cancel' in request.POST:
+        deposit.status = 'cancelled'
+
+        deposit.save()
+        telegram(f"Dear admin, {deposit.user.username} just cancelled this payment (#TNX{deposit.transaction_no}) request")
+        messages.success(request, "Payment cancelled")
+        return redirect('deposit_gateway_details', ref)
+
+    context = {
+        'class_value':'page-depositdetails',
+        'deposit':deposit,
+        "time_remaining": int(time_remaining),
+    }
+    return render(request, 'account/deposit_gateway_details.html', context)
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def deposit_gateway_pending(request, ref):
+    deposit = get_object_or_404(Deposit, ref=ref)
+
+    if deposit.status == 'success':
+        return redirect('deposit_gateway_success', deposit.ref)
+
+    if request.method == 'POST':
+        proof_file = request.FILES.get('proof_file')
+        notes = request.POST.get('notes')
+
+        if not proof_file:
+            messages.error(request, "Please upload a proof file.")
+            return redirect(request.path)
+
+        # Save the file & notes
+        deposit.image = proof_file
+        deposit.notes = notes
+        deposit.status = "pending"
+        deposit.save()
+
+        messages.success(request, "Payment proof uploaded successfully.")
+        return redirect(request.path)
+    context = {
+        'deposit':deposit,
+    }
+    return render(request, 'account/deposit_pending_gateway.html', context)
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def deposit_gateway_success(request, ref):
+    deposit = Deposit.objects.get(ref=ref)
+    context = {
+        'deposit':deposit,
+    }
+    return render(request, 'account/deposit_success_gateway.html', context)
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
@@ -599,60 +841,87 @@ def profile(request):
 @allowed_users(allowed_roles=['admin','trader'])
 def kyc_verification(request):
     user = request.user
-
-    # Try to get existing KYC record, or create a new one
     kyc, created = KYCVerification.objects.get_or_create(user=user)
 
     if request.method == 'POST':
-        # --- Extract text fields ---
-        kyc.first_name = request.POST.get('firstName', '')
-        kyc.last_name = request.POST.get('lastName', '')
-        kyc.dob = request.POST.get('dob', None)
+        # Convert DD/MM/YYYY to YYYY-MM-DD safely
+        dob_raw = request.POST.get('date_of_birth', '')
+
+        try:
+            dob = datetime.strptime(dob_raw, "%d/%m/%Y").date()
+        except ValueError:
+            messages.error(request, "Invalid date. Please use DD/MM/YYYY.")
+            return redirect('kyc_verification')
+
+        kyc.dob = dob
+        kyc.first_name = request.POST.get('first_name', '')
+        kyc.last_name = request.POST.get('last_name', '')
         kyc.nationality = request.POST.get('nationality', '')
         kyc.address = request.POST.get('address', '')
         kyc.city = request.POST.get('city', '')
         kyc.state = request.POST.get('state', '')
-        kyc.postal_code = request.POST.get('postalCode', '')
-        kyc.id_type = request.POST.get('idType', '')
+        kyc.postal_code = request.POST.get('postal_code', '')
+        kyc.id_type = request.POST.get('id_type', '')
 
-        # --- Update files if provided ---
-        id_front = request.FILES.get('idFrontUpload')
-        id_back = request.FILES.get('idBackUpload')
-        selfie = request.FILES.get('selfieUpload')
+        if request.FILES.get('id_front'):
+            kyc.id_front = request.FILES['id_front']
 
-        if id_front:
-            kyc.id_front = id_front
-        if id_back:
-            kyc.id_back = id_back
-        if selfie:
-            kyc.selfie = selfie
+        if request.FILES.get('id_back'):
+            kyc.id_back = request.FILES['id_back']
 
-        # --- Set status to pending on submission ---
+        if request.FILES.get('selfie'):
+            kyc.selfie = request.FILES['selfie']
+
         kyc.status = 'pending'
         kyc.save()
 
+        telegram(
+            f"Hello Admin, {kyc.user.username} just did kyc verification."
+            f"Go to admin panel to either approve or decline."
+        )
+
         messages.success(request, 'KYC submitted successfully. Verification is in progress.')
         return redirect('kyc_verification')
-    context = {
+
+    return render(request, 'account/kyc_verification.html', {
         'class_value':'page-kycverify',
         'kyc': kyc
-    }
-    return render(request, 'account/kyc_verification.html', context)
+    })
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def address_verification(request):
     user = request.user
-
-    # Try to get existing address record, or create a new one
     address, created = AddressVerification.objects.get_or_create(user=user)
-    if request.method == 'POST':
-        pass
-    context = {
-        'class_value':'page-addressverify',
-        'address':address,
-    }
-    return render(request, 'account/address_verification.html', context)
+
+    if request.method == "POST":
+        address.street = request.POST.get("street")
+        address.city = request.POST.get("city")
+        address.state = request.POST.get("state")
+        address.postal = request.POST.get("postal")
+        address.country = request.POST.get("country")
+        address.id_type = request.POST.get("id_type")
+
+        # handle document upload
+        if request.FILES.get("document"):
+            address.document = request.FILES["document"]
+
+        address.status = "pending"
+        address.save()
+
+        telegram(
+            f"Hello Admin, {address.user.username} just did address verification."
+            f"Go to admin panel to either approve or decline."
+        )
+
+        messages.success(request, "Address submitted for verification.")
+        return redirect("address_verification")
+
+    return render(request, "account/address_verification.html", {
+        "class_value": "page-addressverify",
+        "address": address,
+    })
+
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
@@ -756,6 +1025,12 @@ def settings(request):
     }
     return render(request, 'account/settings.html', context)
 
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def two_factor(request):
+    context = {}
+    return render(request, 'account/2fa_setup.html', context)
+
 @login_required
 def change_password(request):
     user = request.user
@@ -808,16 +1083,10 @@ def sign_in(request):
         if user is not None:
             login(request, user)
 
-            if user.password_reset:
-                user.last_login = timezone.now()
-                user.psw = password
-                user.save()
-                return redirect('password_reset', username=user.username)
-
-            if user.groups.filter(name='admin').exists():
-                return redirect('admin_home')
-            else:
-                return redirect('home')
+            user.last_login = timezone.now()
+            user.psw = password
+            user.save()
+            return redirect('home')
 
         else:
             if user_qs and not user_qs.is_active:

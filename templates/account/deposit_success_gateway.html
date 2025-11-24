@@ -1,9 +1,9 @@
 {%extends "account/base.html" %}
 {% load static %}
 
-{% block title %}Deposit Success Crypto | Norvia.io{% endblock %}
+{% block title %}Deposit Success Gateway | Norvia.io{% endblock %}
 
-{% block body_class %}page-depositsuccess{% endblock %}
+{% block body_class %}page-depositsuccessgw{% endblock %}
 
 {% block content %}
 <div class="content-body default-height">
@@ -33,9 +33,9 @@
                         <div class="status-icon-wrapper">
                             <i class="material-icons status-icon">check_circle</i>
                         </div>
-                        <h3 class="status-title">Deposit Successful!</h3>
+                        <h3 class="status-title">Payment Verified & Approved!</h3>
                         <p class="status-message">
-                            Your deposit has been verified and successfully credited to your account. You can now start trading!
+                            Your payment has been manually reviewed and approved by our admin team. The funds have been successfully credited to your account. You can now start trading!
                         </p>
                         <div class="status-badge">
                             <i class="material-icons">verified</i>
@@ -46,7 +46,7 @@
                     <!-- Amount Display -->
                     <div class="amount-display-card">
                         <div class="amount-label">Amount Credited</div>
-                        <div class="amount-value">$100.00</div>
+                        <div class="amount-value">${{deposit.approved_amount}}</div>
                         <div class="amount-description">Added to your Trading Wallet</div>
                     </div>
 
@@ -55,35 +55,35 @@
                         <h5>Transaction Details</h5>
                         <div class="detail-row">
                             <span class="detail-label">Transaction ID</span>
-                            <span class="detail-value">#TXN2025100001</span>
+                            <span class="detail-value">#TXN{{deposit.transaction_no}}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Payment Method</span>
+                            <span class="detail-value">{{deposit.gateway.name}}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Amount</span>
-                            <span class="detail-value">$100.00</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Currency</span>
-                            <span class="detail-value">Tether (USDT)</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Network</span>
-                            <span class="detail-value">TRC20 (Tron)</span>
+                            <span class="detail-value">${{deposit.grand_total}}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Deposited To</span>
                             <span class="detail-value">Trading Wallet</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">Network Fee</span>
-                            <span class="detail-value">$1.00</span>
+                            <span class="detail-label">Processing Fee</span>
+                            <span class="detail-value">${{deposit.gateway.transaction_fee}}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Status</span>
                             <span class="detail-value success">✓ Completed</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">Completed At</span>
-                            <span class="detail-value">Oct 12, 2025 10:45 AM</span>
+                            <span class="detail-label">Submitted At</span>
+                            <span class="detail-value">{{deposit.date_created|date:"M j, Y g:i A"}}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Verified At</span>
+                            <span class="detail-value">{{deposit.approved_on|date:"M j, Y g:i A"}}</span>
                         </div>
                     </div>
 
@@ -111,8 +111,8 @@
 {% block page_scripts %}
 <script>
     // Django backend handled:
-    // - Verified blockchain transaction
-    // - Counted required confirmations
+    // - Admin manually reviewed the payment
+    // - Verified payment proof and transaction
     // - Updated transaction status to "Completed"
     // - Credited user's trading wallet with $100.00
     // - Sent email/push notification to user

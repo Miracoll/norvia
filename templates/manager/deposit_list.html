@@ -109,7 +109,7 @@
                             <td>{{deposit.deposit_to|capfirst}} Wallet</td>
                             <td><span class="status-badge {% if deposit.status == 'pending' %}pending{% elif deposit.status == 'success' %}completed{% else %}failed{% endif %}">{{deposit.status|capfirst}}</span></td>
                             <td>
-                                <a href="#" class="proof-link" data-bs-toggle="modal" data-bs-target="#proofModal">
+                                <a href="#" class="proof-link" data-bs-toggle="modal" data-bs-target="#proofModal{{deposit.id}}">
                                     <i class="material-icons" style="font-size: 16px;">receipt</i>
                                     View Proof
                                 </a>
@@ -177,7 +177,7 @@
                                             <div class="deposit-form-group">
                                                 <label class="deposit-form-label">Amount to Credit</label>
                                                 <span class="deposit-form-sublabel">Adjust this amount if the received amount differs from the requested amount (e.g., due to transaction fees)</span>
-                                                <input type="number" class="deposit-amount-input" id="depositAmountInput" name="credit_amount" value="{{deposit.amount}}" step="100">
+                                                <input type="number" class="deposit-amount-input" id="depositAmountInput" name="credit_amount" value="{{deposit.amount}}">
                                                 <!-- Django will calculate and display amount difference if needed -->
                                             </div>
                                         </div>
@@ -254,7 +254,7 @@
                         </div>
                         
                         <!-- View Proof Modal - Bootstrap Modal -->
-                        <div class="modal fade" id="proofModal" tabindex="-1" aria-labelledby="proofModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="proofModal{{deposit.id}}" tabindex="-1" aria-labelledby="proofModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -266,12 +266,19 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="text-center">
-                                            <img id="proofImage" src="" alt="Payment Proof" style="max-width: 100%; height: auto; border-radius: 8px;">
+                                            <img id="proofImage" src="{{deposit.image.url}}" alt="Payment Proof" width="120" style="border-radius: 8px;">
                                         </div>
                                         <div class="mt-3">
-                                            <p><strong>Transaction ID:</strong> <span id="proofTransactionId"></span></p>
-                                            <p><strong>User:</strong> <span id="proofUserName"></span></p>
-                                            <p><strong>Amount:</strong> <span id="proofAmount"></span></p>
+                                            <p><strong>Transaction ID:</strong> <span id="proofTransactionId">{{deposit.transaction_no}}</span></p>
+                                            <p><strong>User:</strong> <span id="proofUserName">{{deposit.user.username}}</span></p>
+                                            <p><strong>Amount:</strong> <span id="proofAmount">{{deposit.grand_total}}</span></p>
+
+                                            {% if deposit.transaction_hash %}
+                                            <p><strong>Transaction Hash:</strong> <span id="proofAmount">{{deposit.transaction_hash}}</span></p>
+                                            {% endif %}
+                                            {% if deposit.notes %}
+                                            <p><strong>Note:</strong> <span id="proofAmount">{{deposit.notes}}</span></p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="modal-footer">

@@ -71,7 +71,7 @@
                 <div class="config-section">
                     <div class="config-row">
                         <span class="config-label">Copy Mode:</span>
-                        <span class="badge-mode flexible">Flexible</span>
+                        <span class="badge-mode flexible">{{trader.copy_mode|capfirst}}</span>
                     </div>
                     <div class="config-row">
                         <span class="config-label">Min. Balance:</span>
@@ -79,7 +79,7 @@
                     </div>
                     <div class="config-row">
                         <span class="config-label">Approval Required:</span>
-                        <span class="config-value" style="color: #10b981;">No</span>
+                        <span class="config-value" style="color: #10b981;">{{trader.require_approval|yesno|capfirst}}</span>
                     </div>
                     <div class="config-row">
                         <span class="config-label">Copiers:</span>
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="status-toggle">
-                    <input type="checkbox" id="trader{{ trader.id }}" checked>
+                    <input type="checkbox" id="trader{{ trader.id }}" {% if trader.is_active %}checked{% endif %}>
                     <label for="trader{{ trader.id }}">Active & Visible</label>
                 </div>
 

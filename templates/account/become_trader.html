@@ -35,32 +35,19 @@
 
 					<!-- Benefits Section -->
 					<div class="benefits-section">
-						<h2 style="font-size: 24px; font-weight: 700; margin-bottom: 5px;">Why Become a Trader?</h2>
-						<p style="color: #6b7280; margin-bottom: 20px;">Join our elite community of professional traders</p>
-
+						<h2>Why Become a Trader?</h2>
+						<p>Join our elite community of professional traders</p>
+					
 						<div class="benefits-grid">
-							<div class="benefit-card">
-								<i class="material-icons">payments</i>
-								<h4>Earn Extra Income</h4>
-								<p>Receive commission from followers who copy your trades</p>
-							</div>
-							<div class="benefit-card">
-								<i class="material-icons">group</i>
-								<h4>Build Your Reputation</h4>
-								<p>Grow your follower base and establish yourself as a trusted trader</p>
-							</div>
-							<div class="benefit-card">
-								<i class="material-icons">analytics</i>
-								<h4>Performance Tracking</h4>
-								<p>Access advanced analytics and insights on your trading performance</p>
-							</div>
-							<div class="benefit-card">
-								<i class="material-icons">verified</i>
-								<h4>Verified Badge</h4>
-								<p>Get a verified trader badge to boost your credibility</p>
-							</div>
+							{% for item in benefits %}
+								<div class="benefit-card">
+									<i class="material-icons">{{ item.icon }}</i>
+									<h4>{{ item.title }}</h4>
+									<p>{{ item.description }}</p>
+								</div>
+							{% endfor %}
 						</div>
-					</div>
+					</div>					
 
 					<!-- Application Form -->
 					<div class="application-form-section">

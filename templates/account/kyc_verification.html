@@ -13,7 +13,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
-							<li class="breadcrumb-item"><a href="{% url 'settings' %}">Settings</a></li>
+						<li class="breadcrumb-item"><a href="{% url 'settings' %}">Settings</a></li>
 						<li class="breadcrumb-item active"><a href="javascript:void(0)">KYC Verification</a></li>
 					</ol>
 				</div>
@@ -37,7 +37,7 @@
 							</div>
 							<span class="status-badge not-submitted">
 								<i class="material-icons" style="font-size: 18px;">pending</i>
-								Not Submitted
+								{{kyc.status}}
 							</span>
 						</div>
 
@@ -62,7 +62,7 @@
 					<!-- KYC Form -->
 					<form id="kycPersonalInfoForm" method="post" enctype="multipart/form-data">
 						{% csrf_token %}
-
+					
 						<!-- Step 1: Personal Information -->
 						<div class="kyc-form-card">
 							<div class="kyc-form-title">
@@ -70,204 +70,294 @@
 								Step 1: Personal Information
 							</div>
 							<p class="kyc-form-desc">Please provide your personal details exactly as they appear on your government-issued ID</p>
+					
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group-kyc">
 										<label class="form-label-kyc" for="firstName">First Name *</label>
-										<input type="text" class="form-input-kyc" id="firstName" name="first_name" placeholder="Enter your first name" required>
+										<input type="text" class="form-input-kyc" 
+											   id="firstName" 
+											   name="first_name"
+											   value="{{ kyc.first_name|default:'' }}"
+											   placeholder="Enter your first name" 
+											   required>
 									</div>
 								</div>
+					
 								<div class="col-md-6">
 									<div class="form-group-kyc">
 										<label class="form-label-kyc" for="lastName">Last Name *</label>
-										<input type="text" class="form-input-kyc" id="lastName" name="last_name" placeholder="Enter your last name" required>
+										<input type="text" class="form-input-kyc" 
+											   id="lastName" 
+											   name="last_name"
+											   value="{{ kyc.last_name|default:'' }}"
+											   placeholder="Enter your last name" 
+											   required>
 									</div>
 								</div>
 							</div>
-
+					
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group-kyc">
 										<label class="form-label-kyc" for="dob">Date of Birth (DD/MM/YYYY) *</label>
-										<input type="text" class="form-input-kyc" id="dob" name="date_of_birth" placeholder="DD/MM/YYYY" required>
+										<input type="text" class="form-input-kyc" 
+											   id="dob" 
+											   name="date_of_birth"
+											   value="{{ kyc.dob|default:'' }}"
+											   placeholder="DD/MM/YYYY" 
+											   required>
 									</div>
 								</div>
+					
 								<div class="col-md-6">
 									<div class="form-group-kyc">
 										<label class="form-label-kyc" for="nationality">Nationality *</label>
 										<select class="form-select-kyc" id="nationality" name="nationality" required>
 											<option value="">Select your nationality</option>
-											<option value="US">United States</option>
-											<option value="UK">United Kingdom</option>
-											<option value="CA">Canada</option>
-											<option value="AU">Australia</option>
-											<option value="NG">Nigeria</option>
-											<option value="ZA">South Africa</option>
-											<option value="IN">India</option>
-											<option value="other">Other</option>
+											<option value="US" {% if kyc.nationality == "US" %}selected{% endif %}>United States</option>
+											<option value="UK" {% if kyc.nationality == "UK" %}selected{% endif %}>United Kingdom</option>
+											<option value="CA" {% if kyc.nationality == "CA" %}selected{% endif %}>Canada</option>
+											<option value="AU" {% if kyc.nationality == "AU" %}selected{% endif %}>Australia</option>
+											<option value="NG" {% if kyc.nationality == "NG" %}selected{% endif %}>Nigeria</option>
+											<option value="ZA" {% if kyc.nationality == "ZA" %}selected{% endif %}>South Africa</option>
+											<option value="IN" {% if kyc.nationality == "IN" %}selected{% endif %}>India</option>
+											<option value="other" {% if kyc.nationality == "other" %}selected{% endif %}>Other</option>
 										</select>
 									</div>
 								</div>
 							</div>
-
+					
 							<div class="form-group-kyc">
 								<label class="form-label-kyc" for="address">Residential Address *</label>
-								<input type="text" class="form-input-kyc" id="address" name="address" placeholder="Street address, apartment, suite, unit, building, floor, etc." required>
+								<input type="text" class="form-input-kyc" 
+									   id="address" 
+									   name="address"
+									   value="{{ kyc.address|default:'' }}"
+									   placeholder="Street address, apartment, suite, building, etc." 
+									   required>
 							</div>
-
+					
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group-kyc">
 										<label class="form-label-kyc" for="city">City *</label>
-										<input type="text" class="form-input-kyc" id="city" name="city" placeholder="City" required>
+										<input type="text" class="form-input-kyc" 
+											   id="city" 
+											   name="city"
+											   value="{{ kyc.city|default:'' }}"
+											   placeholder="City" 
+											   required>
 									</div>
 								</div>
+					
 								<div class="col-md-4">
 									<div class="form-group-kyc">
 										<label class="form-label-kyc" for="state">State/Province *</label>
-										<input type="text" class="form-input-kyc" id="state" name="state" placeholder="State or Province" required>
+										<input type="text" class="form-input-kyc" 
+											   id="state" 
+											   name="state"
+											   value="{{ kyc.state|default:'' }}"
+											   placeholder="State or Province" 
+											   required>
 									</div>
 								</div>
+					
 								<div class="col-md-4">
 									<div class="form-group-kyc">
 										<label class="form-label-kyc" for="postalCode">Postal Code *</label>
-										<input type="text" class="form-input-kyc" id="postalCode" name="postal_code" placeholder="Postal code" required>
+										<input type="text" class="form-input-kyc" 
+											   id="postalCode" 
+											   name="postal_code"
+											   value="{{ kyc.postal_code|default:'' }}"
+											   placeholder="Postal code" 
+											   required>
 									</div>
 								</div>
 							</div>
 						</div>
-
+					
+					
 						<!-- Step 2: ID Document Upload -->
 						<div class="kyc-form-card">
-						<div class="kyc-form-title">
-							<i class="material-icons" style="color: var(--primary); font-size: 28px;">badge</i>
-							Step 2: ID Document Upload
-						</div>
-						<p class="kyc-form-desc">Upload a clear photo of your government-issued ID (Passport, Driver's License, or National ID Card)</p>
-
-						<div class="requirements-box">
-							<div class="requirements-title">
-								<i class="material-icons">check_circle</i>
-								Document Requirements
+							<div class="kyc-form-title">
+								<i class="material-icons" style="color: var(--primary); font-size: 28px;">badge</i>
+								Step 2: ID Document Upload
 							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Document must be valid and not expired</span>
+							<p class="kyc-form-desc">Upload a clear photo of your government-issued ID</p>
+					
+							<div class="form-group-kyc">
+								<label class="form-label-kyc" for="idType">ID Document Type *</label>
+								<select class="form-select-kyc" id="idType" name="id_type" required>
+									<option value="">Select document type</option>
+									<option value="passport" {% if kyc.id_type == "passport" %}selected{% endif %}>Passport</option>
+									<option value="drivers_license" {% if kyc.id_type == "drivers_license" %}selected{% endif %}>Driver's License</option>
+									<option value="national_id" {% if kyc.id_type == "national_id" %}selected{% endif %}>National ID Card</option>
+								</select>
 							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>All corners of the document must be visible</span>
+					
+							<!-- Front ID Upload -->
+							<div class="form-group-kyc">
+								<label class="form-label-kyc">Upload Front Side *</label>
+					
+								{% if kyc.id_front %}
+									<p>Existing File: <a href="{{ kyc.id_front.url }}" target="_blank">View Front</a></p>
+								{% endif %}
+					
+								<label for="idFrontUpload" class="upload-area" style="cursor: pointer;">
+									<div class="upload-icon"><i class="material-icons">cloud_upload</i></div>
+									<div class="upload-text">Click to upload or drag and drop</div>
+									<div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
+								</label>
+								<input type="file" id="idFrontUpload" name="id_front" accept="image/*,.pdf" style="display: none;">
 							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Information must be clearly readable</span>
+					
+							<!-- Back ID Upload -->
+							<div class="form-group-kyc">
+								<label class="form-label-kyc">Upload Back Side *</label>
+					
+								{% if kyc.id_back %}
+									<p>Existing File: <a href="{{ kyc.id_back.url }}" target="_blank">View Back</a></p>
+								{% endif %}
+					
+								<label for="idBackUpload" class="upload-area" style="cursor: pointer;">
+									<div class="upload-icon"><i class="material-icons">cloud_upload</i></div>
+									<div class="upload-text">Click to upload or drag and drop</div>
+									<div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
+								</label>
+								<input type="file" id="idBackUpload" name="id_back" accept="image/*,.pdf" style="display: none;">
 							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Supported formats: JPG, PNG, PDF (Max 10MB)</span>
-							</div>
 						</div>
-
-						<div class="form-group-kyc">
-							<label class="form-label-kyc" for="idType">ID Document Type *</label>
-							<select class="form-select-kyc" id="idType" name="id_type" required>
-								<option value="">Select document type</option>
-								<option value="passport">Passport</option>
-								<option value="drivers_license">Driver's License</option>
-								<option value="national_id">National ID Card</option>
-							</select>
-						</div>
-
-						<div class="form-group-kyc">
-							<label class="form-label-kyc">Upload Front Side *</label>
-							<label for="idFrontUpload" class="upload-area" style="cursor: pointer; margin-bottom: 0;">
-								<div class="upload-icon">
-									<i class="material-icons">cloud_upload</i>
-								</div>
-								<div class="upload-text">Click to upload or drag and drop</div>
-								<div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
-							</label>
-							<input type="file" id="idFrontUpload" name="id_front" accept="image/*,.pdf" style="display: none;">
-						</div>
-
-						<div class="form-group-kyc">
-							<label class="form-label-kyc">Upload Back Side *</label>
-							<label for="idBackUpload" class="upload-area" style="cursor: pointer; margin-bottom: 0;">
-								<div class="upload-icon">
-									<i class="material-icons">cloud_upload</i>
-								</div>
-								<div class="upload-text">Click to upload or drag and drop</div>
-								<div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
-							</label>
-							<input type="file" id="idBackUpload" name="id_back" accept="image/*,.pdf" style="display: none;">
-						</div>
-						</div>
-
+					
+					
 						<!-- Step 3: Selfie Verification -->
 						<div class="kyc-form-card">
-						<div class="kyc-form-title">
-							<i class="material-icons" style="color: var(--primary); font-size: 28px;">photo_camera</i>
-							Step 3: Selfie Verification
+							<div class="kyc-form-title">
+								<i class="material-icons" style="color: var(--primary); font-size: 28px;">photo_camera</i>
+								Step 3: Selfie Verification
+							</div>
+							<p class="kyc-form-desc">Take a clear selfie holding your ID document next to your face</p>
+					
+							<div class="form-group-kyc">
+								<label class="form-label-kyc">Selfie with ID *</label>
+					
+								{% if kyc.selfie %}
+									<p>Existing File: <a href="{{ kyc.selfie.url }}" target="_blank">View Selfie</a></p>
+								{% endif %}
+					
+								<label for="selfieUpload" class="upload-area" style="cursor: pointer;">
+									<div class="upload-icon"><i class="material-icons">portrait</i></div>
+									<div class="upload-text">Click to take/upload selfie</div>
+									<div class="upload-hint">JPG or PNG (Max 10MB)</div>
+								</label>
+								<input type="file" id="selfieUpload" name="selfie" accept="image/*" capture="user" style="display: none;">
+							</div>
 						</div>
-						<p class="kyc-form-desc">Take a clear selfie holding your ID document next to your face for verification</p>
+					</form>					
 
-						<div class="requirements-box">
-							<div class="requirements-title">
-								<i class="material-icons">check_circle</i>
-								Selfie Requirements
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Your face and ID document must be clearly visible</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Remove sunglasses, hats, or anything covering your face</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Ensure good lighting and no shadows on your face</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Hold your ID next to your face (both must be in frame)</span>
+					<!-- Submit Button -->
+					<div class="kyc-form-card">
+						<div style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; gap: 12px; align-items: flex-start;">
+							<i class="material-icons" style="color: #d97706; font-size: 24px;">info</i>
+							<div>
+								<h4 style="font-size: 15px; font-weight: 700; color: #92400e; margin-bottom: 6px;">Important Information</h4>
+								<p style="font-size: 14px; color: #78350f; margin: 0; line-height: 1.6;">
+									By submitting this verification, you confirm that all information provided is accurate and truthful. False information may result in account suspension. Verification typically takes 24-48 hours.
+								</p>
 							</div>
 						</div>
 
-						<div class="form-group-kyc">
-							<label class="form-label-kyc">Take Selfie with ID *</label>
-							<label for="selfieUpload" class="upload-area" style="cursor: pointer; margin-bottom: 0;">
-								<div class="upload-icon">
-									<i class="material-icons">portrait</i>
-								</div>
-								<div class="upload-text">Click to take your selfie</div>
-								<div class="upload-hint">JPG or PNG (Max 10MB)</div>
-							</label>
-							<input type="file" id="selfieUpload" name="selfie" accept="image/*" capture="user" style="display: none;">
-						</div>
-						</div>
-						
-						<!-- Submit Button -->
-						<div class="kyc-form-card">
-							<div style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; gap: 12px; align-items: flex-start;">
-								<i class="material-icons" style="color: #d97706; font-size: 24px;">info</i>
-								<div>
-									<h4 style="font-size: 15px; font-weight: 700; color: #92400e; margin-bottom: 6px;">Important Information</h4>
-									<p style="font-size: 14px; color: #78350f; margin: 0; line-height: 1.6;">
-										By submitting this verification, you confirm that all information provided is accurate and truthful. False information may result in account suspension. Verification typically takes 24-48 hours.
-									</p>
-								</div>
-							</div>
-							
-							<button type="submit" class="btn-submit-kyc" form="kycPersonalInfoForm">
-								<i class="material-icons">send</i>
-								Submit for Verification
-							</button>
-						</div>
-					</form>
+						<button type="submit" class="btn-submit-kyc" form="kycPersonalInfoForm">
+							<i class="material-icons">send</i>
+							Submit for Verification
+						</button>
+					</div>
 
 				</div>
 			</div>
 		</div>
 
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+// File upload handling for KYC verification
+document.addEventListener('DOMContentLoaded', function() {
+	// Handle ID Front Upload
+	const idFrontInput = document.getElementById('idFrontUpload');
+	const idFrontLabel = document.querySelector('label[for="idFrontUpload"]');
+
+	idFrontInput.addEventListener('change', function(e) {
+		handleFileUpload(e, idFrontLabel, 'Front');
+	});
+
+	// Handle ID Back Upload
+	const idBackInput = document.getElementById('idBackUpload');
+	const idBackLabel = document.querySelector('label[for="idBackUpload"]');
+
+	idBackInput.addEventListener('change', function(e) {
+		handleFileUpload(e, idBackLabel, 'Back');
+	});
+
+	// Handle Selfie Upload
+	const selfieInput = document.getElementById('selfieUpload');
+	const selfieLabel = document.querySelector('label[for="selfieUpload"]');
+
+	selfieInput.addEventListener('change', function(e) {
+		handleFileUpload(e, selfieLabel, 'Selfie');
+	});
+
+	function handleFileUpload(event, labelElement, type) {
+		const file = event.target.files[0];
+
+		if (!file) return;
+
+		// Validate file size (10MB max)
+		const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+		if (file.size > maxSize) {
+			alert('File size exceeds 10MB limit. Please choose a smaller file.');
+			event.target.value = '';
+			return;
+		}
+
+		// Validate file type
+		const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+		if (!allowedTypes.includes(file.type)) {
+			alert('Invalid file type. Please upload JPG, PNG, or PDF files only.');
+			event.target.value = '';
+			return;
+		}
+
+		// Update the label to show file name
+		const uploadIcon = labelElement.querySelector('.upload-icon i');
+		const uploadText = labelElement.querySelector('.upload-text');
+		const uploadHint = labelElement.querySelector('.upload-hint');
+
+		// Change icon to success
+		uploadIcon.textContent = 'check_circle';
+		uploadIcon.style.color = '#10b981';
+
+		// Update text to show file name
+		uploadText.textContent = file.name;
+		uploadText.style.color = '#10b981';
+		uploadText.style.fontWeight = '600';
+
+		// Update hint
+		uploadHint.textContent = `${type} uploaded successfully - ${formatFileSize(file.size)}`;
+		uploadHint.style.color = '#059669';
+
+		// Add success styling to upload area
+		labelElement.style.borderColor = '#10b981';
+		labelElement.style.backgroundColor = '#f0fdf4';
+	}
+
+	function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+	}
+});
+</script>
 {% endblock %}

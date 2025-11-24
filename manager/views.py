@@ -11,8 +11,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Sum
+from django.utils import timezone
 
-from account.models import Activity, AddressVerification, BannedIp, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, ManualTrade, Notification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, User, UserPaymentMethod, UserPlan, Withdraw
+from account.models import Activity, AddressVerification, BannedIp, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, Notification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, UserPlan, Withdraw
 from manager.forms import TraderForm
 from utils.decorators import allowed_users
 
@@ -79,7 +80,7 @@ def user_detail(request, username):
     user = User.objects.get(username=username)
     traders = CopiedTrader.objects.filter(user=user)
     trades = Trade.objects.filter(user=user)
-    manual_trades = ManualTrade.objects.filter(user=user)
+    manual_trades = CopiedTrader.objects.filter(user=user)
     kyc = KYCVerification.objects.get(user=user)
     address = AddressVerification.objects.get(user=user)
 
@@ -115,7 +116,7 @@ def user_detail(request, username):
     transactions = sorted(transactions, key=lambda x: x["date"], reverse=True)
 
     active_trade = Trade.objects.filter(user=user,status='open').count()
-    manual_trade = ManualTrade.objects.filter(user=user).count()
+    manual_trade = CopiedTrader.objects.filter(user=user).count()
 
     user_plans = UserPlan.objects.filter(user=user, active=True)
 
@@ -123,6 +124,8 @@ def user_detail(request, username):
     gateways = PaymentGateway.objects.all()
 
     user_payment_methods = UserPaymentMethod.objects.filter(user=user)
+
+    print(user_payment_methods)
 
     if 'user_payment_method' in request.POST:
         payment_ref, payment_type = request.POST.get('paymentType').split('_')
@@ -135,7 +138,7 @@ def user_detail(request, username):
             payment = PaymentGateway.objects.get(ref=payment_ref)
 
         UserPaymentMethod.objects.create(
-            user=request.user,
+            user=user,
             payment=payment,
             active=True
         )
@@ -290,6 +293,7 @@ def kyc(request):
         kyc.user.verified_email = True
         kyc.user.kyc_verification_status = 'verified'
         kyc.user.kyc_status = 'verified'
+        kyc.user.verified_kyc = True
         kyc.user.save()
 
         # --- Send Email Notification ---
@@ -437,30 +441,32 @@ def deposit_list(request):
         # --- Credit the user's wallet ---
         try:
             wallet = User.objects.get(id=deposit.user.id)
-            wallet.balance += float(credit_amount)
+            wallet.deposit += float(credit_amount)
             wallet.save()
 
             # --- Update deposit record ---
             deposit.status = 'success'
+            deposit.approved_amount = float(credit_amount)
+            deposit.approved_on = timezone.now()
             deposit.save()
 
-            # --- Send in-app notification ---
-            Notification.objects.create(
-                user=deposit.user,
-                title="Deposit Approved 💰",
-                message=f"Your deposit of ${credit_amount} has been approved and credited to your {deposit.deposit_to.capitalize()} wallet.",
-                media_type="text",
-                text="DA",
-            )
+            # # --- Send in-app notification ---
+            # Notification.objects.create(
+            #     user=deposit.user,
+            #     title="Deposit Approved 💰",
+            #     message=f"Your deposit of ${credit_amount} has been approved and credited to your {deposit.deposit_to.capitalize()} wallet.",
+            #     media_type="text",
+            #     text="DA",
+            # )
 
-            # --- Send email notification ---
-            send_mail(
-                subject="✅ Deposit Approved",
-                message=f"Dear {deposit.user.first_name},\n\nYour deposit of ${credit_amount} has been approved and credited to your wallet.\n\nThank you for using our platform.\n\nBest regards,\nSupport Team",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[deposit.user.email],
-                fail_silently=True
-            )
+            # # --- Send email notification ---
+            # send_mail(
+            #     subject="✅ Deposit Approved",
+            #     message=f"Dear {deposit.user.first_name},\n\nYour deposit of ${credit_amount} has been approved and credited to your wallet.\n\nThank you for using our platform.\n\nBest regards,\nSupport Team",
+            #     from_email=settings.DEFAULT_FROM_EMAIL,
+            #     recipient_list=[deposit.user.email],
+            #     fail_silently=True
+            # )
 
             messages.success(request, f"Deposit #{deposit.transaction_no} successfully approved and credited.")
             return redirect('admin_deposit_list')
@@ -929,40 +935,43 @@ def trader_edit(request, ref):
 @allowed_users(allowed_roles=['admin'])
 def trader_add(request):
     if request.method == 'POST':
-        print(request.POST)
         full_name = request.POST.get('trader_name')
         username = request.POST.get('username')
-        profit_share = request.POST.get('profit_share')
-        min_balance = request.POST.get('min_balance')
-        copy_mode = request.POST.get('copy_mode')
-        require_approval = request.POST.get('require_approval') == 'on'
-        badge = request.POST.get('badge')
+        profit_share = request.POST.get('profit_share') or 0
+        min_balance = request.POST.get('min_balance') or 0
+        copy_mode = request.POST.get('copy_mode') or 'flexible'
+        require_approval = request.POST.get('require_approval') == '1'
+        badge = request.POST.get('badge') or 'none'
         bio = request.POST.get('bio')
+        win = request.POST.get('total_wins') or 0
+        lose = request.POST.get('total_losses') or 0
+        win_rate = request.POST.get('win_rate') or 0
+        is_active = request.POST.get('is_active') == '1'
         image = request.FILES.get('profile_photo')
 
-        # --- Validation (optional but recommended) ---
+        # --- Validation ---
         if not full_name or not username:
-            print(1)
             messages.error(request, "Full name and username are required.")
             return redirect('admin_trader_list')
 
         if Trader.objects.filter(username=username).exists():
-            print(2)
             messages.error(request, "Username already exists.")
             return redirect('admin_trader_list')
-        
-        print(3)
 
         # --- Create trader ---
         trader = Trader.objects.create(
             full_name=full_name,
             username=username,
-            profit_share=profit_share or 0,
-            min_balance=min_balance or 0,
-            copy_mode=copy_mode or 'flexible',
+            profit_share=float(profit_share),
+            min_balance=float(min_balance),
+            copy_mode=copy_mode,
             require_approval=require_approval,
-            badge=badge or 'none',
+            badge=badge,
             bio=bio,
+            win=int(win),
+            lose=int(lose),
+            win_rate=float(win_rate),
+            is_active=is_active,
             created_by=request.user,
         )
 
@@ -972,9 +981,9 @@ def trader_add(request):
             trader.save()
 
         messages.success(request, f"Trader '{full_name}' added successfully.")
-        return redirect('admin_trader_list')  # Change to your trader list URL name
+        return redirect('admin_trader_list')
 
-    # --- GET request (show form) ---
+    # --- GET request ---
     context = {
         'header_title': 'Add Trader',
         'body_class': 'page-admin-traderadd',
@@ -1102,17 +1111,21 @@ def take_trade(request):
             trader = Trader.objects.get(username=trader_id)
 
             # --- Create trade record ---
-            ManualTrade.objects.create(
-                user=user,
-                trader=trader,
-                market_type=market_type,
-                asset=asset,
-                direction=direction,
-                amount=amount,
-                duration=duration,
-                outcome=outcome,
-                outcome_amount=outcome_amount,
-            )
+            # ManualTrade.objects.create(
+            #     user=user,
+            #     trader=trader,
+            #     market_type=market_type,
+            #     asset=asset,
+            #     direction=direction,
+            #     amount=amount,
+            #     duration=duration,
+            #     outcome=outcome,
+            #     outcome_amount=outcome_amount,
+            # )
+
+            # CopiedTrader.objects.create(
+
+            # )
 
             messages.success(request, f"Trade executed successfully for {user.username}.")
             return redirect('take_trade')  # You can change redirect as needed
@@ -1133,9 +1146,44 @@ def take_trade(request):
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def become_trader(request):
+    if request.method == "POST":
+        card_id = request.POST.get("card_id")
+
+        # DELETE
+        if request.POST.get("action") == "delete" and card_id:
+            benefit = get_object_or_404(TraderBenefit, id=card_id)
+            benefit.delete()
+            return redirect("admin_become_trader")
+
+        # ADD or UPDATE
+        icon = request.POST.get("card_icon")
+        title = request.POST.get("card_title")
+        description = request.POST.get("card_description")
+
+        if card_id:
+            # UPDATE
+            benefit = get_object_or_404(TraderBenefit, id=card_id)
+            benefit.icon = icon
+            benefit.title = title
+            benefit.description = description
+            benefit.save()
+        else:
+            # CREATE
+            TraderBenefit.objects.create(
+                icon=icon,
+                title=title,
+                description=description,
+                order=TraderBenefit.objects.count() + 1
+            )
+
+        return redirect("admin_become_trader")
+
+    # List all benefits
+    benefits = TraderBenefit.objects.all()
     context = {
         'header_title': 'Manage Trader Benefits',
-        'body_class': 'page-admin-becometrader'
+        'body_class': 'page-admin-becometrader',
+        "benefits": benefits,
     }
     return render(request, 'manager/become_trader.html', context)
 

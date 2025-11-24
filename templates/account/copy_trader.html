@@ -8,167 +8,206 @@
 
 {% block page_scripts %}
 <script>
-	// Update percentage slider display
-	function updatePercentage(value) {
-		document.getElementById('percentageValue').textContent = value + '%';
-		document.getElementById('sliderFill').style.width = value + '%';
-	}
-</script>
+    /*
+      updatePercentage supports:
+       - updatePercentage(traderId, value)  -> used by looped modals with IDs suffixed by traderId
+       - updatePercentage(value)            -> used by the single generic modal with non-suffixed IDs
+    */
+    function updatePercentage(arg1, arg2) {
+        let traderId, value;
+    
+        // Determine call form
+        if (arg2 === undefined) {
+            // Called as updatePercentage(value)
+            traderId = '';        // no suffix
+            value = parseInt(arg1, 10);
+        } else {
+            // Called as updatePercentage(traderId, value)
+            traderId = String(arg1);
+            value = parseInt(arg2, 10);
+        }
+        if (isNaN(value)) return;
+    
+        // Build element IDs (works for both suffixed and non-suffixed IDs)
+        const percentageValueEl = document.getElementById('percentageValue' + traderId);
+        const sliderFillEl = document.getElementById('sliderFill' + traderId);
+        const amountInputEl = document.getElementById('amountInputFlexible' + traderId);
+        const balanceEl = document.getElementById('availableBalanceFlexible' + traderId);
+    
+        // Update display if elements exist
+        if (percentageValueEl) percentageValueEl.textContent = value + '%';
+        if (sliderFillEl) sliderFillEl.style.width = value + '%';
+    
+        // If we have amount input & balance, calculate and set the amount
+        if (amountInputEl && balanceEl) {
+            // Strip commas and parse
+            const rawBalance = balanceEl.innerText.replace(/,/g, '').trim();
+            const balance = parseFloat(rawBalance);
+            if (!isNaN(balance)) {
+                const newAmount = (balance * value) / 100;
+                // Keep two decimal places
+                amountInputEl.value = newAmount.toFixed(2);
+            }
+        }
+    }
+    </script>
+    
 {% endblock %}
 
 {% block content %}
 <div class="content-body default-height">
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-xl-12">
-				<div class="row">
-					<div class="col-xl-12">
-						<div class="page-titles">
-							<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Browse Traders</li>
-								</ol>
-							</nav>
-						</div>
-					</div>
-				</div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="page-titles">
+                            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Browse Traders</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
 
-				<!-- Filter Section -->
-				<div class="filter-section">
-					<h5 class="filter-title">Search & Filter Traders</h5>
-					<div class="row g-3">
-						<div class="col-md-4">
-							<input type="text" class="filter-input" placeholder="Search trader name...">
-						</div>
-						<div class="col-md-2">
-							<select class="filter-select">
-								<option value="">All Risk Levels</option>
-								<option value="low">Low Risk</option>
-								<option value="medium">Medium Risk</option>
-								<option value="high">High Risk</option>
-							</select>
-						</div>
-						<div class="col-md-3">
-							<select class="filter-select">
-								<option value="">Sort By</option>
-								<option value="profit">Most Profitable</option>
-								<option value="winrate">Best Win Rate</option>
-								<option value="copiers">Most Popular</option>
-								<option value="recent">Recently Joined</option>
-							</select>
-						</div>
-						<div class="col-md-3">
-							<select class="filter-select">
-								<option value="">All Trading Pairs</option>
-								<option value="btc">BTC Pairs</option>
-								<option value="eth">ETH Pairs</option>
-								<option value="usdt">USDT Pairs</option>
-								<option value="forex">Forex</option>
-							</select>
-						</div>
-					</div>
-				</div>
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <h5 class="filter-title">Search & Filter Traders</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="filter-input" placeholder="Search trader name...">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="filter-select">
+                                <option value="">All Risk Levels</option>
+                                <option value="low">Low Risk</option>
+                                <option value="medium">Medium Risk</option>
+                                <option value="high">High Risk</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="filter-select">
+                                <option value="">Sort By</option>
+                                <option value="profit">Most Profitable</option>
+                                <option value="winrate">Best Win Rate</option>
+                                <option value="copiers">Most Popular</option>
+                                <option value="recent">Recently Joined</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="filter-select">
+                                <option value="">All Trading Pairs</option>
+                                <option value="btc">BTC Pairs</option>
+                                <option value="eth">ETH Pairs</option>
+                                <option value="usdt">USDT Pairs</option>
+                                <option value="forex">Forex</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-				<!-- Traders Grid -->
-				<!-- Row 1 -->
-				<div class="row trader-row">
-					<!-- Trader Card 1 -->
-					{% for copy in copied_trades %}
-					<div class="col-xl-4 col-lg-6 col-md-6 my-4">
-						<div class="trader-card copying">
-							<div class="trader-header">
-								<img src="{{copy.trader.image.url}}" alt="Trader" class="trader-avatar">
-								<div class="trader-info">
-									<h5><a href="#"
-											style="color: inherit; text-decoration: none;">{{copy.trader.full_name}}</a>
-									</h5>
-									<p>@{{copy.trader.username}}</p>
-								</div>
-								<div class="verified-badge">
-									<i class="material-icons">verified</i>
-								</div>
-							</div>
+                <!-- Traders Grid -->
+                <!-- Row 1 -->
+                <div class="row trader-row">
+                    <!-- Trader Card 1 -->
+                    {% for copy in copied_trades %}
+                    <div class="col-xl-4 col-lg-6 col-md-6 my-4">
+                        <div class="trader-card copying">
+                            <div class="trader-header">
+                                <img src="{{copy.trader.image.url}}" alt="Trader" class="trader-avatar">
+                                <div class="trader-info">
+                                    <h5><a href="#"
+                                            style="color: inherit; text-decoration: none;">{{copy.trader.full_name}}</a>
+                                    </h5>
+                                    <p>@{{copy.trader.username}}</p>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="material-icons">verified</i>
+                                </div>
+                            </div>
 
-							<div class="min-balance">
-								<i class="material-icons">account_balance_wallet</i>
-								<span>Min. Balance: ${{copy.trader.min_balance}}</span>
-							</div>
+                            <div class="min-balance">
+                                <i class="material-icons">account_balance_wallet</i>
+                                <span>Min. Balance: ${{copy.trader.min_balance}}</span>
+                            </div>
 
-							<div class="stats-list">
-								<div class="stat-item">
-									<i class="material-icons stat-icon trophy">emoji_events</i>
-									<span class="stat-text">{{copy.trader.win}} Wins</span>
-								</div>
-								<div class="stat-item">
-									<i class="material-icons stat-icon cross">close</i>
-									<span class="stat-text">{{copy.trader.lose}} Losses</span>
-								</div>
-								<div class="stat-item">
-									<i class="material-icons stat-icon chart">show_chart</i>
-									<span class="stat-text">{{copy.trader.win_rate}}% Win Rate</span>
-								</div>
-								<div class="stat-item">
-									<i class="material-icons stat-icon money">attach_money</i>
-									<span class="stat-text">{{copy.trader.profit_share}}% Profit Share</span>
-								</div>
-							</div>
+                            <div class="stats-list">
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon trophy">emoji_events</i>
+                                    <span class="stat-text">{{copy.trader.win}} Wins</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon cross">close</i>
+                                    <span class="stat-text">{{copy.trader.lose}} Losses</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon chart">show_chart</i>
+                                    <span class="stat-text">{{copy.trader.win_rate}}% Win Rate</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon money">attach_money</i>
+                                    <span class="stat-text">{{copy.trader.profit_share}}% Profit Share</span>
+                                </div>
+                            </div>
 
-							<button class="copy-btn already-copying">
-								<i class="material-icons">check_circle</i>
-								Copying
-							</button>
+                            <button class="copy-btn already-copying">
+                                <i class="material-icons">check_circle</i>
+                                Copying
+                            </button>
 
-							<button class="btn-cancel-copy" data-bs-toggle="modal" data-bs-target="#stopCopyModal{{copy.id}}">
-								<i class="material-icons">cancel</i>
-								Stop Copying
-							</button>
+                            <button class="btn-cancel-copy" data-bs-toggle="modal"
+                                data-bs-target="#stopCopyModal{{copy.id}}">
+                                <i class="material-icons">cancel</i>
+                                Stop Copying
+                            </button>
 
-							<div class="copiers-count">
-								<i class="material-icons">group</i>
-								<span>{{copy.trader.copier|intcomma}} copiers</span>
-							</div>
-						</div>
-					</div>
+                            <div class="copiers-count">
+                                <i class="material-icons">group</i>
+                                <span>{{copy.trader.copier|intcomma}} copiers</span>
+                            </div>
+                        </div>
+                    </div>
 
-					<!-- Stop Copying Confirmation Modal -->
-					<div class="modal fade" id="stopCopyModal{{copy.id}}" tabindex="-1" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered">
-							<form action="" method="post">
-								{% csrf_token %}
-								<div class="modal-content">
-									<div class="modal-header">
-										<div>
-											<h5 class="modal-title" style="color: #dc2626;">Stop Copying Trader</h5>
-											<p class="mb-0" style="font-size: 14px; color: #6b7280;">Are you sure you
-												want to stop copying
-												<strong><span id="stopTraderName"></span></strong>?
-											</p>
-										</div>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"
-											aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<div
-											style="background: #fee2e2; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #dc2626;">
-											<div
-												style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-												<i class="material-icons"
-													style="color: #991b1b; font-size: 24px;">warning</i>
-												<h5
-													style="margin: 0; font-size: 16px; font-weight: 700; color: #991b1b;">
-													Warning</h5>
-											</div>
-											<p style="margin: 0; font-size: 13px; color: #7f1d1d; line-height: 1.5;">
-												Stopping will close all open positions copied from this trader and you
-												will no longer
-												receive
-												new trade signals. This action cannot be undone.
-											</p>
-										</div>
+                    <!-- Stop Copying Confirmation Modal -->
+                    <div class="modal fade" id="stopCopyModal{{copy.id}}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <div>
+                                            <h5 class="modal-title" style="color: #dc2626;">Stop Copying Trader</h5>
+                                            <p class="mb-0" style="font-size: 14px; color: #6b7280;">Are you sure you
+                                                want to stop copying
+                                                <strong><span id="stopTraderName"></span></strong>?
+                                            </p>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div
+                                            style="background: #fee2e2; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #dc2626;">
+                                            <div
+                                                style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                                <i class="material-icons"
+                                                    style="color: #991b1b; font-size: 24px;">warning</i>
+                                                <h5
+                                                    style="margin: 0; font-size: 16px; font-weight: 700; color: #991b1b;">
+                                                    Warning</h5>
+                                            </div>
+                                            <p style="margin: 0; font-size: 13px; color: #7f1d1d; line-height: 1.5;">
+                                                Stopping will close all open positions copied from this trader and you
+                                                will no longer
+                                                receive
+                                                new trade signals. This action cannot be undone.
+                                            </p>
+                                        </div>
 
-										<div style="background: #f9fafb; padding: 15px; border-radius: 10px;">
-											<!-- <div
+                                        <div style="background: #f9fafb; padding: 15px; border-radius: 10px;">
+                                            <!-- <div
 												style="display: flex; justify-content: space-between; margin-bottom: 10px;">
 												<span style="color: #6b7280; font-size: 14px;">Current
 													Allocation:</span>
@@ -186,278 +225,469 @@
 												<span style="font-weight: 700; font-size: 14px; color: #10b981;"
 													id="stopTotalPL">+$247.50</span>
 											</div> -->
-											<input type="hidden" name="copy_ref" value="{{copy.ref}}">
-										</div>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary"
-											data-bs-dismiss="modal">Cancel</button>
-										<button type="submit" name="stop_copy" class="btn btn-danger">Yes,
-											Stop Copying</button>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-					{% endfor %}
+                                            <input type="hidden" name="copy_ref" value="{{copy.ref}}">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" name="stop_copy" class="btn btn-danger">Yes,
+                                            Stop Copying</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
 
-					<!-- Trader Card 2 -->
-					{% for trader in traders %}
-					<div class="col-xl-4 col-lg-6 col-md-6 my-4">
-						<div class="trader-card">
-							<div class="trader-header">
-								<img src="{{trader.image.url}}" alt="Trader" class="trader-avatar">
-								<div class="trader-info">
-									<h5><a href="#"
-											style="color: inherit; text-decoration: none;">{{trader.full_name}}</a></h5>
-									<p>@{{trader.username}}</p>
-								</div>
-								<div class="verified-badge">
-									<i class="material-icons">verified</i>
-								</div>
-							</div>
+                    <!-- Trader Card 2 -->
+                    {% for trader in traders %}
+                    <div class="col-xl-4 col-lg-6 col-md-6 my-4">
+                        <div class="trader-card">
+                            <div class="trader-header">
+                                <img src="{{trader.image.url}}" alt="Trader" class="trader-avatar">
+                                <div class="trader-info">
+                                    <h5><a href="#"
+                                            style="color: inherit; text-decoration: none;">{{trader.full_name}}</a></h5>
+                                    <p>@{{trader.username}}</p>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="material-icons">verified</i>
+                                </div>
+                            </div>
 
-							<div class="min-balance">
-								<i class="material-icons">account_balance_wallet</i>
-								<span>Min. Balance: ${{trader.min_balance}}</span>
-							</div>
+                            <div class="min-balance">
+                                <i class="material-icons">account_balance_wallet</i>
+                                <span>Min. Balance: ${{trader.min_balance}}</span>
+                            </div>
 
-							<div class="stats-list">
-								<div class="stat-item">
-									<i class="material-icons stat-icon trophy">emoji_events</i>
-									<span class="stat-text">{{trader.win}} Wins</span>
-								</div>
-								<div class="stat-item">
-									<i class="material-icons stat-icon cross">close</i>
-									<span class="stat-text">{{trader.lose}} Losses</span>
-								</div>
-								<div class="stat-item">
-									<i class="material-icons stat-icon chart">show_chart</i>
-									<span class="stat-text">{{trader.win_rate}}% Win Rate</span>
-								</div>
-								<div class="stat-item">
-									<i class="material-icons stat-icon money">attach_money</i>
-									<span class="stat-text">{{trader.profit_share}}% Profit Share</span>
-								</div>
-							</div>
+                            <div class="stats-list">
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon trophy">emoji_events</i>
+                                    <span class="stat-text">{{trader.win}} Wins</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon cross">close</i>
+                                    <span class="stat-text">{{trader.lose}} Losses</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon chart">show_chart</i>
+                                    <span class="stat-text">{{trader.win_rate}}% Win Rate</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons stat-icon money">attach_money</i>
+                                    <span class="stat-text">{{trader.profit_share}}% Profit Share</span>
+                                </div>
+                            </div>
 
-							<button class="copy-btn" data-bs-toggle="modal"
-								data-bs-target="#copyModalFlexible{{trader.id}}">
-								<i class="material-icons">content_copy</i>
-								Copy Trader
-							</button>
+                            {% if trader.require_approval %}
+                            <button class="copy-btn" data-bs-toggle="modal"
+                                data-bs-target="#copyModalRequest{{trader.id}}">
+                                <i class="material-icons">send</i>
+                                Request to Copy
+                            </button>
+                            {% else %}
+                            {% if trader.copy_mode == 'flexible' %}
+                            <button class="copy-btn" data-bs-toggle="modal"
+                                data-bs-target="#copyModalFlexible{{trader.id}}">
+                                <i class="material-icons">content_copy</i>
+                                Copy Trader flex
+                            </button>
+                            {% elif trader.copy_mode == 'full' %}
+                            <button class="copy-btn" data-bs-toggle="modal"
+                                data-bs-target="#copyModalFull{{trader.id}}">
+                                <i class="material-icons">content_copy</i>
+                                Copy Trader full
+                            </button>
+                            {% endif %}
+                            {% endif %}
 
-							<div class="copiers-count">
-								<i class="material-icons">group</i>
-								<span>{{ trader.copier|intcomma }} copiers</span>
-							</div>
-						</div>
-					</div>
+                            <div class="copiers-count">
+                                <i class="material-icons">group</i>
+                                <span>{{ trader.copier|intcomma }} copiers</span>
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="modal fade" id="copyModalFlexible{{trader.id}}" tabindex="-1" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered">
-							<div class="modal-content">
-								<div class="modal-header">
-									<div>
-										<h5 class="modal-title">Configure Copy Trading</h5>
-										<p class="mb-0" style="font-size: 14px; color: #6b7280;">Set your copy trading
-											parameters for
-											<strong><span id="traderNameFlexible"></span></strong>
-										</p>
-									</div>
-									<button type="button" class="btn-close" data-bs-dismiss="modal"
-										aria-label="Close"></button>
-								</div>
-								<form action="" method="post">
-									{% csrf_token %}
-									<div class="modal-body">
+                    <div class="modal fade" id="copyModalFlexible{{trader.id}}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <div>
+                                            <h5 class="modal-title">Configure Copy Trading</h5>
+                                            <p class="mb-0" style="font-size: 14px; color: #6b7280;">Set your copy
+                                                trading
+                                                parameters for
+                                                <strong><span id="traderNameFlexible"></span></strong>
+                                            </p>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
 
-										<!-- Approval Notice (shown only for request mode) -->
-										<div class="approval-notice" id="approvalNoticeFlexible" style="display: none;">
-											<div class="approval-notice-header">
-												<i class="material-icons approval-notice-icon">schedule</i>
-												<h5 class="approval-notice-title">Approval Required</h5>
-											</div>
-											<p class="approval-notice-text">
-												This trader requires approval before you can start copying. Your request
-												will be sent to the
-												trader for review. You'll be notified once they approve or decline your
-												request.
-											</p>
-										</div>
+                                    <div class="modal-body">
 
-										<div class="form-group">
-											<label>Amount to Allocate (USD)</label>
-											<input type="number" class="form-control" id="amountInputFlexible"
-												name="amount" placeholder="{{request.user.balance}}" min="100"
-												step="0.01" required
-												style="font-size: 20px; font-weight: 700; color: var(--primary);">
-											<small style="color: #6b7280; margin-top: 5px; display: block;">Available
-												balance: $<span id="availableBalanceFlexible">5420.50</span></small>
-										</div>
-										<div class="form-group">
-											<label>Allocation Percentage</label>
-											<div class="percentage-slider-container">
-												<div class="percentage-display">
-													<div>
-														<span class="percentage-value" id="percentageValue">20%</span>
-													</div>
-												</div>
-												<div style="position: relative;">
-													<div class="slider-track">
-														<div class="slider-fill" id="sliderFill" style="width: 20%;">
-														</div>
-													</div>
-													<input type="range" class="percentage-input" id="percentageSlider"
-														min="1" max="100" name="allocation" step="1"
-														oninput="updatePercentage(this.value)">
-												</div>
-												<div class="slider-labels">
-													<span>1%</span>
-													<span>25%</span>
-													<span>50%</span>
-													<span>75%</span>
-													<span>100%</span>
-												</div>
-											</div>
-											<small style="color: #6b7280; margin-top: 5px; display: block;">Drag the
-												slider or enter amount
-												directly</small>
-										</div>
-										<div class="form-group">
-											<label>Leverage</label>
-											<select class="form-control" name="leverage" id="leverageSelectFlexible"
-												style="height: 48px; padding: 0 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px;">
-												<option value="10">10X Leverage</option>
-												<option value="25" selected>25X Leverage</option>
-												<option value="50">50X Leverage</option>
-												<option value="100" class="leverage-locked">100X Leverage (Locked)
-												</option>
-												<option value="200" class="leverage-locked">200X Leverage (Locked)
-												</option>
-												<option value="500" class="leverage-locked">500X Leverage (Locked)
-												</option>
-											</select>
-											<small style="color: #6b7280; margin-top: 5px; display: block;">Higher
-												leverage increases both
-												potential profit and risk. <span id="leverageWarning"
-													style="color: #ef4444; display: none; font-weight: 600;">This
-													leverage option is locked
-													for your account level.</span></small>
-										</div>
+                                        <!-- Approval Notice (shown only for request mode) -->
+                                        <div class="approval-notice" id="approvalNoticeFlexible" style="display: none;">
+                                            <div class="approval-notice-header">
+                                                <i class="material-icons approval-notice-icon">schedule</i>
+                                                <h5 class="approval-notice-title">Approval Required</h5>
+                                            </div>
+                                            <p class="approval-notice-text">
+                                                This trader requires approval before you can start copying. Your request
+                                                will be sent to the
+                                                trader for review. You'll be notified once they approve or decline your
+                                                request.
+                                            </p>
+                                        </div>
 
-										<div class="terms-container">
-											<input type="checkbox" class="terms-checkbox" id="termsCheckboxFlexible">
-											<label for="termsCheckboxFlexible" class="terms-text">
-												By copying this trader, you accept the <a
-													href="{% url 'copytrading_agreement' %}" target="_blank">Copy
-													Trading Agreement</a> and understand the risks involved.
-											</label>
-										</div>
-										<input type="hidden" name="ref" value="{{trader.ref}}">
+                                        <div class="form-group">
+                                            <label>Amount to Allocate (USD)</label>
+                                            <input type="number" class="form-control" id="amountInputFlexible{{trader.id}}"
+                                                name="amount" placeholder="{{request.user.deposit}}" min="100"
+                                                step="0.01" required value="{{request.user.deposit|intcomma}}"
+                                                style="font-size: 20px; font-weight: 700; color: var(--primary);">
+                                            <small style="color: #6b7280; margin-top: 5px; display: block;">Available
+                                                balance: $<span id="availableBalanceFlexible{{trader.id}}">{{request.user.deposit|intcomma}}</span></small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Allocation Percentage</label>
+                                            <div class="percentage-slider-container">
+                                                <div class="percentage-display">
+                                                    <div>
+                                                        <span class="percentage-value" id="percentageValue{{trader.id}}">50%</span>
+                                                    </div>
+                                                </div>
+                                                <div style="position: relative;">
+                                                    <div class="slider-track">
+                                                        <div class="slider-fill" id="sliderFill{{trader.id}}" style="width: 50%;">
+                                                        </div>
+                                                    </div>
+                                                    <input type="range" class="percentage-input" id="percentageSlider{{trader.id}}"
+                                                    min="1" max="100" name="allocation" step="1"
+                                                    oninput="updatePercentage({{trader.id}}, this.value)">
 
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary"
-											data-bs-dismiss="modal">Cancel</button>
-										<button type="submit" name="copy_trader" class="btn btn-primary"
-											id="confirmBtnFlexible">Start
-											Copying</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-					{% endfor %}
-				</div>
+                                                </div>
+                                                <div class="slider-labels">
+                                                    <span>1%</span>
+                                                    <span>25%</span>
+                                                    <span>50%</span>
+                                                    <span>75%</span>
+                                                    <span>100%</span>
+                                                </div>
+                                            </div>
+                                            <small style="color: #6b7280; margin-top: 5px; display: block;">Drag the
+                                                slider or enter amount
+                                                directly</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Leverage</label>
+                                            <select class="form-control" name="leverage" id="leverageSelectFlexible"
+                                                style="height: 48px; padding: 0 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px;">
+                                                <option value="10">10X Leverage</option>
+                                                <option value="25" selected>25X Leverage</option>
+                                                <option value="50">50X Leverage</option>
+                                                <option value="100" class="leverage-locked">100X Leverage (Locked)
+                                                </option>
+                                                <option value="200" class="leverage-locked">200X Leverage (Locked)
+                                                </option>
+                                                <option value="500" class="leverage-locked">500X Leverage (Locked)
+                                                </option>
+                                            </select>
+                                            <small style="color: #6b7280; margin-top: 5px; display: block;">Higher
+                                                leverage increases both
+                                                potential profit and risk. <span id="leverageWarning"
+                                                    style="color: #ef4444; display: none; font-weight: 600;">This
+                                                    leverage option is locked
+                                                    for your account level.</span></small>
+                                        </div>
 
-				<!-- Pagination -->
-				<div class="d-flex justify-content-center mt-4 mb-4">
-					<nav>
-						<ul class="pagination">
-							<li class="page-item disabled">
-								<a class="page-link" href="#" tabindex="-1">&lt;</a>
-							</li>
-							<li class="page-item active"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item"><a class="page-link" href="#">4</a></li>
-							<li class="page-item">
-								<a class="page-link" href="#">&gt;</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
+                                        <div class="terms-container">
+                                            <input type="checkbox" class="terms-checkbox" id="termsCheckboxFlexible">
+                                            <label for="termsCheckboxFlexible" class="terms-text">
+                                                By copying this trader, you accept the <a
+                                                    href="{% url 'copytrading_agreement' %}" target="_blank">Copy
+                                                    Trading Agreement</a> and understand the risks involved.
+                                            </label>
+                                        </div>
+                                        <input type="hidden" name="ref" value="{{trader.ref}}">
 
-			</div>
-		</div>
-	</div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" name="copy_trader_flexible" class="btn btn-primary"
+                                            id="confirmBtnFlexible">Start
+                                            Copying</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="copyModalRequest{{trader.id}}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <div>
+                                            <h5 class="modal-title">Configure Copy Trading</h5>
+                                            <p class="mb-0" style="font-size: 14px; color: #6b7280;">Set your copy
+                                                trading
+                                                parameters for <strong><span id="traderNameFull"></span></strong></p>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <!-- Approval Notice (shown only for request mode) -->
+                                        <div class="approval-notice" id="approvalNoticeFull">
+                                            <div class="approval-notice-header">
+                                                <i class="material-icons approval-notice-icon">schedule</i>
+                                                <h5 class="approval-notice-title">Approval Required</h5>
+                                            </div>
+                                            <p class="approval-notice-text">
+                                                This trader requires approval before you can start copying. Your request
+                                                will be sent to the trader for review. You'll be notified once they
+                                                approve
+                                                or decline your request.
+                                            </p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Your Available Balance</label>
+                                            <div
+                                                style="padding: 15px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 10px;">
+                                                <div style="font-size: 28px; font-weight: 700; color: var(--primary);">
+                                                    $<span id="availableBalanceFull">{{request.user.deposit|intcomma}}</span>
+                                                </div>
+                                                <div style="font-size: 13px; color: #6b7280; margin-top: 5px;">
+                                                    This full amount will be allocated for copy trading (100%)
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="terms-container">
+                                            <input type="hidden" name="ref" value="{{trader.ref}}">
+                                            <input type="checkbox" class="terms-checkbox" id="termsCheckboxFull" required>
+                                            <label for="termsCheckboxFull" class="terms-text">
+                                                By copying this trader, you accept the <a
+                                                    href="{% url 'copytrading_agreement' %}" target="_blank">Copy
+                                                    Trading Agreement</a> and understand the risks involved.
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" name="copy_trader_request" class="btn btn-primary" id="confirmBtnFull">Start Copying</button>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="copyModalFull{{trader.id}}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <div>
+                                            <h5 class="modal-title">Configure Copy Trading</h5>
+                                            <p class="mb-0" style="font-size: 14px; color: #6b7280;">Set your copy
+                                                trading
+                                                parameters for <strong><span id="traderNameFull"></span></strong></p>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+
+                                        <div class="form-group">
+                                            <label>Your Available Balance</label>
+                                            <div
+                                                style="padding: 15px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 10px;">
+                                                <div style="font-size: 28px; font-weight: 700; color: var(--primary);">
+                                                    $<span id="availableBalanceFull">5420.50</span>
+                                                </div>
+                                                <div style="font-size: 13px; color: #6b7280; margin-top: 5px;">
+                                                    This full amount will be allocated for copy trading (100%)
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="terms-container">
+                                            <input type="hidden" name="ref" value="{{trader.ref}}">
+                                            <input type="checkbox" class="terms-checkbox" id="termsCheckboxFull" required>
+                                            <label for="termsCheckboxFull" class="terms-text">
+                                                By copying this trader, you accept the <a
+                                                    href="{% url 'copytrading_agreement' %}" target="_blank">Copy
+                                                    Trading
+                                                    Agreement</a> and understand the risks involved.
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary" id="confirmBtnFull" name="copy_trader_full">Start Copying</button>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-center mt-4 mb-4">
+                    <nav>
+                        <ul class="pagination">
+                
+                            {% if traders.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ traders.previous_page_number }}">&lt;</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">&lt;</a>
+                            </li>
+                            {% endif %}
+                
+                            {% for page in traders.paginator.page_range %}
+                                {% if page == traders.number %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">{{ page }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                
+                            {% if traders.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ traders.next_page_number }}">&gt;</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">&gt;</a>
+                            </li>
+                            {% endif %}
+                
+                        </ul>
+                    </nav>
+                </div>                
+
+            </div>
+        </div>
+    </div>
 </div>
 <!--**********************************
 			Content body end
 		***********************************-->
 
 <!-- Copy Configuration Modal - Flexible Percentage -->
+<div class="copy-modal" id="copyModalFlexible">
+    <div class="modal-content-wrapper">
+        <div class="modal-header-custom">
+            <h4 id="modalTitleFlexible">Configure Copy Trading</h4>
+            <p>Set your copy trading parameters for <strong><span id="traderNameFlexible"></span></strong></p>
+        </div>
 
+        <!-- Approval Notice (shown only for request mode) -->
+        <div class="approval-notice" id="approvalNoticeFlexible" style="display: none;">
+            <div class="approval-notice-header">
+                <i class="material-icons approval-notice-icon">schedule</i>
+                <h5 class="approval-notice-title">Approval Required</h5>
+            </div>
+            <p class="approval-notice-text">
+                This trader requires approval before you can start copying. Your request will be sent to the trader for
+                review. You'll be notified once they approve or decline your request.
+            </p>
+        </div>
 
-<!-- Copy Configuration Modal - Full Balance Only (100%) -->
-<div class="modal fade" id="copyModalFull" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<div>
-					<h5 class="modal-title">Configure Copy Trading</h5>
-					<p class="mb-0" style="font-size: 14px; color: #6b7280;">Set your copy trading parameters for
-						<strong><span id="traderNameFull"></span></strong>
-					</p>
-				</div>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
+        <form class="config-form">
+            <div class="form-group">
+                <label>Amount to Allocate (USD)</label>
+                <input type="number" class="form-control" id="amountInputFlexible" placeholder="1084.10" value="1084.10"
+                    min="100" step="0.01" required style="font-size: 20px; font-weight: 700; color: var(--primary);">
+                <small style="color: #6b7280; margin-top: 5px; display: block;">Available balance: $<span
+                        id="availableBalanceFlexible">5420.50</span></small>
+            </div>
+            <div class="form-group">
+                <label>Allocation Percentage</label>
+                <div class="percentage-slider-container">
+                    <div class="percentage-display">
+                        <div>
+                            <span class="percentage-value" id="percentageValue">20%</span>
+                        </div>
+                    </div>
+                    <div style="position: relative;">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="sliderFill" style="width: 20%;"></div>
+                        </div>
+                        <input type="range" class="percentage-input" id="percentageSlider" min="1" max="100" value="20"
+                            step="1" oninput="updatePercentage(this.value)">
+                    </div>
+                    <div class="slider-labels">
+                        <span>1%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+                <small style="color: #6b7280; margin-top: 5px; display: block;">Drag the slider or enter amount
+                    directly</small>
+            </div>
+            <div class="form-group">
+                <label>Leverage</label>
+                <select class="form-control" id="leverageSelectFlexible"
+                    style="height: 48px; padding: 0 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px;">
+                    <option value="10">10X Leverage</option>
+                    <option value="25" selected>25X Leverage</option>
+                    <option value="50">50X Leverage</option>
+                    <option value="100" class="leverage-locked">100X Leverage (Locked)</option>
+                    <option value="200" class="leverage-locked">200X Leverage (Locked)</option>
+                    <option value="500" class="leverage-locked">500X Leverage (Locked)</option>
+                </select>
+                <small style="color: #6b7280; margin-top: 5px; display: block;">Higher leverage increases both potential
+                    profit and risk. <span id="leverageWarning"
+                        style="color: #ef4444; display: none; font-weight: 600;">This leverage option is locked for your
+                        account level.</span></small>
+            </div>
+        </form>
 
-				<!-- Approval Notice (shown only for request mode) -->
-				<div class="approval-notice" id="approvalNoticeFull" style="display: none;">
-					<div class="approval-notice-header">
-						<i class="material-icons approval-notice-icon">schedule</i>
-						<h5 class="approval-notice-title">Approval Required</h5>
-					</div>
-					<p class="approval-notice-text">
-						This trader requires approval before you can start copying. Your request will be sent to the
-						trader for review. You'll be notified once they approve or decline your request.
-					</p>
-				</div>
+        <div class="terms-container">
+            <input type="checkbox" class="terms-checkbox" id="termsCheckboxFlexible">
+            <label for="termsCheckboxFlexible" class="terms-text">
+                By copying this trader, you accept the <a href="copytrading-agreement.html" target="_blank">Copy Trading
+                    Agreement</a> and understand the risks involved.
+            </label>
+        </div>
 
-				<form class="config-form">
-					<div class="form-group">
-						<label>Your Available Balance</label>
-						<div
-							style="padding: 15px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 10px;">
-							<div style="font-size: 28px; font-weight: 700; color: var(--primary);">
-								$<span id="availableBalanceFull">5420.50</span>
-							</div>
-							<div style="font-size: 13px; color: #6b7280; margin-top: 5px;">
-								This full amount will be allocated for copy trading (100%)
-							</div>
-						</div>
-					</div>
-				</form>
-
-				<div class="terms-container">
-					<input type="checkbox" class="terms-checkbox" id="termsCheckboxFull">
-					<label for="termsCheckboxFull" class="terms-text">
-						By copying this trader, you accept the <a href="{% url 'copytrading_agreement' %}"
-							target="_blank">Copy Trading Agreement</a> and understand the risks involved.
-					</label>
-				</div>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary" id="confirmBtnFull" onclick="submitCopyConfigFull()">Start
-					Copying</button>
-			</div>
-		</div>
-	</div>
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="closeCopyModal()">Cancel</button>
+            <button class="btn-confirm" id="confirmBtnFlexible" onclick="submitCopyConfigFlexible()">Start
+                Copying</button>
+        </div>
+    </div>
 </div>
 
 <!--**********************************

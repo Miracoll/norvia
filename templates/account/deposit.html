@@ -86,7 +86,27 @@
 	window.addEventListener('DOMContentLoaded', function() {
 		updateCurrencyLabel();
 	});
+
+	function switchPaymentMethod(method) {
+    // Update active state
+    document.querySelectorAll('.payment-method-card').forEach(card => card.classList.remove('active'));
+    document.querySelector(`[data-method="${method}"]`).classList.add('active');
+
+    // Show/hide sections
+    if (method === 'crypto') {
+        document.getElementById('cryptoSection').style.display = 'block';
+        document.getElementById('gatewaySection').style.display = 'none';
+    } else {
+        document.getElementById('cryptoSection').style.display = 'none';
+        document.getElementById('gatewaySection').style.display = 'block';
+    }
+
+    // Update hidden input for backend
+    document.getElementById('paymentMethodInput').value = method;
+}
+
 </script>
+
 {% endblock %}
 
 {% block content %}
@@ -138,6 +158,7 @@
 										<!-- Deposit Form -->
 										<form id="depositForm" method="post">
 											{% csrf_token %}
+											<input type="hidden" name="payment_method" id="paymentMethodInput" value="crypto">
 											<!-- Deposit To Wallet Selection -->
 											<div class="form-group mb-4">
 												<label class="form-label fw-bold">Deposit To</label>

@@ -11,6 +11,29 @@ import uuid
 
 # Create your models here.
 
+class PlanCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)  # e.g. Trading, Signals, Mining, Staking
+
+    def __str__(self):
+        return self.name
+
+class Plan(models.Model):
+    category = models.ForeignKey(PlanCategory, on_delete=models.CASCADE, related_name='plans')
+    tier = models.CharField(max_length=100)  # e.g. Gold, Silver, Bronze
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    features = models.TextField(help_text="Enter one feature per line.")
+    button_text = models.CharField(max_length=100, default="PURCHASE PLAN")
+
+    # Only used for Mining (optional)
+    has_currency_select = models.BooleanField(default=False)
+
+    def get_features(self):
+        """Return features as a list."""
+        return [f.strip() for f in self.features.split('\n') if f.strip()]
+
+    def __str__(self):
+        return f"{self.category.name} - {self.tier}"
+    
 class User(AbstractUser):
     image = models.ImageField(upload_to='image', default='default.png')
     password_reset = models.BooleanField(default=False)
@@ -77,6 +100,7 @@ class User(AbstractUser):
     ip_address = models.CharField(max_length=20, blank=True, null=True)
     total_trading_volume = models.FloatField(default=0.0)
     use_global_settings = models.BooleanField(default=True)
+    current_plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.username
@@ -193,6 +217,7 @@ class Deposit(models.Model):
         ('pending', 'pending'),
         ('success', 'success'),
         ('expired', 'expired'),
+        ('cancelled', 'cancelled'),
     ]
     DEPOSIT_TO_CHOICES = [
         ('trading', 'trading'),
@@ -201,6 +226,7 @@ class Deposit(models.Model):
 
     deposit_to = models.CharField(max_length=100, choices=DEPOSIT_TO_CHOICES, default='trading')
     amount = models.FloatField(blank=True, null=True)
+    approved_amount = models.PositiveIntegerField(blank=True, null=True)
     grand_total = models.FloatField(blank=True, null=True)
     payment_method = models.CharField(max_length=20, blank=True, null=True)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, blank=True, null=True)
@@ -211,6 +237,9 @@ class Deposit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='deposits')
     expire_time = models.DateTimeField(blank=True, null=True)
     date_created = models.DateTimeField(default=timezone.now, blank=True, null=True)
+    approved_on = models.DateTimeField(blank=True, null=True)
+    notes = models.TextField(null=True, blank=True)
+    transaction_hash = models.CharField(max_length=50, blank=True, null=True)
     ref = models.UUIDField(default=uuid.uuid4, editable=False)
     transaction_no = models.CharField(max_length=20, unique=True, blank=True, null=True)
     equivalent = models.FloatField(default=0.0)
@@ -273,29 +302,6 @@ class Withdraw(models.Model):
 
         super().save(*args, **kwargs)
 
-class PlanCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)  # e.g. Trading, Signals, Mining, Staking
-
-    def __str__(self):
-        return self.name
-
-class Plan(models.Model):
-    category = models.ForeignKey(PlanCategory, on_delete=models.CASCADE, related_name='plans')
-    tier = models.CharField(max_length=100)  # e.g. Gold, Silver, Bronze
-    price = models.DecimalField(max_digits=12, decimal_places=2)
-    features = models.TextField(help_text="Enter one feature per line.")
-    button_text = models.CharField(max_length=100, default="PURCHASE PLAN")
-
-    # Only used for Mining (optional)
-    has_currency_select = models.BooleanField(default=False)
-
-    def get_features(self):
-        """Return features as a list."""
-        return [f.strip() for f in self.features.split('\n') if f.strip()]
-
-    def __str__(self):
-        return f"{self.category.name} - {self.tier}"
-    
 class UserPlan(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     deposit = models.ForeignKey(Deposit, on_delete=models.SET_NULL, null=True)
@@ -404,12 +410,39 @@ class Trader(models.Model):
     win_rate = models.FloatField(default=0)
     copier = models.PositiveIntegerField(default=0)
 
+    # Status
+    is_active = models.BooleanField(default=True)
+
     ref = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.full_name
+    
+class TraderBenefit(models.Model):
+    ICON_CHOICES = [
+        ("payments", "Payments"),
+        ("group", "Group"),
+        ("analytics", "Analytics"),
+        ("verified", "Verified"),
+    ]
+
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    icon = models.CharField(max_length=50, choices=ICON_CHOICES)
+
+    # Optional fields
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["id"]
+        verbose_name = "Trader Benefit"
+        verbose_name_plural = "Trader Benefits"
+
+    def __str__(self):
+        return self.title
     
 class CopyRequest(models.Model):
     STATUS_CHOICES = [
@@ -428,42 +461,6 @@ class CopyRequest(models.Model):
 
     def __str__(self):
         return f"{self.user.username} → {self.trader.full_name} ({self.status})"
-
-class CopiedTrader(models.Model):
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected'),
-    ]
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='copied_trades'
-    )
-    trader = models.ForeignKey(
-        'Trader',
-        on_delete=models.CASCADE,
-        related_name='copied_by_users'
-    )
-    total_profit = models.FloatField(default=0.0)
-    amount = models.FloatField(default=0.0)
-    leverage = models.PositiveIntegerField(default=1)
-    last_24h_profit_loss = models.FloatField(default=0.0)
-    ref = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    allocation = models.FloatField(default=0.0)
-    percentage = models.PositiveIntegerField(default=0)
-    user_balance = models.FloatField(default=0.0)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_on = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} copied {self.trader.name if hasattr(self.trader, 'name') else 'a trader'}"
-
-    class Meta:
-        ordering = ['-created_on']
-        verbose_name = 'Copied Trader'
-        verbose_name_plural = 'Copied Traders'
 
 class Notification(models.Model):
     MEDIA_TYPE_CHOICES = [
@@ -505,6 +502,29 @@ class Notification(models.Model):
     def __str__(self):
         return self.title
     
+class AdminNotification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('admin', 'Admin'),
+        ('system', 'System'),
+        ('info', 'Info'),
+        ('warning', 'Warning'),
+        ('danger', 'Danger'),
+    ]
+
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    notif_type = models.CharField(
+        max_length=20,
+        choices=NOTIFICATION_TYPES,
+        default='admin'
+    )
+    icon = models.CharField(max_length=50, default='campaign')  # material icon name
+    is_active = models.BooleanField(default=True)  # used for showing/hiding
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.title} ({self.notif_type})"
+    
 class BannedIp(models.Model):
     ip = models.CharField(max_length=15)
     banned_date = models.DateTimeField(auto_now_add=True)
@@ -536,39 +556,75 @@ class TraderApplication(models.Model):
     def __str__(self):
         return f"{self.full_name} ({self.email})"
     
-class ManualTrade(models.Model):
-    MARKET_CHOICES = [
-        ('crypto', 'Crypto'),
-        ('stocks', 'Stocks'),
-    ]
-    DIRECTION_CHOICES = [
-        ('buy', 'Buy'),
-        ('sell', 'Sell'),
-    ]
-    OUTCOME_CHOICES = [
-        ('profit', 'Profit'),
-        ('loss', 'Loss'),
+# class ManualTrade(models.Model):
+#     MARKET_CHOICES = [
+#         ('crypto', 'Crypto'),
+#         ('stocks', 'Stocks'),
+#     ]
+#     DIRECTION_CHOICES = [
+#         ('buy', 'Buy'),
+#         ('sell', 'Sell'),
+#     ]
+#     OUTCOME_CHOICES = [
+#         ('profit', 'Profit'),
+#         ('loss', 'Loss'),
+#     ]
+
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='manual_trades')
+#     trader = models.ForeignKey(Trader, on_delete=models.SET_NULL, null=True, blank=True, related_name='copied_trades')
+
+#     market_type = models.CharField(max_length=20, choices=MARKET_CHOICES)
+#     asset = models.CharField(max_length=50)
+#     direction = models.CharField(max_length=10, choices=DIRECTION_CHOICES)
+#     amount = models.DecimalField(max_digits=12, decimal_places=2)
+#     duration = models.PositiveIntegerField(help_text="Duration in minutes")
+#     outcome = models.CharField(max_length=10, choices=OUTCOME_CHOICES)
+#     outcome_amount = models.DecimalField(max_digits=12, decimal_places=2)
+
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"{self.user.username} - {self.asset} ({self.direction.upper()})"
+
+#     @property
+#     def result_summary(self):
+#         return f"{self.outcome.capitalize()} of ${self.outcome_amount}"
+
+class CopiedTrader(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='manual_trades')
-    trader = models.ForeignKey(Trader, on_delete=models.SET_NULL, null=True, blank=True, related_name='copied_trades')
-
-    market_type = models.CharField(max_length=20, choices=MARKET_CHOICES)
-    asset = models.CharField(max_length=50)
-    direction = models.CharField(max_length=10, choices=DIRECTION_CHOICES)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
-    duration = models.PositiveIntegerField(help_text="Duration in minutes")
-    outcome = models.CharField(max_length=10, choices=OUTCOME_CHOICES)
-    outcome_amount = models.DecimalField(max_digits=12, decimal_places=2)
-
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='copied_trades'
+    )
+    trader = models.ForeignKey(
+        'Trader',
+        on_delete=models.CASCADE,
+        related_name='copied_by_users'
+    )
+    total_profit = models.FloatField(default=0.0)
+    amount = models.FloatField(default=0.0)
+    leverage = models.PositiveIntegerField(default=1)
+    last_24h_profit_loss = models.FloatField(default=0.0)
+    ref = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    allocation = models.FloatField(default=0.0)
+    percentage = models.PositiveIntegerField(default=0)
+    user_balance = models.FloatField(default=0.0)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.asset} ({self.direction.upper()})"
+        return f"{self.user.username} copied {self.trader.name if hasattr(self.trader, 'name') else 'a trader'}"
 
-    @property
-    def result_summary(self):
-        return f"{self.outcome.capitalize()} of ${self.outcome_amount}"
+    class Meta:
+        ordering = ['-created_on']
+        verbose_name = 'Copied Trader'
+        verbose_name_plural = 'Copied Traders'
     
 class Trade(models.Model):
     TRADE_TYPES = (

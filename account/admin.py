@@ -1,5 +1,5 @@
 from django.contrib import admin
-from account.models import CopiedTrader, CopyRequest, Currency, PaymentGateway, Plan, PlanCategory, Trader, TraderApplication, User, Withdraw, PasswordHistory, Activity, Deposit, KYCVerification, Notification, ManualTrade, Trade, AddressVerification, UserPaymentMethod, UserPlan
+from account.models import CopiedTrader, CopyRequest, Currency, PaymentGateway, Plan, PlanCategory, Trader, TraderApplication, TraderBenefit, User, Withdraw, PasswordHistory, Activity, Deposit, KYCVerification, Notification, AdminNotification, Trade, AddressVerification, UserPaymentMethod, UserPlan
 
 # Register your models here.
 
@@ -18,8 +18,9 @@ admin.site.register(CopiedTrader)
 admin.site.register(Notification)
 admin.site.register(TraderApplication)
 admin.site.register(CopyRequest)
-admin.site.register(ManualTrade)
 admin.site.register(Trade)
 admin.site.register(UserPlan)
 admin.site.register(UserPaymentMethod)
 admin.site.register(AddressVerification)
+admin.site.register(TraderBenefit)
+admin.site.register(AdminNotification)

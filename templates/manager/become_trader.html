@@ -1,5 +1,6 @@
 {% extends 'manager/base.html' %}
 {% load static %}
+
 {% block content %}
 <div class="content-body">
     <div class="container-fluid">
@@ -20,80 +21,43 @@
 
         <!-- Cards Grid -->
         <div class="cards-grid">
-            <!-- Benefit Card 1 -->
+            {% for card in benefits %}
             <div class="benefit-card-admin">
                 <div class="benefit-card-preview">
-                    <i class="material-icons">payments</i>
-                    <h4>Earn Extra Income</h4>
-                    <p>Receive commission from followers who copy your trades</p>
+                    <i class="material-icons">{{ card.icon }}</i>
+                    <h4>{{ card.title }}</h4>
+                    <p>{{ card.description }}</p>
                 </div>
+
                 <div class="card-actions">
-                    <button class="btn btn-secondary btn-sm" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#cardModal" onclick="loadCardForEdit('Build Your Reputation', 'group', 'Grow your follower base and establish yourself as a trusted trader', 2)">
+                    <!-- EDIT BUTTON -->
+                    <button class="btn btn-secondary btn-sm"
+                        style="flex: 1;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#cardModal"
+                        onclick="loadCardForEdit('{{ card.title }}', '{{ card.icon }}', '{{ card.description }}', '{{ card.id }}')">
                         <i class="material-icons">edit</i>
                         Edit
                     </button>
-                    <button class="btn btn-danger btn-sm btn-icon">
-                        <i class="material-icons">delete</i>
-                    </button>
+
+                    <!-- DELETE BUTTON -->
+                    <form method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="card_id" value="{{ card.id }}">
+                        <button class="btn btn-danger btn-sm btn-icon">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </form>
                 </div>
             </div>
+            {% endfor %}
 
-            <!-- Benefit Card 2 -->
-            <div class="benefit-card-admin">
-                <div class="benefit-card-preview">
-                    <i class="material-icons">group</i>
-                    <h4>Build Your Reputation</h4>
-                    <p>Grow your follower base and establish yourself as a trusted trader</p>
-                </div>
-                <div class="card-actions">
-                    <button class="btn btn-secondary btn-sm" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#cardModal" onclick="loadCardForEdit('Build Your Reputation', 'group', 'Grow your follower base and establish yourself as a trusted trader', 2)">
-                        <i class="material-icons">edit</i>
-                        Edit
-                    </button>
-                    <button class="btn btn-danger btn-sm btn-icon">
-                        <i class="material-icons">delete</i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Benefit Card 3 -->
-            <div class="benefit-card-admin">
-                <div class="benefit-card-preview">
-                    <i class="material-icons">analytics</i>
-                    <h4>Performance Tracking</h4>
-                    <p>Access advanced analytics and insights on your trading performance</p>
-                </div>
-                <div class="card-actions">
-                    <button class="btn btn-secondary btn-sm" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#cardModal" onclick="loadCardForEdit('Performance Tracking', 'analytics', 'Access advanced analytics and insights on your trading performance', 3)">
-                        <i class="material-icons">edit</i>
-                        Edit
-                    </button>
-                    <button class="btn btn-danger btn-sm btn-icon">
-                        <i class="material-icons">delete</i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Benefit Card 4 -->
-            <div class="benefit-card-admin">
-                <div class="benefit-card-preview">
-                    <i class="material-icons">verified</i>
-                    <h4>Verified Badge</h4>
-                    <p>Get a verified trader badge to boost your credibility</p>
-                </div>
-                <div class="card-actions">
-                    <button class="btn btn-secondary btn-sm" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#cardModal" onclick="loadCardForEdit('Verified Badge', 'verified', 'Get a verified trader badge to boost your credibility', 4)">
-                        <i class="material-icons">edit</i>
-                        Edit
-                    </button>
-                    <button class="btn btn-danger btn-sm btn-icon">
-                        <i class="material-icons">delete</i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Add New Card Button -->
-            <div class="add-card-button" data-bs-toggle="modal" data-bs-target="#cardModal" onclick="resetModalForAdd()">
+            <!-- Add New Card -->
+            <div class="add-card-button"
+                 data-bs-toggle="modal"
+                 data-bs-target="#cardModal"
+                 onclick="resetModalForAdd()">
                 <i class="material-icons">add_circle</i>
                 <h4>Add New Benefit</h4>
                 <p>Click to create a new benefit card</p>
@@ -103,6 +67,7 @@
     </div>
 </div>
 
+<!-- Modal Form for Add/Edit -->
 <div class="modal fade" id="cardModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -112,6 +77,7 @@
             </div>
 
             <form id="cardForm" method="POST">
+                {% csrf_token %}
                 <div class="modal-body">
                     <input type="hidden" name="card_id" id="cardId">
 
@@ -171,16 +137,17 @@
     </div>
 </div>
 {% endblock %}
+
 {% block extra_script %}
 <script>
-    // Reset modal for adding new card - UI only
+    // Reset modal for adding new card
     function resetModalForAdd() {
         document.getElementById('modalTitle').textContent = 'Add Benefit Card';
         document.getElementById('cardForm').reset();
         document.getElementById('cardId').value = '';
     }
 
-    // Load card data for editing - UI only
+    // Load card data into modal for editing
     function loadCardForEdit(title, icon, description, id) {
         document.getElementById('modalTitle').textContent = 'Edit Benefit Card';
         document.getElementById('cardId').value = id;
@@ -188,6 +155,5 @@
         document.getElementById('cardIcon').value = icon;
         document.getElementById('cardDescription').value = description;
     }
-
 </script>
 {% endblock %}

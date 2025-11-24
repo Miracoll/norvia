@@ -1,0 +1,213 @@
+{%extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Deposit Pending Crypto | Norvia.io{% endblock %}
+
+{% block body_class %}page-depositpending{% endblock %}
+
+{% block content %}
+<div class="content-body default-height">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="page-titles">
+                            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="{% url 'deposit' %}">Deposit</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Pending</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="row justify-content-center">
+                    <div class="col-xl-8 col-lg-10">
+
+                        <!-- Status Card -->
+                        <div class="status-card">
+                            <div class="status-icon-wrapper">
+                                <i class="material-icons status-icon">schedule</i>
+                            </div>
+                            <h3 class="status-title">Deposit Pending Verification</h3>
+                            <p class="status-message">
+                                Your deposit request has been submitted. We are currently verifying your transaction on
+                                the blockchain. This process usually takes 5-15 minutes depending on network congestion.
+                            </p>
+                            <div class="status-badge">
+                                <i class="material-icons">sync</i>
+                                Awaiting Blockchain Confirmation
+                            </div>
+                            <p class="status-message" style="font-size: 14px; margin-top: 15px;">
+                                This page will automatically refresh every 30 seconds to check for updates.
+                            </p>
+                        </div>
+
+                        <!-- Transaction Details -->
+                        <div class="transaction-details-card">
+                            <h5>Transaction Details</h5>
+                            <div class="detail-row">
+                                <span class="detail-label">Transaction ID</span>
+                                <span class="detail-value">#TXN{{deposit.transaction_no}}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Amount</span>
+                                <span class="detail-value">${{deposit.grand_total}}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Currency</span>
+                                <span class="detail-value">{{deposit.currency.currency}} ({{deposit.currency.abbr|upper}})</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Network</span>
+                                <span class="detail-value">{{deposit.network}}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deposit To</span>
+                                <span class="detail-value">Trading Wallet</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Network Fee</span>
+                                <span class="detail-value">${{deposit.transaction_fee}}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value">{{deposit.status|capfirst}}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Date & Time</span>
+                                <span class="detail-value">{{deposit.date_created|date:"M j, Y g:i A"}}</span>
+                            </div>
+                        </div>
+
+                        <!-- Upload Proof Section -->
+                        <div class="upload-proof-card">
+                            <h6>Transaction Confirmed on Your End?</h6>
+                            <p>
+                                If your transaction has been confirmed in your wallet but hasn't been detected here yet,
+                                you can upload proof of payment (screenshot) to speed up the verification process.
+                            </p>
+                            <button class="upload-button" type="button" data-bs-toggle="modal"
+                                data-bs-target="#uploadProofModal">
+                                <i class="material-icons">upload_file</i>
+                                Upload Proof of Payment
+                            </button>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a href="{% url 'deposit_history' %}" class="btn btn-outline-primary">
+                                <i class="material-icons">receipt_long</i>
+                                View All Transactions
+                            </a>
+                            <a href="{% url 'home' %}" class="btn btn-primary">
+                                <i class="material-icons">home</i>
+                                Back to Dashboard
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Proof Modal -->
+<div class="modal fade" id="uploadProofModal" tabindex="-1" aria-labelledby="uploadProofModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadProofModalLabel">
+                    <i class="material-icons" style="vertical-align: middle; margin-right: 8px;">upload_file</i>
+                    Upload Proof of Payment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="uploadProofForm" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="proofFile" class="form-label">Select Payment Proof</label>
+                        <input type="file" class="form-control" id="proofFile" name="proof_file" accept="image/*,.pdf"
+                            required>
+                        <div class="form-text">Upload a screenshot of your confirmed transaction (JPG, PNG, or PDF, max
+                            10MB)</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="txHash" class="form-label">Transaction Hash (Optional)</label>
+                        <input type="text" class="form-control" id="txHash" name="tx_hash" placeholder="0x...">
+                        <div class="form-text">If available, paste your blockchain transaction hash</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="additionalNotes" class="form-label">Additional Notes (Optional)</label>
+                        <textarea class="form-control" id="additionalNotes" name="notes" rows="3"
+                            placeholder="Add any additional information about your transaction..."></textarea>
+                    </div>
+                    <div id="uploadStatus" class="alert" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitProofUpload()">
+                        <i class="material-icons" style="vertical-align: middle; margin-right: 5px;">cloud_upload</i>
+                        Upload
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+    function submitProofUpload() {
+        // TODO: Django backend will handle:
+        // - Accept multipart/form-data POST request
+        // - Validate file type (image/*, .pdf) and size (max 10MB)
+        // - Save file securely (use Django FileField or ImageField)
+        // - Link uploaded proof to transaction ID
+        // - Store transaction hash if provided
+        // - Store additional notes in transaction record
+        // - Notify admin of new proof upload
+        // - Update transaction status to "Under Review with Proof"
+        // - Monitor blockchain API for transaction confirmation
+        // - Check transaction hash against wallet address
+        // - Send confirmation email to user
+        // - Return success/error response as JSON
+
+        const form = document.getElementById('uploadProofForm');
+        const fileInput = document.getElementById('proofFile');
+        const statusDiv = document.getElementById('uploadStatus');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            statusDiv.className = 'alert alert-danger';
+            statusDiv.textContent = 'Please select a file to upload.';
+            statusDiv.style.display = 'block';
+            return;
+        }
+
+        // Show loading state
+        statusDiv.className = 'alert alert-info';
+        statusDiv.innerHTML = '<i class="material-icons" style="vertical-align: middle; margin-right: 5px;">sync</i>Uploading...';
+        statusDiv.style.display = 'block';
+
+        // Simulate upload success (Django will handle actual upload)
+        setTimeout(function () {
+            statusDiv.className = 'alert alert-success';
+            statusDiv.innerHTML = '<i class="material-icons" style="vertical-align: middle; margin-right: 5px;">check_circle</i>Upload successful! The admin will review your proof shortly.';
+
+            setTimeout(function () {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('uploadProofModal'));
+                modal.hide();
+                location.reload();
+            }, 2000);
+        }, 1500);
+    }
+</script>
+{% endblock %}

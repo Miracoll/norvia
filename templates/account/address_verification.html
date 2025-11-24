@@ -31,192 +31,193 @@
 						<div class="verification-header-content">
 							<i class="material-icons" style="font-size: 48px; margin-bottom: 15px;">home</i>
 							<h1>Address Verification (Proof of Residence)</h1>
-							<p>Verify your residential address to comply with regulatory requirements and enable higher withdrawal limits</p>
+							<p>Verify your residential address to comply with regulatory requirements and enable higher
+								withdrawal limits</p>
 						</div>
 					</div>
 
 					<!-- Current Status Card -->
 					<div class="status-card">
-						<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+						<div
+							style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
 							<div>
-								<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a;">Verification Status</h3>
-								<p style="font-size: 14px; color: #6b7280; margin: 0;">Your current address verification status</p>
+								<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a;">
+									Verification Status</h3>
+								<p style="font-size: 14px; color: #6b7280; margin: 0;">Your current address verification
+									status</p>
 							</div>
 							<span class="status-badge not-submitted">
 								<i class="material-icons" style="font-size: 18px;">pending</i>
-								Not Submitted
+								{{address.status}}
 							</span>
 						</div>
 					</div>
 
-					<!-- Address Information Form -->
-					<div class="form-card">
-						<div class="form-card-title">
-							<i class="material-icons" style="color: var(--primary); font-size: 28px;">location_on</i>
-							Residential Address Information
-						</div>
-						<p class="form-card-desc">Provide your current residential address that matches the proof of address document you'll upload</p>
-
-						<form id="addressForm">
+					<form id="addressForm" method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+					
+						<!-- Address Information Form -->
+						<div class="form-card">
+							<div class="form-card-title">
+								<i class="material-icons" style="color: var(--primary); font-size: 28px;">location_on</i>
+								Residential Address Information
+							</div>
+					
+							<p class="form-card-desc">
+								Provide your current residential address that matches the proof of address document you'll upload
+							</p>
+					
+							<!-- FULL STREET ADDRESS -->
 							<div class="form-group-address">
 								<label class="form-label-address" for="fullAddress">Full Street Address *</label>
-								<input type="text" class="form-input-address" id="fullAddress" placeholder="Street address, apartment, suite, unit, building, floor, etc." required>
+								<input type="text"
+									   class="form-input-address"
+									   id="fullAddress"
+									   name="street"
+									   value="{{ address.street|default:'' }}"
+									   placeholder="Street address, apartment, suite, unit, etc."
+									   required>
 							</div>
-
+					
 							<div class="row">
+								<!-- CITY -->
 								<div class="col-md-6">
 									<div class="form-group-address">
 										<label class="form-label-address" for="city">City *</label>
-										<input type="text" class="form-input-address" id="city" placeholder="City" required>
+										<input type="text"
+											   class="form-input-address"
+											   id="city"
+											   name="city"
+											   value="{{ address.city|default:'' }}"
+											   placeholder="City"
+											   required>
 									</div>
 								</div>
+					
+								<!-- STATE -->
 								<div class="col-md-6">
 									<div class="form-group-address">
 										<label class="form-label-address" for="state">State/Province *</label>
-										<input type="text" class="form-input-address" id="state" placeholder="State or Province" required>
+										<input type="text"
+											   class="form-input-address"
+											   id="state"
+											   name="state"
+											   value="{{ address.state|default:'' }}"
+											   placeholder="State or Province"
+											   required>
 									</div>
 								</div>
 							</div>
-
+					
 							<div class="row">
+								<!-- POSTAL -->
 								<div class="col-md-6">
 									<div class="form-group-address">
 										<label class="form-label-address" for="postalCode">Postal/Zip Code *</label>
-										<input type="text" class="form-input-address" id="postalCode" placeholder="Postal code" required>
+										<input type="text"
+											   class="form-input-address"
+											   id="postalCode"
+											   name="postal"
+											   value="{{ address.postal|default:'' }}"
+											   placeholder="Postal Code"
+											   required>
 									</div>
 								</div>
+					
+								<!-- COUNTRY -->
 								<div class="col-md-6">
 									<div class="form-group-address">
 										<label class="form-label-address" for="country">Country *</label>
-										<select class="form-select-address" id="country" required>
+										<select class="form-select-address" id="country" name="country" required>
 											<option value="">Select your country</option>
-											<option value="US">United States</option>
-											<option value="UK">United Kingdom</option>
-											<option value="CA">Canada</option>
-											<option value="AU">Australia</option>
-											<option value="NG">Nigeria</option>
-											<option value="ZA">South Africa</option>
-											<option value="IN">India</option>
-											<option value="other">Other</option>
+					
+											<option value="US" {% if address.country == "US" %}selected{% endif %}>United States</option>
+											<option value="UK" {% if address.country == "UK" %}selected{% endif %}>United Kingdom</option>
+											<option value="CA" {% if address.country == "CA" %}selected{% endif %}>Canada</option>
+											<option value="AU" {% if address.country == "AU" %}selected{% endif %}>Australia</option>
+											<option value="NG" {% if address.country == "NG" %}selected{% endif %}>Nigeria</option>
+											<option value="ZA" {% if address.country == "ZA" %}selected{% endif %}>South Africa</option>
+											<option value="IN" {% if address.country == "IN" %}selected{% endif %}>India</option>
+											<option value="other" {% if address.country == "other" %}selected{% endif %}>Other</option>
 										</select>
 									</div>
 								</div>
 							</div>
-						</form>
-					</div>
-
-					<!-- Document Upload Section -->
-					<div class="form-card">
-						<div class="form-card-title">
-							<i class="material-icons" style="color: var(--primary); font-size: 28px;">description</i>
-							Upload Proof of Address Document
 						</div>
-						<p class="form-card-desc">Upload a recent document (issued within the last 3 months) that shows your name and residential address</p>
-
-						<!-- Accepted Documents -->
-						<div class="requirements-box">
-							<div class="requirements-title">
-								<i class="material-icons">check_circle</i>
-								Accepted Documents
+					
+						<!-- Document Upload Section -->
+						<div class="form-card">
+							<div class="form-card-title">
+								<i class="material-icons" style="color: var(--primary); font-size: 28px;">description</i>
+								Upload Proof of Address Document
 							</div>
-							<div class="document-examples">
-								<div class="example-item">
-									<div class="example-icon">
-										<i class="material-icons">receipt</i>
+					
+							<p class="form-card-desc">
+								Upload a recent document (issued within the last 3 months) that shows your name and residential address
+							</p>
+					
+							<!-- DOCUMENT TYPE -->
+							<div class="form-group-address">
+								<label class="form-label-address" for="docType">Document Type *</label>
+								<select class="form-select-address" id="docType" name="id_type" required>
+									<option value="">Select document type</option>
+					
+									<option value="utility_bill" {% if address.id_type == "utility_bill" %}selected{% endif %}>
+										Utility Bill
+									</option>
+									<option value="bank_statement" {% if address.id_type == "bank_statement" %}selected{% endif %}>
+										Bank Statement
+									</option>
+									<option value="tax_document" {% if address.id_type == "tax_document" %}selected{% endif %}>
+										Tax Document
+									</option>
+									<option value="govt_letter" {% if address.id_type == "govt_letter" %}selected{% endif %}>
+										Government Letter
+									</option>
+									<option value="lease_agreement" {% if address.id_type == "lease_agreement" %}selected{% endif %}>
+										Lease/Rental Agreement
+									</option>
+								</select>
+							</div>
+					
+							<!-- Document Upload -->
+							<div class="form-group-address">
+								<label class="form-label-address">Upload Document *</label>
+					
+								<div class="upload-area" id="uploadAreaDoc"
+									 onclick="document.getElementById('docUpload').click();">
+									<div class="upload-icon">
+										<i class="material-icons">cloud_upload</i>
 									</div>
-									<div class="example-title">Utility Bill</div>
-									<div class="example-desc">Electricity, water, gas, or internet bill</div>
+					
+									{% if address.document %}
+										<div class="upload-text">
+											<strong>Uploaded:</strong> {{ address.document.name }}
+										</div>
+									{% else %}
+										<div class="upload-text">Click to upload or drag and drop</div>
+									{% endif %}
+					
+									<div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
 								</div>
-								<div class="example-item">
-									<div class="example-icon">
-										<i class="material-icons">account_balance</i>
-									</div>
-									<div class="example-title">Bank Statement</div>
-									<div class="example-desc">Official bank statement from your bank</div>
-								</div>
-								<div class="example-item">
-									<div class="example-icon">
-										<i class="material-icons">description</i>
-									</div>
-									<div class="example-title">Government Letter</div>
-									<div class="example-desc">Tax document or official government mail</div>
-								</div>
+					
+								<input type="file"
+									   id="docUpload"
+									   name="document"
+									   accept="image/*,.pdf"
+									   style="display: none;"
+									   {% if not address.document %}required{% endif %}>
 							</div>
 						</div>
-
-						<div class="requirements-box">
-							<div class="requirements-title">
-								<i class="material-icons">rule</i>
-								Document Requirements
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Document must be issued within the last 3 months</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Your full name must be clearly visible</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Your complete residential address must be shown</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Document issuer's name/logo must be visible</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>All four corners of the document must be visible</span>
-							</div>
-							<div class="requirement-item">
-								<i class="material-icons">check</i>
-								<span>Supported formats: JPG, PNG, PDF (Max 10MB)</span>
-							</div>
+					
+						<!-- Submit -->
+						<div class="form-card">
+							<button type="submit" class="btn-submit">
+								<i class="material-icons">send</i>
+								Submit for Verification
+							</button>
 						</div>
-
-						<div class="form-group-address">
-							<label class="form-label-address" for="docType">Document Type *</label>
-							<select class="form-select-address" id="docType" required>
-								<option value="">Select document type</option>
-								<option value="utility_bill">Utility Bill (Electricity, Water, Gas, Internet)</option>
-								<option value="bank_statement">Bank Statement</option>
-								<option value="tax_document">Tax Document</option>
-								<option value="govt_letter">Government Letter</option>
-								<option value="lease_agreement">Lease/Rental Agreement</option>
-							</select>
-						</div>
-
-						<div class="form-group-address">
-							<label class="form-label-address">Upload Document *</label>
-							<div class="upload-area" id="uploadAreaDoc" onclick="document.getElementById('docUpload').click();">
-								<div class="upload-icon">
-									<i class="material-icons">cloud_upload</i>
-								</div>
-								<div class="upload-text">Click to upload or drag and drop</div>
-								<div class="upload-hint">JPG, PNG or PDF (Max 10MB)</div>
-							</div>
-							<input type="file" id="docUpload" accept="image/*,.pdf" style="display: none;">
-						</div>
-					</div>
-
-					<!-- Submit Section -->
-					<div class="form-card">
-						<div style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; gap: 12px; align-items: flex-start;">
-							<i class="material-icons" style="color: #d97706; font-size: 24px;">info</i>
-							<div>
-								<h4 style="font-size: 15px; font-weight: 700; color: #92400e; margin-bottom: 6px;">Important Information</h4>
-								<p style="font-size: 14px; color: #78350f; margin: 0; line-height: 1.6;">
-									Ensure the address on your document matches exactly with the address you provided above. Documents older than 3 months will not be accepted. Address verification typically takes 24-48 hours to process.
-								</p>
-							</div>
-						</div>
-
-						<button type="button" class="btn-submit" onclick="submitAddressVerification()">
-							<i class="material-icons">send</i>
-							Submit for Verification
-						</button>
-					</div>
+					</form>									
 
 				</div>
 			</div>
@@ -227,6 +228,94 @@
 
 {% block page_scripts %}
 <script>
-// Address verification - Django will handle file uploads and form submission
+	// File upload handling for Address verification
+	document.addEventListener('DOMContentLoaded', function () {
+		const docUploadInput = document.getElementById('docUpload');
+		const uploadArea = document.getElementById('uploadAreaDoc');
+
+		// Handle file input change
+		docUploadInput.addEventListener('change', function (e) {
+			const file = e.target.files[0];
+
+			if (!file) return;
+
+			// Validate file size (10MB max)
+			const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+			if (file.size > maxSize) {
+				alert('File size exceeds 10MB limit. Please choose a smaller file.');
+				e.target.value = '';
+				return;
+			}
+
+			// Validate file type
+			const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+			if (!allowedTypes.includes(file.type)) {
+				alert('Invalid file type. Please upload JPG, PNG, or PDF files only.');
+				e.target.value = '';
+				return;
+			}
+
+			// Update the upload area to show file name
+			const uploadIcon = uploadArea.querySelector('.upload-icon i');
+			const uploadText = uploadArea.querySelector('.upload-text');
+			const uploadHint = uploadArea.querySelector('.upload-hint');
+
+			// Change icon to success
+			uploadIcon.textContent = 'check_circle';
+			uploadIcon.style.color = '#10b981';
+
+			// Update text to show file name
+			uploadText.textContent = file.name;
+			uploadText.style.color = '#10b981';
+			uploadText.style.fontWeight = '600';
+
+			// Update hint
+			uploadHint.textContent = `Document uploaded successfully - ${formatFileSize(file.size)}`;
+			uploadHint.style.color = '#059669';
+
+			// Add success styling to upload area
+			uploadArea.style.borderColor = '#10b981';
+			uploadArea.style.backgroundColor = '#f0fdf4';
+		});
+
+		// Drag and drop functionality
+		uploadArea.addEventListener('dragover', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			uploadArea.style.borderColor = '#3b82f6';
+			uploadArea.style.backgroundColor = '#eff6ff';
+		});
+
+		uploadArea.addEventListener('dragleave', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			uploadArea.style.borderColor = '#e5e7eb';
+			uploadArea.style.backgroundColor = '#f9fafb';
+		});
+
+		uploadArea.addEventListener('drop', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			const files = e.dataTransfer.files;
+			if (files.length > 0) {
+				docUploadInput.files = files;
+				// Trigger the change event
+				const event = new Event('change', { bubbles: true });
+				docUploadInput.dispatchEvent(event);
+			}
+
+			uploadArea.style.borderColor = '#e5e7eb';
+			uploadArea.style.backgroundColor = '#f9fafb';
+		});
+
+		function formatFileSize(bytes) {
+			if (bytes === 0) return '0 Bytes';
+			const k = 1024;
+			const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+			const i = Math.floor(Math.log(bytes) / Math.log(k));
+			return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+		}
+	});
 </script>
 {% endblock %}
