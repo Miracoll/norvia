@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+        <title>Sign In - Norvia.io | Advanced Trading Platform</title>
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon.png' %}">
+    
+        <!-- Material Icons -->
+        <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    
+        <!-- Custom Styles -->
+        <link href="{% static 'css/global.css' %}" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    </head>
+    
+
+<body class="{{ class_value }}">
+	{% block content %}{% endblock %}
+
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+    
+                <div class="modal-header text-white" id="modalHeader">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+    
+                <div class="modal-body" id="modalMessage"></div>
+    
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+    
+            </div>
+        </div>
+    </div>    
+
+	<script>
+		function togglePassword() {
+			const input = document.getElementById('password');
+			const icon = input.parentElement.querySelector('.password-toggle');
+			if (input.type === 'password') {
+				input.type = 'text';
+				icon.textContent = 'visibility';
+			} else {
+				input.type = 'password';
+				icon.textContent = 'visibility_off';
+			}
+		}
+	</script>
+
+    <!-- jQuery + Bootstrap Modal Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Modal Trigger Script -->
+    {% if messages %}
+    <script>
+        $(document).ready(function () {
+
+            {% for message in messages %}
+                let text = "{{ message|escapejs }}";
+                let tag  = "{{ message.tags }}";
+            {% endfor %}
+
+            let title = "Notice";
+            let color = "bg-primary";
+
+            if (tag.includes("error")) {
+                title = "Error";
+                color = "bg-danger";
+            } else if (tag.includes("success")) {
+                title = "Success";
+                color = "bg-success";
+            } else if (tag.includes("warning")) {
+                title = "Warning";
+                color = "bg-warning";
+            } else if (tag.includes("info")) {
+                title = "Information";
+                color = "bg-info";
+            }
+
+            $("#modalTitle").text(title);
+            $("#modalHeader").attr("class", "modal-header text-white " + color);
+            $("#modalMessage").text(text);
+
+            $("#alertModal").modal("show");
+        });
+    </script>
+    {% endif %}
+
+</body>
+</html>

@@ -1,18 +1,25 @@
 from decimal import Decimal
 import json
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from django.urls import reverse
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.views import PasswordResetView
 from django.core.paginator import Paginator
-
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
 
 from account.models import AddressVerification, AdminNotification, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, Withdraw, PasswordHistory
 from account.utils import add_activity, add_notification, telegram
@@ -925,7 +932,7 @@ def address_verification(request):
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
-def settings(request):
+def account_settings(request):
     user = request.user
     if 'email' in request.POST:
         email1 = request.POST.get('email')
@@ -1090,7 +1097,7 @@ def sign_in(request):
 
         else:
             if user_qs and not user_qs.is_active:
-                messages.error(request, 'Your account is not active.')
+                messages.error(request, 'Your account is not verified yet.')
             else:
                 messages.error(request, 'Incorrect email or password.')
 
@@ -1149,8 +1156,6 @@ def sign_up_step_1(request):
 def sign_up_step_2(request):
     # Make sure the session key exists
     signup_data = request.session.get('signup_data', {})
-
-    print(signup_data)
 
     if not signup_data:
         messages.error(request, 'Please complete Step 1 first.')
@@ -1214,7 +1219,7 @@ def sign_up_step_3(request):
             password=signup_data['password'],
             first_name=signup_data['first_name'],
             last_name=signup_data['last_name'],
-            is_active=False,
+            is_active=False,  # User inactive until email verification
         )
 
         # Optional extended fields if your model supports them
@@ -1237,16 +1242,108 @@ def sign_up_step_3(request):
         group, _ = Group.objects.get_or_create(name='trader')
         user.groups.add(group)
 
+        # Generate UID and token
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+
+        # Build verification link
+        verification_url = request.build_absolute_uri(
+            reverse('verify_email', kwargs={'uidb64': uid, 'token': token})
+        )
+
+        # Email content
+        subject = "Verify Your Email Address"
+        message = f"""
+        Hi {user.first_name},
+
+        Please click the link below to verify your email:
+
+        {verification_url}
+
+        If you didn’t create this account, just ignore this email.
+        """
+
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False,
+        )
+
         # ✅ Clear session data now that registration is done
         del request.session['signup_data']
 
-        messages.success(request, 'Account created successfully. Please sign in.')
-        return redirect('sign_in')
+        messages.success(request, 'Request submitted.')
+        return redirect('email_verification')
 
     context = {
         'class_value': 'page-signupstep3'
     }
     return render(request, 'account/sign_up_step_3.html', context)
+
+def email_verification(request):
+    context = {
+        'class_value':'page-emailverify'
+    }
+    return render(request, 'account/email_verification.html', context)
+
+def verify_email(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Email verified successfully!")
+        return redirect("sign_in")
+    else:
+        messages.error(request, "Invalid or expired verification link.")
+        return redirect("email_verification")
+    
+def resend_verification_email(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to resend verification link.")
+        return redirect("signin")
+
+    user = request.user
+
+    if user.is_active:
+        messages.info(request, "Your email is already verified.")
+        return redirect("dashboard")  # Change to your preferred page
+
+    # Generate new UID and token
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+
+    verification_url = request.build_absolute_uri(
+        reverse("verify_email", kwargs={'uidb64': uid, 'token': token})
+    )
+
+    subject = "Resend Email Verification Link"
+    message = f"""
+                Hi {user.first_name},
+
+                Please verify your email using the link below:
+
+                {verification_url}
+
+                If you didn’t request this, you can ignore it.
+                """
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [user.email],
+        fail_silently=False,
+    )
+
+    messages.success(request, "A new verification link has been sent to your email.")
+    return redirect("email_verification")
 
 def copytrading_agreement(request):
     return redirect(request, 'account/copytrading_agreement.html')

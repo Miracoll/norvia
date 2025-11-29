@@ -1,120 +1,107 @@
+{% extends 'account/main.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Security Questions - Sign Up | Norvia.io</title>
-	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon.png' %}">
-	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-
-	<link href="{% static 'css/global.css' %}" rel="stylesheet">
-</head>
-<body class="page-signupstep2">
-	<div class="auth-container">
-		<div class="auth-card">
-			<div class="auth-header">
-				<div class="auth-logo">
-					<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="url(#blue-gradient)"/>
-						<defs>
-							<linearGradient id="blue-gradient" x1="5" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse">
-								<stop offset="0%" stop-color="#01A3FF"/>
-								<stop offset="100%" stop-color="#0284c7"/>
-							</linearGradient>
-						</defs>
-					</svg>
-					<span class="auth-logo-text">Norvia.io</span>
-				</div>
-
-				<div class="progress-steps">
-					<div class="step completed"></div>
-					<div class="step active"></div>
-					<div class="step"></div>
-				</div>
-
-				<p class="step-indicator">Step 2 of 3</p>
-				<h1 class="auth-title">Security Questions</h1>
-				<p class="auth-subtitle">Help us protect your account by answering these questions</p>
+{% block content %}
+<div class="auth-container">
+	<div class="auth-card">
+		<div class="auth-header">
+			<div class="auth-logo">
+				<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="url(#blue-gradient)"/>
+					<defs>
+						<linearGradient id="blue-gradient" x1="5" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse">
+							<stop offset="0%" stop-color="#01A3FF"/>
+							<stop offset="100%" stop-color="#0284c7"/>
+						</linearGradient>
+					</defs>
+				</svg>
+				<span class="auth-logo-text">Norvia.io</span>
 			</div>
 
-			<div class="auth-body">
-				<div class="info-box">
-					<i class="material-icons">security</i>
-					<div class="info-box-content">
-						<strong>Why security questions?</strong><br>
-						These questions help verify your identity for account recovery and sensitive operations.
-					</div>
-				</div>
-
-				<form method="post">
-					{% csrf_token %}
-					<div class="form-group">
-						<label class="form-label" for="question1">Security Question 1</label>
-						<select class="form-select" id="question1" required name="question1">
-							<option value="">Select a question</option>
-							<option value="pet">What was the name of your first pet?</option>
-							<option value="city">In what city were you born?</option>
-							<option value="school">What is the name of your first school?</option>
-							<option value="food">What is your favorite food?</option>
-							<option value="car">What was the make of your first car?</option>
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label class="form-label" for="answer1">Your Answer</label>
-						<input type="text" class="form-input" id="answer1" placeholder="Enter your answer" required name="answer1">
-					</div>
-
-					<div class="form-group">
-						<label class="form-label" for="question2">Security Question 2</label>
-						<select class="form-select" id="question2" required name="question2">
-							<option value="">Select a question</option>
-							<option value="maiden">What is your mother's maiden name?</option>
-							<option value="book">What is your favorite book?</option>
-							<option value="teacher">What was your favorite teacher's name?</option>
-							<option value="street">What street did you grow up on?</option>
-							<option value="movie">What is your favorite movie?</option>
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label class="form-label" for="answer2">Your Answer</label>
-						<input type="text" class="form-input" id="answer2" placeholder="Enter your answer" required name="answer2">
-					</div>
-
-					<div class="form-group">
-						<label class="form-label" for="question3">Security Question 3</label>
-						<select class="form-select" id="question3" required name="question3">
-							<option value="">Select a question</option>
-							<option value="job">What was your first job?</option>
-							<option value="friend">Who is your childhood best friend?</option>
-							<option value="vacation">Where did you go on your first vacation?</option>
-							<option value="hobby">What is your favorite hobby?</option>
-							<option value="sport">What is your favorite sport?</option>
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label class="form-label" for="answer3">Your Answer</label>
-						<input type="text" class="form-input" id="answer3" placeholder="Enter your answer" required name="answer3">
-					</div>
-
-					<div class="btn-row">
-						<button type="button" class="btn-back">
-							<i class="material-icons">arrow_back</i>
-							<span>Back</span>
-						</button>
-						<button type="submit" class="btn-submit">
-							<span>Continue</span>
-							<i class="material-icons">arrow_forward</i>
-						</button>
-					</div>
-				</form>
+			<div class="progress-steps">
+				<div class="step completed"></div>
+				<div class="step active"></div>
+				<div class="step"></div>
 			</div>
+
+			<p class="step-indicator">Step 2 of 3</p>
+			<h1 class="auth-title">Security Questions</h1>
+			<p class="auth-subtitle">Help us protect your account by answering these questions</p>
 		</div>
-	</div> 
-<script src="{% static 'js/copy-to-clipboard.js' %}"></script>
-</body>
-</html>
+
+		<div class="auth-body">
+			<div class="info-box">
+				<i class="material-icons">security</i>
+				<div class="info-box-content">
+					<strong>Why security questions?</strong><br>
+					These questions help verify your identity for account recovery and sensitive operations.
+				</div>
+			</div>
+
+			<form method="post">
+				{% csrf_token %}
+				<div class="form-group">
+					<label class="form-label" for="question1">Security Question 1</label>
+					<select class="form-select" id="question1" required name="question1">
+						<option value="">Select a question</option>
+						<option value="pet">What was the name of your first pet?</option>
+						<option value="city">In what city were you born?</option>
+						<option value="school">What is the name of your first school?</option>
+						<option value="food">What is your favorite food?</option>
+						<option value="car">What was the make of your first car?</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label" for="answer1">Your Answer</label>
+					<input type="text" class="form-input" id="answer1" placeholder="Enter your answer" required name="answer1">
+				</div>
+
+				<div class="form-group">
+					<label class="form-label" for="question2">Security Question 2</label>
+					<select class="form-select" id="question2" required name="question2">
+						<option value="">Select a question</option>
+						<option value="maiden">What is your mother's maiden name?</option>
+						<option value="book">What is your favorite book?</option>
+						<option value="teacher">What was your favorite teacher's name?</option>
+						<option value="street">What street did you grow up on?</option>
+						<option value="movie">What is your favorite movie?</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label" for="answer2">Your Answer</label>
+					<input type="text" class="form-input" id="answer2" placeholder="Enter your answer" required name="answer2">
+				</div>
+
+				<div class="form-group">
+					<label class="form-label" for="question3">Security Question 3</label>
+					<select class="form-select" id="question3" required name="question3">
+						<option value="">Select a question</option>
+						<option value="job">What was your first job?</option>
+						<option value="friend">Who is your childhood best friend?</option>
+						<option value="vacation">Where did you go on your first vacation?</option>
+						<option value="hobby">What is your favorite hobby?</option>
+						<option value="sport">What is your favorite sport?</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label" for="answer3">Your Answer</label>
+					<input type="text" class="form-input" id="answer3" placeholder="Enter your answer" required name="answer3">
+				</div>
+
+				<div class="btn-row">
+					<button type="button" class="btn-back">
+						<i class="material-icons">arrow_back</i>
+						<span>Back</span>
+					</button>
+					<button type="submit" class="btn-submit">
+						<span>Continue</span>
+						<i class="material-icons">arrow_forward</i>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div> 
+{% endblock %}
