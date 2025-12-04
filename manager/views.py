@@ -80,12 +80,18 @@ def user_detail(request, username):
     user = User.objects.get(username=username)
     traders = CopiedTrader.objects.filter(user=user)
     trades = Trade.objects.filter(user=user)
-    manual_trades = CopiedTrader.objects.filter(user=user)
     kyc = KYCVerification.objects.get(user=user)
     address = AddressVerification.objects.get(user=user)
 
     deposits = Deposit.objects.filter(user=user)
     withdraws = Withdraw.objects.filter(user=user)
+
+    total_deposit = 0
+    total_withdraw = 0
+    total_trade = 0
+    win_rate = 0
+    active_plan = 0
+    referral = 0
 
     # Normalizing field names for template
     transactions = []
@@ -241,6 +247,44 @@ def user_detail(request, username):
 
         messages.success(request, "Using global settings updated.")
         return redirect("admin_user_detail", username=username)
+    
+    elif 'edit_balance' in request.POST:
+        trading_balance = request.POST.get('trading_balance')
+        holding_balance = request.POST.get('holding_balance')
+
+        user.deposit = trading_balance
+        user.holding_deposit = holding_balance
+
+        user.save()
+
+        messages.success(request, "Successful")
+        return redirect('admin_user_detail', username=username)
+    
+    elif 'premium_tick' in request.POST:
+        user.is_premium_account = True
+        user.use_badge = True
+
+        user.save()
+
+        messages.success(request, "successful")
+        return redirect('admin_user_detail', username=username)
+    
+    elif 'suspend_user' in request.POST:
+        user.ban = not user.ban
+
+        user.save()
+
+        messages.success(request, "successful")
+        return redirect('admin_user_detail', username=username)
+    
+    elif 'blue_tick' in request.POST:
+        user.is_premium_account = False
+        user.use_badge = False
+
+        user.save()
+
+        messages.success(request, "successful")
+        return redirect('admin_user_detail', username=username)
 
     context = {
         'header_title': 'User Details',
@@ -248,7 +292,6 @@ def user_detail(request, username):
         'user':user,
         'traders':traders,
         'trades':trades,
-        'manual_trades':manual_trades,
         'kyc':kyc,
         'address':address,
         'transactions': transactions,
@@ -260,6 +303,98 @@ def user_detail(request, username):
         'methods':user_payment_methods,
     }
     return render(request, 'manager/user_detail.html', context)
+
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
+def two_factor_authentication(request, user_id):
+    if request.method == "POST":
+        # Get the checkbox value (it exists only if checked)
+        value = request.POST.get("status")  # "on" if checked, None if unchecked
+
+        try:
+           user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+            return redirect("admin_user_detail", username=user.username)
+        
+        # Update the user's field (example: artisan_accept_booking)
+        user.two_factor_authentication_enabled = True if value == "on" else False
+        user.save()
+
+        # Redirect back to the same page
+        messages.success(request, "Successful")
+        return redirect("admin_user_detail", username=user.username)
+    
+    return redirect("admin_user_detail", username=user.username)
+
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
+def enable_email_notification(request, user_id):
+    if request.method == "POST":
+        # Get the checkbox value (it exists only if checked)
+        value = request.POST.get("email_notifications")  # "on" if checked, None if unchecked
+
+        try:
+           user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+            return redirect("admin_user_detail", username=user.username)
+        
+        # Update the user's field (example: artisan_accept_booking)
+        user.email_notification = True if value == "on" else False
+        user.save()
+
+        # Redirect back to the same page
+        messages.success(request, "Successful")
+        return redirect("admin_user_detail", username=user.username)
+    
+    return redirect("admin_user_detail", username=user.username)
+
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
+def enable_trading(request, user_id):
+    if request.method == "POST":
+        # Get the checkbox value (it exists only if checked)
+        value = request.POST.get("trading_enabled")  # "on" if checked, None if unchecked
+
+        try:
+           user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+            return redirect("admin_user_detail", username=user.username)
+        
+        # Update the user's field (example: artisan_accept_booking)
+        user.trading_enabled = True if value == "on" else False
+        user.save()
+
+        # Redirect back to the same page
+        messages.success(request, "Successful")
+        return redirect("admin_user_detail", username=user.username)
+    
+    return redirect("admin_user_detail", username=user.username)
+
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
+def enable_withdrawal(request, user_id):
+    if request.method == "POST":
+        # Get the checkbox value (it exists only if checked)
+        value = request.POST.get("withdrawal_enabled")  # "on" if checked, None if unchecked
+
+        try:
+           user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+            return redirect("admin_user_detail", username=user.username)
+        
+        # Update the user's field (example: artisan_accept_booking)
+        user.withdrawal_enabled = True if value == "on" else False
+        user.save()
+
+        # Redirect back to the same page
+        messages.success(request, "Successful")
+        return redirect("admin_user_detail", username=user.username)
+    
+    return redirect("admin_user_detail", username=user.username)
 
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
@@ -320,7 +455,6 @@ def kyc(request):
             Notification.objects.create(
                 user=kyc.user,
                 title="KYC Approved 🎉",
-                message="Your KYC verification has been approved and your account has been upgraded.",
                 media_type="text",
                 text="KA",
             )
@@ -374,7 +508,6 @@ def kyc(request):
             Notification.objects.create(
                 user=kyc.user,
                 title="KYC Rejected ⚠️",
-                message="Your KYC verification has been rejected. Please re-submit valid documents for review.",
                 media_type="text",
                 text="KR"
             )
@@ -498,7 +631,6 @@ def deposit_list(request):
         Notification.objects.create(
             user=deposit.user,
             title="Deposit Rejected ❌",
-            message=f"Your deposit of ${deposit.amount} was rejected. Reason: {rejection_reason}",
             media_type="text",
             text="DR",
         )
@@ -518,7 +650,7 @@ def deposit_list(request):
             fail_silently=True
         )
 
-        messages.error(request, f"Deposit #{deposit.transaction_no} has been rejected.")
+        messages.success(request, f"Deposit #{deposit.transaction_no} has been rejected.")
         return redirect('admin_deposit_list')
 
     context = {
@@ -576,7 +708,6 @@ def withdrawal_list(request):
         Notification.objects.create(
             user=user,
             title="Withdrawal Approved 💸",
-            message=f"Your withdrawal request of ${amount} has been approved. The funds will be transferred to your account shortly.",
             media_type="text",
             text="WA",
             color="success",
@@ -619,7 +750,6 @@ def withdrawal_list(request):
         Notification.objects.create(
             user=user,
             title="Withdrawal Rejected ❌",
-            message=f"Your withdrawal of ${amount} has been rejected.",
             media_type="text",
             text="WR",
             color="danger",

@@ -28,4 +28,8 @@ urlpatterns = [
     path('admin/profile/', views.admin_profile, name='admin_profile'),
     path('login/', views.admin_login, name='admin_login'),
     path('reports/analytics/', views.reports, name='admin_reports'),
+    path('two-factor-authentication/<int:user_id>/', views.two_factor_authentication, name='admin_two_factor_authentication'),
+    path('enable-email-notification/<int:user_id>/', views.enable_email_notification, name='enable_email_notification'),
+    path('enable-trading/<int:user_id>/', views.enable_trading, name='enable_trading'),
+    path('enable-withdrawal/<int:user_id>/', views.enable_withdrawal, name='enable_withdrawal'),
 ]

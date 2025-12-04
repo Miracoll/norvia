@@ -86,6 +86,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.mysql',
+# 		'NAME': 'tysbncfz_new_db',
+# 		'USER': 'root',
+# 		'PASSWORD': '',
+# 		'HOST':'localhost',
+# 		'PORT':'3306',
+# 	}
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -135,10 +145,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'account.User'
 
+#Email validation
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = 'norvia.io'
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mtesting829@gmail.com'
-EMAIL_HOST_PASSWORD = 'owpgptombnzglxab'
-DEFAULT_FROM_EMAIL = 'NORVIA <mtesting829@gmail.com>'
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'no_reply@norvia.io'
+EMAIL_HOST_PASSWORD = '~NW?]y8-w$bm'
+DEFAULT_FROM_EMAIL = 'NORVIA <no_reply@norvia.io>'

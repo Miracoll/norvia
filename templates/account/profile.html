@@ -1,5 +1,6 @@
 {% extends "account/base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Profile{% endblock %}
 
@@ -161,7 +162,7 @@
 					</div>
 					<div class="info-row">
 						<span class="info-label">Last Login</span>
-						<span class="info-value">{{request.user.time_label}}</span>
+						<span class="info-value">{{request.user.last_login|naturaltime }}</span>
 					</div>
 				</div>
 

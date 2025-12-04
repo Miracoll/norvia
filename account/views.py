@@ -20,9 +20,10 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
+from django.db import transaction
 
 from account.models import AddressVerification, AdminNotification, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, Withdraw, PasswordHistory
-from account.utils import add_activity, add_notification, telegram
+from account.utils import add_activity, add_notification, telegram, usd_to_btc
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -38,14 +39,59 @@ def home(request):
 
     notifications = AdminNotification.objects.filter(is_active=True).order_by('-created_at')
 
+    user = request.user
+
     context = {
         'class_value': 'page-dashboard',
         'traders': copied_trader,
         'open_trades': open_trades,
         'closed_trades': closed_trades,
         'notifications': notifications,
+        'trading_deposit_btc': usd_to_btc(user.deposit),
+        'holding_deposit_btc': usd_to_btc(user.holding_deposit),
+        'trading_profit_btc': usd_to_btc(user.profit),
+        'holding_profit_btc': usd_to_btc(user.holding_profit),
     }
     return render(request, 'account/dashboard.html', context)
+
+@login_required
+def transfer_wallet(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        from_wallet = data.get("from_wallet")
+        to_wallet = data.get("to_wallet")
+        amount = float(data.get("amount", 0))
+
+        user = request.user
+
+        # Check wallets and balances
+        if from_wallet == "trading":
+            from_balance = user.deposit
+        else:
+            from_balance = user.holding_balance  # Replace with your field
+
+        if amount > from_balance:
+            return JsonResponse({"status": "error", "message": "Insufficient balance"})
+
+        # Deduct and add
+        if from_wallet == "trading":
+            user.deposit -= amount
+        else:
+            user.holding_balance -= amount
+
+        if to_wallet == "trading":
+            user.deposit += amount
+        else:
+            user.holding_balance += amount
+
+        user.save()
+
+        return JsonResponse({
+            "status": "success",
+            "new_from_balance": from_balance - amount
+        })
+
+    return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
@@ -365,7 +411,6 @@ def copy_trader(request):
 def become_trader(request):
     benefits = TraderBenefit.objects.filter(is_active=True)
     if request.method == 'POST':
-        print("big head")
         full_name = request.POST.get('fullName')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
@@ -383,6 +428,12 @@ def become_trader(request):
         trading_statements = request.FILES.get('tradingStatements')
         government_id = request.FILES.get('governmentId')
         proof_account = request.FILES.get('proofAccount')
+
+        if not all([full_name, email, phone, country, experience, markets, volume,
+                    certifications, trading_style, risk_level, strategy, win_rate,
+                    trading_statements, government_id, proof_account]):
+            messages.error(request, "Please fill in all required fields and upload all necessary documents.")
+            return redirect('become_trader')
 
         # Optional: Save to your model (example model below)
         TraderApplication.objects.create(
@@ -1030,7 +1081,7 @@ def account_settings(request):
     context = {
         'class_value':'page-settings'
     }
-    return render(request, 'account/settings.html', context)
+    return render(request, 'account/account_settings.html', context)
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
@@ -1274,7 +1325,7 @@ def sign_up_step_3(request):
         # ✅ Clear session data now that registration is done
         del request.session['signup_data']
 
-        messages.success(request, 'Request submitted.')
+        messages.success(request, 'Registration submitted.')
         return redirect('email_verification')
 
     context = {

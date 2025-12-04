@@ -150,7 +150,6 @@
                     </div>
                 </div>
 
-                {% if kyc.status == 'not_submitted' %}
                 <div class="kyc-actions">
                     <button class="btn-approve" data-bs-toggle="modal" data-bs-target="#approveModal{{kyc.id}}">
                         <i class="material-icons" style="font-size: 18px;">check_circle</i>
@@ -161,7 +160,7 @@
                         Reject
                     </button>
                 </div>
-                {% endif %}
+                
             </div>
 
             <div class="modal fade" id="approveModal{{kyc.id}}" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">

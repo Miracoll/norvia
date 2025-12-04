@@ -101,6 +101,10 @@ class User(AbstractUser):
     total_trading_volume = models.FloatField(default=0.0)
     use_global_settings = models.BooleanField(default=True)
     current_plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True, blank=True)
+    two_factor_authentication_enabled = models.BooleanField(default=False)
+    trading_enabled = models.BooleanField(default=True)
+    withdrawal_enabled = models.BooleanField(default=False)
+    trading_circle = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.username

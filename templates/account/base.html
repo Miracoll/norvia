@@ -344,16 +344,46 @@
 <!--**********************************
 	Modal
 ***********************************-->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header text-white" id="modalHeader" style="border-bottom:none !important;">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" data-bs-dismiss="modal" style="
+                    background: transparent;
+                    border: none;
+                    font-size: 28px;
+                    line-height: 1;
+                    opacity: 1;
+                    color: white;
+                ">&times;</button>
+            </div>
+
+            <div class="modal-body" id="modalMessage"></div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
     <!--**********************************
         Scripts
     ***********************************-->
 
   <!-- Required vendors -->
+  
+
     <script src="{% static 'vendor/global/global.min.js' %}"></script>
 	<script src="{% static 'vendor/chart-js/chart.bundle.min.js' %}"></script>
 	<!--datatables-->
 	<script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
+
+	<!-- Required Bootstrap 5 JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 	<!-- Apex Chart -->
 	<script src="{% static 'vendor/apexchart/apexchart.js' %}"></script>
@@ -369,7 +399,43 @@
 
 	<!-- Custom JavaScript - External Files -->
 	<script src="{% static 'js/cleanup-theme-elements.js' %}"></script>
-	<script src="{% static 'js/theme-toggle.js' %}"></script>
+	<script src="{% static 'js/theme-toggle.js' %}"></script>	
+
+	<!-- Modal Trigger Script -->
+    {% if messages %}
+    <script>
+        $(document).ready(function () {
+
+            {% for message in messages %}
+                let text = "{{ message|escapejs }}";
+                let tag  = "{{ message.tags }}";
+            {% endfor %}
+
+            let title = "Notice";
+            let color = "bg-primary";
+
+            if (tag.includes("error")) {
+                title = "Error";
+                color = "bg-danger";
+            } else if (tag.includes("success")) {
+                title = "Success";
+                color = "bg-success";
+            } else if (tag.includes("warning")) {
+                title = "Warning";
+                color = "bg-warning";
+            } else if (tag.includes("info")) {
+                title = "Information";
+                color = "bg-info";
+            }
+
+            $("#modalTitle").text(title);
+            $("#modalHeader").attr("class", "modal-header text-white " + color);
+            $("#modalMessage").text(text);
+
+            $("#alertModal").modal("show");
+        });
+    </script>
+    {% endif %}
 
 	<!-- Page-specific scripts (dashboard.js loaded here for dashboard page) -->
 	{% block page_scripts %}{% endblock %}

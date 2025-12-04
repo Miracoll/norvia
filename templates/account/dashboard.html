@@ -14,87 +14,6 @@
 <!-- Alert Display JavaScript -->
 <script src="{% static 'js/alert-display.js' %}"></script>
 
-<!-- Transfer Modal Functions -->
-<script>
-	// Transfer Modal Functions
-	let currentFromWallet = 'trading';
-	let currentToWallet = 'holding';
-
-	// Swap wallets function
-	function swapWallets() {
-		// Swap the wallet values
-		const temp = currentFromWallet;
-		currentFromWallet = currentToWallet;
-		currentToWallet = temp;
-
-		// Update display
-		updateWalletDisplay();
-	}
-
-	// Update wallet display
-	function updateWalletDisplay() {
-		const fromDisplay = document.getElementById('fromWalletDisplay');
-		const toDisplay = document.getElementById('toWalletDisplay');
-
-		fromDisplay.textContent = currentFromWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
-		toDisplay.textContent = currentToWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
-
-		// Update available balance
-		updateAvailableBalance();
-	}
-
-	// Set max amount function
-	function setMaxAmount() {
-		const maxBalance = walletData[currentFromWallet].deposit.usd;
-		document.getElementById('transferAmount').value = maxBalance.toFixed(2);
-	}
-
-	// Update available balance
-	function updateAvailableBalance() {
-		const balance = walletData[currentFromWallet].deposit.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-		document.getElementById('availableBalance').textContent = balance;
-	}
-
-	// Show success alert
-	function showTransferSuccess() {
-		// Django will handle showing success messages
-		alert('Transfer successful!');
-	}
-
-	function processTransfer() {
-		const amount = parseFloat(document.getElementById('transferAmount').value);
-
-		if (isNaN(amount) || amount <= 0) {
-			alert('Please enter a valid amount');
-			return;
-		}
-
-		const fromBalance = walletData[currentFromWallet].deposit.usd;
-		if (amount > fromBalance) {
-			alert('Insufficient balance');
-			return;
-		}
-
-		// Django will handle the actual transfer
-		// Close modal
-		const modal = bootstrap.Modal.getInstance(document.getElementById('transferModal'));
-		modal.hide();
-
-		// Show success alert
-		showTransferSuccess();
-
-		// Reset form
-		document.getElementById('transferAmount').value = '';
-	}
-
-	// Reset to default when modal opens
-	document.getElementById('transferModal')?.addEventListener('show.bs.modal', function() {
-		currentFromWallet = 'trading';
-		currentToWallet = 'holding';
-		updateWalletDisplay();
-		document.getElementById('transferAmount').value = '';
-	});
-</script>
 {% endblock %}
 
 {% block content %}
@@ -197,14 +116,14 @@
 														</div>
 
 														<div class="balance-row">
-															<div class="balance-number" id="tradingBalanceDisplay" data-deposit-usd="${{request.user.profit|intcomma}}" data-trading-usd="${{request.user.deposit|intcomma}}">${{request.user.profit|intcomma}}</div>
+															<div class="balance-number" id="tradingBalanceDisplay" data-deposit-usd="${{request.user.deposit|intcomma}}" data-trading-usd="${{request.user.profit|intcomma}}">${{request.user.profit|intcomma}}</div>
 															<button class="visibility-toggle-btn" onclick="toggleTradingBalance()">
 																<i class="material-icons" id="tradingEyeIcon">visibility_off</i>
 															</button>
 														</div>
 
 														<div class="btc-equiv" id="tradingBtcDisplay">
-															≈ <span id="tradingBtcValue" data-deposit-btc="0.0832" data-trading-btc="0.0192">0.0832</span> BTC
+															≈ <span id="tradingBtcValue" data-deposit-btc="{{trading_deposit_btc}}" data-trading-btc="{{trading_profit_btc}}">{{trading_deposit_btc}}</span> BTC
 														</div>
 
 														<div class="swipe-hint">
@@ -234,14 +153,14 @@
 														</div>
 
 														<div class="balance-row">
-															<div class="balance-number" id="holdingBalanceDisplay" data-deposit-usd="${{request.user.holding_profit|intcomma}}" data-trading-usd="${{request.user.holding_deposit|intcomma}}">${{request.user.holding_profit|intcomma}}</div>
+															<div class="balance-number" id="holdingBalanceDisplay" data-deposit-usd="${{request.user.holding_deposit|intcomma}}" data-trading-usd="${{request.user.holding_profit|intcomma}}">${{request.user.holding_profit|intcomma}}</div>
 															<button class="visibility-toggle-btn" onclick="toggleHoldingBalance()">
 																<i class="material-icons" id="holdingEyeIcon">visibility_off</i>
 															</button>
 														</div>
 
 														<div class="btc-equiv" id="holdingBtcDisplay">
-															≈ <span id="holdingBtcValue" data-deposit-btc="0.0279" data-trading-btc="0.0052">0.0279</span> BTC
+															≈ <span id="holdingBtcValue" data-deposit-btc="{{holding_deposit_btc}}" data-trading-btc="{{holding_profit_btc}}">{{holding_deposit_btc}}</span> BTC
 														</div>
 													</div>
 												</div>
@@ -671,77 +590,163 @@
 	</div>
 
 	<!-- Transfer Modal -->
-	<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content transfer-modal">
-				<div class="modal-header border-0 pb-0">
-					<h5 class="modal-title fw-bold" id="transferModalLabel">Transfer</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body px-3 pb-3">
-					<form id="transferForm">
-						<!-- From Account Section -->
-						<div class="transfer-section mb-1">
-							<label class="transfer-label">From</label>
-							<div class="transfer-display-wrapper">
-								<div class="transfer-wallet-name" id="fromWalletDisplay">Trading Wallet</div>
-							</div>
-						</div>
-
-						<!-- Swap Button -->
-						<div class="text-center" style="margin: 8px 0;">
-							<button type="button" class="swap-button" onclick="swapWallets()">
-								<i class="material-icons">swap_vert</i>
-							</button>
-						</div>
-
-						<!-- To Account Section -->
-						<div class="transfer-section mb-3">
-							<label class="transfer-label">To</label>
-							<div class="transfer-display-wrapper">
-								<div class="transfer-wallet-name" id="toWalletDisplay">Holding Wallet</div>
-							</div>
-						</div>
-
-						<!-- Coin Section -->
-						<div class="transfer-section mb-2">
-							<label class="transfer-label">Coin</label>
-							<div class="coin-select-wrapper">
-								<div class="coin-display">
-									<span class="coin-symbol">$</span>
-									<span class="coin-name">USD</span>
-								</div>
-								<i class="material-icons">chevron_right</i>
-							</div>
-						</div>
-
-						<!-- Amount Section -->
-						<div class="transfer-section mb-2">
-							<label class="transfer-label">Amount</label>
-							<div class="amount-input-wrapper">
-								<input type="number" class="amount-input" id="transferAmount" placeholder="Please enter" min="0" step="0.01">
-								<button type="button" class="max-button" onclick="setMaxAmount()">Max</button>
-								<span class="currency-label">USD</span>
-							</div>
-						</div>
-
-						<!-- Available Balance -->
-						<div class="available-balance">
-							<span class="available-label">Available</span>
-							<span class="available-amount">
-								<span id="availableBalance">5,430.50</span> USD
-								<i class="material-icons available-info">help_outline</i>
-							</span>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer border-0 pt-0 px-3 pb-3">
-					<button type="button" class="btn btn-transfer w-100" onclick="processTransfer()">
-						Confirm Transfer
-					</button>
-				</div>
-			</div>
+<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+	  <div class="modal-content transfer-modal">
+		<div class="modal-header border-0 pb-0">
+		  <h5 class="modal-title fw-bold" id="transferModalLabel">Transfer</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		</div>
+		<div class="modal-body px-3 pb-3">
+		  <form id="transferForm">
+			<!-- From Wallet -->
+			<div class="transfer-section mb-1">
+			  <label class="transfer-label">From</label>
+			  <div class="transfer-display-wrapper">
+				<div class="transfer-wallet-name" id="fromWalletDisplay">Trading Wallet</div>
+			  </div>
+			</div>
+  
+			<!-- Swap -->
+			<div class="text-center mb-3">
+			  <button type="button" class="swap-button" onclick="swapWallets()">
+				<i class="material-icons">swap_vert</i>
+			  </button>
+			</div>
+  
+			<!-- To Wallet -->
+			<div class="transfer-section mb-3">
+			  <label class="transfer-label">To</label>
+			  <div class="transfer-display-wrapper">
+				<div class="transfer-wallet-name" id="toWalletDisplay">Holding Wallet</div>
+			  </div>
+			</div>
+  
+			<!-- Amount -->
+			<div class="transfer-section mb-2">
+			  <label class="transfer-label">Amount</label>
+			  <div class="amount-input-wrapper">
+				<input type="number" class="amount-input" id="transferAmount" placeholder="Enter amount" min="0" step="0.01">
+				<button type="button" class="max-button" onclick="setMaxAmount()">Max</button>
+				<span class="currency-label">USD</span>
+			  </div>
+			</div>
+  
+			<!-- Available Balance -->
+			<div class="available-balance">
+			  <span class="available-label">Available(Trading)</span>
+			  <span class="available-amount">
+				<span id="availableBalance">{{request.user.deposit|floatformat:2}}</span> USD
+			  </span>
+			</div>
+		  </form>
+		</div>
+  
+		<div class="modal-footer border-0 pt-0 px-3 pb-3">
+		  <button type="button" class="btn btn-transfer w-100" onclick="processTransfer()">
+			Confirm Transfer
+		  </button>
+		</div>
+	  </div>
 	</div>
+  </div>
+  
+  <script>
+  let currentFromWallet = 'trading';
+  let currentToWallet = 'holding';
+  
+  // Swap wallets
+  function swapWallets() {
+	  [currentFromWallet, currentToWallet] = [currentToWallet, currentFromWallet];
+	  updateWalletDisplay();
+  }
+  
+  // Update wallet display
+  function updateWalletDisplay() {
+	  document.getElementById('fromWalletDisplay').textContent = currentFromWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
+	  document.getElementById('toWalletDisplay').textContent = currentToWallet === 'trading' ? 'Trading Wallet' : 'Holding Wallet';
+	  updateAvailableBalance();
+  }
+  
+  // Update available balance
+  function updateAvailableBalance() {
+	  const balance = parseFloat(document.getElementById('availableBalance').textContent) || 0;
+	  document.getElementById('availableBalance').textContent = balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  
+  // Set max amount
+  function setMaxAmount() {
+	  const balance = parseFloat(document.getElementById('availableBalance').textContent) || 0;
+	  document.getElementById('transferAmount').value = balance.toFixed(2);
+  }
+  
+  // Get CSRF token
+  function getCookie(name) {
+	  let cookieValue = null;
+	  if (document.cookie && document.cookie !== '') {
+		  const cookies = document.cookie.split(';');
+		  for (let cookie of cookies) {
+			  cookie = cookie.trim();
+			  if (cookie.startsWith(name + '=')) {
+				  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				  break;
+			  }
+		  }
+	  }
+	  return cookieValue;
+  }
+  
+  // Process transfer via AJAX
+  function processTransfer() {
+	  const amount = parseFloat(document.getElementById('transferAmount').value);
+	  if (isNaN(amount) || amount <= 0) {
+		  alert('Enter a valid amount');
+		  return;
+	  }
+  
+	  const csrftoken = getCookie('csrftoken');
+  
+	  fetch("{% url 'transfer_wallet' %}", {
+		  method: 'POST',
+		  headers: {
+			  'Content-Type': 'application/json',
+			  'X-CSRFToken': csrftoken
+		  },
+		  body: JSON.stringify({
+			  from_wallet: currentFromWallet,
+			  to_wallet: currentToWallet,
+			  amount: amount
+		  })
+	  })
+	  .then(response => response.json())
+	  .then(data => {
+		  if (data.status === 'success') {
+			  document.getElementById('availableBalance').textContent = parseFloat(data.new_from_balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+			  document.getElementById('transferAmount').value = '';
+  
+			  // Close modal
+			  const modalEl = document.getElementById('transferModal');
+			  const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+			  modal.hide();
+  
+			  alert('Transfer successful!');
+		  } else {
+			  alert(data.message);
+		  }
+	  })
+	  .catch(err => {
+		  console.error(err);
+		  alert('An error occurred. Try again.');
+	  });
+  }
+  
+  // Reset modal when opened
+  document.getElementById('transferModal')?.addEventListener('show.bs.modal', () => {
+	  currentFromWallet = 'trading';
+	  currentToWallet = 'holding';
+	  document.getElementById('transferAmount').value = '';
+	  updateWalletDisplay();
+  });
+  </script>  
 
 {% endblock %}

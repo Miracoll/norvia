@@ -1,5 +1,5 @@
 import requests
-
+import yfinance as yf
 from account.models import Activity, Notification
 
 def telegram(message):
@@ -35,3 +35,24 @@ def add_notification(user,title,text,color):
     )
 
     return notification
+
+# def usd_to_btc(amount_usd):
+#     url = "https://api.kraken.com/0/public/Ticker?pair=XBTUSD"
+
+#     response = requests.get(url)
+#     response.raise_for_status()
+
+#     data = response.json()
+#     btc_price = float(data["result"]["XXBTZUSD"]["c"][0])  # last trade price
+
+#     return amount_usd / btc_price
+
+def usd_to_btc(amount_usd):
+    btc = yf.Ticker("BTC-USD")
+    data = btc.history(period="1d")   # ALWAYS works
+
+    if data.empty:
+        raise Exception("Failed to fetch BTC price")
+
+    btc_price = data["Close"].iloc[-1]   # last available price
+    return amount_usd / btc_price

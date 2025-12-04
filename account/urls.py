@@ -38,4 +38,5 @@ urlpatterns = [
     path('agreement/', views.copytrading_agreement, name='copytrading_agreement'),
     path('password/change/', views.change_password, name='change_password'),
     path('two-factor/', views.two_factor, name='two_factor'),
+    path("wallet/transfer/", views.transfer_wallet, name="transfer_wallet"),
 ]
