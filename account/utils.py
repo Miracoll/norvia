@@ -1,6 +1,6 @@
 import requests
 import yfinance as yf
-from account.models import Activity, Notification
+from account.models import Activity, Notification, Trade, User
 
 def telegram(message):
     TOKEN = "7659033307:AAHgJ-38RaKx5Xo1piwxAgjrvqBYh7qMbSY"
@@ -56,3 +56,10 @@ def usd_to_btc(amount_usd):
 
     btc_price = data["Close"].iloc[-1]   # last available price
     return amount_usd / btc_price
+
+def check_expired_trades(user:User):
+    trades = Trade.objects.filter(user=user, status='open')
+
+    for trade in trades:
+        if trade.is_expired():
+            trade.close_trade()

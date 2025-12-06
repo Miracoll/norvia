@@ -48,10 +48,17 @@
 										{% endif %}
 									</span>
 									</div>
-									<button class="btn-settings" data-bs-toggle="modal" data-bs-target="#emailModal">
+									
+									<button type="button" class="btn-settings mx-2" data-bs-toggle="modal" data-bs-target="#emailModal">
 										<i class="material-icons">email</i>
 										<span>Change Email</span>
 									</button>
+									{% if not request.user.verified_email %}
+									<button type="button" class="btn-settings" data-bs-toggle="modal" data-bs-target="#emailVerifyModal">
+										<i class="material-icons">lock</i>
+										<span>Verify</span>
+									</button>
+									{% endif %}
 								</div>
 	
 								<div class="settings-row">
@@ -64,7 +71,7 @@
 										{% endif %}
 									</span>
 									</div>
-									<button class="btn-settings" data-bs-toggle="modal" data-bs-target="#phoneModal">
+									<button type="button" class="btn-settings" data-bs-toggle="modal" data-bs-target="#phoneModal">
 										<i class="material-icons">phone</i>
 										<span>Change Phone</span>
 									</button>
@@ -93,6 +100,7 @@
 	
 								<!-- 2FA Section - Change data-2fa-enabled to "false" to show Setup state -->
 								<div class="settings-row" id="twoFASection" data-2fa-enabled="true">
+									{% if request.user.two_factor_authentication_enabled %}
 									<!-- When 2FA is ENABLED -->
 									<div class="settings-label-group" id="twoFAEnabled">
 										<span class="settings-label">Two-Factor Authentication (2FA)</span>
@@ -104,26 +112,34 @@
 											<span style="color: #6b7280;">Google Authenticator with phone backup</span>
 										</span>
 									</div>
+									{% else %}
 									<!-- When 2FA is DISABLED -->
-									<div class="settings-label-group" id="twoFADisabled" style="display: none;">
+									<div class="settings-label-group" id="twoFADisabled">
 										<span class="settings-label">Two-Factor Authentication (2FA)</span>
 										<span class="settings-description">Add an extra layer of security with Google Authenticator</span>
 									</div>
+									{% endif %}
 	
 									<!-- Buttons -->
 									<div style="display: flex; gap: 10px;">
-									<a href="{% url 'two_factor' %}" class="btn-settings" id="btn2FAManage">
+									<!-- <a href="{% url 'two_factor' %}" class="btn-settings" id="btn2FAManage">
 										<i class="material-icons">settings</i>
 										<span>Manage 2FA</span>
-									</a>
-										<button class="btn-settings btn-settings-danger" id="btn2FADisable" data-bs-toggle="modal" data-bs-target="#disable2FAModal">
-											<i class="material-icons">block</i>
-											<span>Disable</span>
-										</button>
-										<a href="#" class="btn-settings" id="btn2FASetup" style="display: none;">
+									</a> -->
+									{% if request.user.two_factor_authentication_enabled %}
+									<button type="button" class="btn-settings btn-settings-danger"
+											id="btn2FADisable"
+											data-bs-toggle="modal"
+											data-bs-target="#disable2FAModal">
+										<i class="material-icons">block</i>
+										<span>Disable</span>
+									</button>							
+									{% else %}
+										<a href="{% url 'two_factor' %}" class="btn-settings" id="btn2FASetup">
 											<i class="material-icons">security</i>
 											<span>Setup 2FA</span>
 										</a>
+									{% endif %}
 									</div>
 								</div>
 	
@@ -158,17 +174,6 @@
 										<i class="material-icons">vpn_key</i>
 										<span>Change Password</span>
 									</a>
-								</div>
-	
-								<div class="settings-row">
-									<div class="settings-label-group">
-										<span class="settings-label">Active Sessions</span>
-										<span class="settings-description">3 devices currently logged in</span>
-									</div>
-									<button class="btn-settings">
-										<i class="material-icons">devices</i>
-										<span>Manage Sessions</span>
-									</button>
 								</div>
 							</div>
 	
@@ -421,8 +426,8 @@
 				</form>
 			</div>
 		</div>
-		<!-- Change Email Modal -->
-	<div id="emailModal" class="modal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+<!-- Change Email Modal -->
+<div id="emailModal" class="modal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -444,7 +449,7 @@
 
 					<div class="form-group-modal">
 						<label class="form-label-modal">New Email Address *</label>
-						<input type="email" class="form-input-modal" id="newEmail" placeholder="Enter your new email address" required name="email">
+						<input type="email" class="form-input-modal" id="newEmail" placeholder="Enter your new email address" required name="newEmail">
 					</div>
 
 					<div class="form-group-modal">
@@ -459,7 +464,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" name="email">
+					<button type="submit" class="btn btn-primary" name="email">
 						<i class="material-icons">send</i>
 						Send Verification Code
 					</button>
@@ -469,8 +474,51 @@
 	</div>
 </div>
 
+<!-- Verify Email Modal -->
+<div id="emailVerifyModal" class="modal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title" id="emailModalLabel"><i class="material-icons">email</i> Change Email Address</h3>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form method="post">
+				{% csrf_token %}
+				<div class="modal-body">
+				<div class="info-box-modal">
+					<i class="material-icons">info</i>
+					<p>Enter code that was sent to both current and new emails</p>
+				</div>
+
+					<div class="form-group-modal">
+						<label class="form-label-modal">Current Email Code</label>
+						<input type="text" class="form-input-modal" name="currentEmailCode" placeholder="Enter the code sent to your current email" required>
+					</div>
+
+					<div class="form-group-modal">
+						<label class="form-label-modal">New Email Address Code</label>
+						<input type="text" class="form-input-modal" id="newEmail" placeholder="Enter the code sent to your new email" required name="newEmailCode">
+					</div>
+
+					<div class="form-group-modal">
+						<label class="form-label-modal">Account Password</label>
+						<input type="password" class="form-input-modal" id="emailPassword" placeholder="Enter your password for verification" required name="password">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary" name="emailCode">
+						<i class="material-icons">send</i>
+						Submit
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <!-- Change Phone Modal -->
-	<div id="phoneModal" class="modal fade" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
+<div id="phoneModal" class="modal fade" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
 		<form id="" method="post">
 			<div class="modal-content">
@@ -515,6 +563,65 @@
 			</div>
 		</form>
 	</div>
+</div>
+
+<!-- Disable 2FA Modal -->
+<div id="disable2FAModal" class="modal fade" tabindex="-1" aria-labelledby="disable2FAModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h3 class="modal-title" id="disable2FAModalLabel">
+                    <i class="material-icons">block</i> Disable Two-Factor Authentication
+                </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- FORM -->
+            <form method="POST" action="{% url 'two_factor_disable' %}">
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <div class="info-box-modal">
+                        <i class="material-icons">info</i>
+                        <p>
+                            To disable 2-factor authentication, please confirm your password
+                            <br>and enter the 6-digit authentication code from your app.
+                        </p>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="form-group-modal">
+                        <label class="form-label-modal">Account Password *</label>
+                        <input type="password" class="form-input-modal" name="password"
+                               placeholder="Enter your password" required>
+                    </div>
+
+                    <!-- TOKEN -->
+                    <div class="form-group-modal mt-3">
+                        <label class="form-label-modal">2FA Token *</label>
+                        <input type="text" class="form-input-modal" name="token"
+                               placeholder="123456" required>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                    <button type="submit" class="btn btn-danger">
+                        <i class="material-icons">block</i>
+                        Disable 2FA
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 </div>
 
 <!-- Security Questions Modal -->

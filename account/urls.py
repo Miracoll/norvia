@@ -38,5 +38,8 @@ urlpatterns = [
     path('agreement/', views.copytrading_agreement, name='copytrading_agreement'),
     path('password/change/', views.change_password, name='change_password'),
     path('two-factor/', views.two_factor, name='two_factor'),
+    path('two-factor-verify/', views.verify_mfa, name='two_factor_verify'),
+    path('two-factor-disable/', views.disable_mfa, name='two_factor_disable'),
+    path('2fa-setup/<uuid:ref>/', views.verify_2fa_login, name='two_factor_login_verify'),
     path("wallet/transfer/", views.transfer_wallet, name="transfer_wallet"),
 ]

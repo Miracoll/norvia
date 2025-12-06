@@ -102,9 +102,13 @@ class User(AbstractUser):
     use_global_settings = models.BooleanField(default=True)
     current_plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True, blank=True)
     two_factor_authentication_enabled = models.BooleanField(default=False)
+    mfa_secret = models.CharField(max_length=100, blank=True, null=True)
     trading_enabled = models.BooleanField(default=True)
     withdrawal_enabled = models.BooleanField(default=False)
     trading_circle = models.PositiveIntegerField(blank=True, null=True)
+    current_email_code = models.CharField(max_length=100, blank=True, null=True)
+    new_email_code = models.CharField(max_length=100, blank=True, null=True)
+    new_email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -322,6 +326,8 @@ class UserPaymentMethod(models.Model):
     payment_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     payment_object_id = models.PositiveIntegerField()
     payment = GenericForeignKey('payment_content_type', 'payment_object_id')
+
+    method_type = models.CharField(max_length=30, choices=[('gateway','gateway'), ('currency','currency')], blank=True, null=True)
 
     active = models.BooleanField(default=False)
 
@@ -651,10 +657,29 @@ class Trade(models.Model):
     status = models.CharField(max_length=10, default='open')
     pnl = models.FloatField(default=0.0)
     pnl_percent = models.FloatField(default=0.0)
-    duration = models.PositiveIntegerField(default=1)
+    duration = models.PositiveIntegerField(default=1)   #minutes
     opened_at = models.DateTimeField(default=timezone.now)
     closed_at = models.DateTimeField(null=True, blank=True)
     asset = models.CharField(max_length=10, default='crypto')
 
     def __str__(self):
         return f"{self.user.username} - {self.symbol} ({self.trade_type})"
+    
+    def is_expired(self):
+        expire_time = self.opened_at + timedelta(minutes=self.duration)
+        return timezone.now() >= expire_time
+
+    def close_trade(self):
+        self.status = 'closed'
+        self.closed_at = timezone.now()
+
+        # Example PnL logic
+        if self.trade_type == 'buy':
+            self.pnl = (self.current_price - self.entry_price) * self.size
+        else:
+            self.pnl = (self.entry_price - self.current_price) * self.size
+
+        if self.entry_price > 0:
+            self.pnl_percent = (self.pnl / (self.entry_price * self.size)) * 100
+
+        self.save()

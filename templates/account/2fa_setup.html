@@ -79,7 +79,8 @@
 						<div class="qr-code-container">
 							<div class="qr-code-box">
 								<!-- TODO: Generate actual QR code on backend -->
-								<i class="material-icons qr-code-placeholder">qr_code_2</i>
+								<!-- <i class="material-icons qr-code-placeholder">qr_code_2</i> -->
+								<img src="{{qrcode}}" alt="">
 							</div>
 							<p style="font-size: 14px; color: #6b7280; margin: 0;">Scan this QR code with Google Authenticator</p>
 						</div>
@@ -104,13 +105,14 @@
 							Enter the 6-digit code from your Google Authenticator app to verify the setup.
 						</p>
 
-						<form id="verify2faForm">
+						<form id="verify2faForm" action="{% url 'two_factor_verify' %}" method="post">
+							{% csrf_token %}
 							<div class="form-group-2fa">
 								<label class="form-label-2fa">6-Digit Verification Code *</label>
-								<input type="text" class="form-input-2fa verification-code-input" id="verificationCode" placeholder="000000" maxlength="6" required>
+								<input type="text" name="token" class="form-input-2fa verification-code-input" id="verificationCode" placeholder="000000" maxlength="6" required>
 							</div>
 
-							<button type="button" class="btn-2fa">
+							<button type="submit" class="btn-2fa">
 								<i class="material-icons">verified_user</i>
 								Verify & Continue
 							</button>

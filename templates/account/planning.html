@@ -50,7 +50,7 @@
 							<div>
 								<select class="form-control my-2" name="plan">
 									{% for i in currency_list %}
-									<option value="{{i.ref}}_{{plan.id}}">{{i.currency}} ({{i.abbr}})</option>
+									<option value="{{i.payment.ref}}_{{plan.id}}">{{i.payment.currency}} ({{i.payment.abbr}})</option>
 									{% endfor %}
 								</select>
 							</div>

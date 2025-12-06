@@ -1177,55 +1177,59 @@
 								Trading Settings
 							</h3>
 						</div>
-						<div class="info-grid">
-							<div class="info-item">
-								<div class="info-label">Current Tier</div>
-								<select style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
-									<option>Tier 1 (50X Leverage)</option>
-									<option selected>Tier 2 (200X Leverage)</option>
-									<option>Tier 3 (500X Leverage)</option>
-								</select>
-							</div>
-							<div class="info-item">
-								<div class="info-label">Max Leverage</div>
-								<input type="number" value="200" style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
-							</div>
-							<div class="info-item">
-								<div class="info-label">Allowed Timeframes</div>
-								<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-									<label style="display: flex; align-items: center; gap: 4px;">
-										<input type="checkbox" checked> 3s
-									</label>
-									<label style="display: flex; align-items: center; gap: 4px;">
-										<input type="checkbox" checked> 1m
-									</label>
-									<label style="display: flex; align-items: center; gap: 4px;">
-										<input type="checkbox" checked> 5m
-									</label>
-									<label style="display: flex; align-items: center; gap: 4px;">
-										<input type="checkbox"> 15m
-									</label>
-									<label style="display: flex; align-items: center; gap: 4px;">
-										<input type="checkbox"> 30m
-									</label>
+						<form action="" method="post">
+							{% csrf_token %}
+							<div class="info-grid">
+								<div class="info-item">
+									<div class="info-label">Current Tier</div>
+									<select style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+										<option value="50">Tier 1 (50X Leverage)</option>
+										<option value="200" selected>Tier 2 (200X Leverage)</option>
+										<option value="500">Tier 3 (500X Leverage)</option>
+									</select>
+								</div>
+								<div class="info-item">
+									<div class="info-label">Max Leverage</div>
+									<input type="number" value="200" style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+								</div>
+								<div class="info-item">
+									<div class="info-label">Allowed Timeframes</div>
+									<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+										<label style="display: flex; align-items: center; gap: 4px;">
+											<input type="checkbox" checked> 3s
+										</label>
+										<label style="display: flex; align-items: center; gap: 4px;">
+											<input type="checkbox" checked> 1m
+										</label>
+										<label style="display: flex; align-items: center; gap: 4px;">
+											<input type="checkbox" checked> 5m
+										</label>
+										<label style="display: flex; align-items: center; gap: 4px;">
+											<input type="checkbox"> 15m
+										</label>
+										<label style="display: flex; align-items: center; gap: 4px;">
+											<input type="checkbox"> 30m
+										</label>
+									</div>
+								</div>
+								<div class="info-item" style="grid-column: 1 / -1;">
+									<div class="info-label">Copy Trading Circle (Days)</div>
+									<div style="display: flex; gap: 10px; align-items: center;">
+										<input type="number" id="copyTradingCircle" name="circle" value="{{user.trading_circle}}" min="1" placeholder="Enter days" style="flex: 1; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+										<button type="submit" name="set_circle"
+											style="background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+											Set Circle
+										</button>
+									</div>
+									<div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
+										Set the number of days for the copy trading cycle. This will start a countdown timer in the user's dashboard.
+									</div>
 								</div>
 							</div>
-							<div class="info-item" style="grid-column: 1 / -1;">
-								<div class="info-label">Copy Trading Circle (Days)</div>
-								<div style="display: flex; gap: 10px; align-items: center;">
-									<input type="number" id="copyTradingCircle" value="30" min="1" placeholder="Enter days" style="flex: 1; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
-									<button onclick="setCopyTradingCircle()" style="background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap;">
-										Set Circle
-									</button>
-								</div>
-								<div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
-									Set the number of days for the copy trading cycle. This will start a countdown timer in the user's dashboard.
-								</div>
-							</div>
-						</div>
-						<button style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 16px;">
-							Save Trading Settings
-						</button>
+							<button name="trading_circle" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 16px;">
+								Save Trading Settings
+							</button>
+						</form>
 					</div>
 
 					<div class="info-card">
@@ -1605,8 +1609,7 @@
 			</div>
 			<div class="modal-body">
 				<form id="takeTradeForm" method="POST" action="">
-					<input type="hidden" name="action" value="take_manual_trade">
-					<input type="hidden" name="user_id" value="USR-12345">
+					{% csrf_token %}
 
 				<!-- Copied Traders -->
 				<div style="margin-bottom: 20px;">
@@ -1615,10 +1618,9 @@
 					</label>
 					<select name="tradeTrader" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;" required>
 						<option value="">Select a trader...</option>
-						<option value="johndoe">John Doe (@johndoe)</option>
-						<option value="sarahkim">Sarah Kim (@sarahkim)</option>
-						<option value="mikelee">Mike Lee (@mikelee)</option>
-						<option value="manual">Manual Trade (No Trader)</option>
+						{% for t in traders %}
+						<option value="{{t.ref}}">{{t.trader.full_name}} (@{{t.trader.username}})</option>
+						{% endfor %}
 					</select>
 					<div style="font-size: 12px; color: #6b7280; margin-top: 6px;">
 						Select which copied trader this trade should be attributed to
@@ -1735,7 +1737,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-				<button type="submit" form="takeTradeForm" class="btn btn-danger">Execute Trade</button>
+				<button type="submit" name="take_trade" form="takeTradeForm" class="btn btn-danger">Execute Trade</button>
 			</div>
 		</div>
 	</div>

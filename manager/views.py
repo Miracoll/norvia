@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Sum
 from django.utils import timezone
+import requests
 
 from account.models import Activity, AddressVerification, BannedIp, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, Notification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, UserPlan, Withdraw
 from manager.forms import TraderForm
@@ -140,13 +141,16 @@ def user_detail(request, username):
 
         if payment_type == 'currency':
             payment = Currency.objects.get(ref=payment_ref)
+            method_type = 'currency'
         else:
             payment = PaymentGateway.objects.get(ref=payment_ref)
+            method_type = 'gateway'
 
         UserPaymentMethod.objects.create(
             user=user,
             payment=payment,
-            active=True
+            active=True,
+            method_type=method_type,
         )
 
         messages.success(request, "payment method add to this user")
@@ -284,6 +288,92 @@ def user_detail(request, username):
         user.save()
 
         messages.success(request, "successful")
+        return redirect('admin_user_detail', username=username)
+    
+    elif 'take_trade' in request.POST:
+        print("kdfkdfdkhf")
+
+        trader_ref = request.POST.get('tradeTrader')
+        market_type = request.POST.get('marketType')
+        asset = request.POST.get('tradeAsset')
+        direction = request.POST.get('direction')
+        amount = float(request.POST.get('tradeAmount'))
+        leverage = int(request.POST.get('tradeLeverage'))
+        duration = request.POST.get('tradeDuration')
+        outcome = request.POST.get('outcome')
+        outcome_amount = request.POST.get('outcomeAmount')
+
+        # Clean asset for Binance (e.g. 'BTC/USDT' → 'BTCUSDT')
+        api_symbol = asset.replace("/", "")
+        api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+
+        entry_price = None
+
+        # ====== FETCH MARKET PRICE FOR CRYPTO ======
+        if market_type == 'crypto':
+            try:
+                response = requests.get(api_url, timeout=5)
+                response.raise_for_status()
+                data = response.json()
+
+                if "price" not in data:
+                    raise Exception("Invalid price response")
+
+                entry_price = float(data["price"])
+
+            except Exception as e:
+                messages.error(request, f"Failed to fetch price: {e}")
+                return redirect("admin_user_detail", username=username)
+
+        # Safety check
+        if entry_price is None:
+            messages.error(request, "Entry price missing.")
+            return redirect("admin_user_detail", username=username)
+
+        # ====== CALCULATE SIZE ======
+        # size = total_value / entry_price
+        size = amount / entry_price
+
+        # For now, on open trade PnL is zero
+        pnl = 0
+        pnl_percent = 0
+
+        # ====== GET TRADER OBJECT ======
+        trader = CopiedTrader.objects.get(ref=trader_ref)
+
+        # ====== CHECK MODE ======
+        mode = 'leverage' if leverage > 1 else 'spot'
+
+        # ====== CREATE TRADE ======
+        trade = Trade.objects.create(
+            user=user,
+            symbol=asset,
+            trade_type=direction,
+            mode=mode,
+            leverage=leverage,
+            size=size,
+            entry_price=entry_price,
+            current_price=entry_price,   # same when opening
+            duration=duration,
+            pnl=pnl,
+            pnl_percent=pnl_percent,
+            asset=asset,
+            status='open',
+            opened_at=timezone.now(),
+            trader=trader
+        )
+
+        messages.success(request, "Trade successfully opened.")
+        return redirect("admin_user_detail", username=username)
+    
+    elif 'set_circle' in request.POST:
+
+        trading_circle = request.POST.get('circle')
+
+        user.trading_circle = int(trading_circle)
+        user.save()
+
+        messages.success(request, "Successful")
         return redirect('admin_user_detail', username=username)
 
     context = {

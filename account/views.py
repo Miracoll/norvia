@@ -1,5 +1,8 @@
+import base64
 from decimal import Decimal
+import io
 import json
+import random
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -21,9 +24,11 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.db import transaction
+import pyotp
+import qrcode
 
-from account.models import AddressVerification, AdminNotification, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, Withdraw, PasswordHistory
-from account.utils import add_activity, add_notification, telegram, usd_to_btc
+from account.models import AddressVerification, AdminNotification, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, Withdraw, PasswordHistory
+from account.utils import add_activity, add_notification, check_expired_trades, telegram, usd_to_btc
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -31,15 +36,18 @@ from utils.decorators import allowed_users
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def home(request):
-    copied_trader = CopiedTrader.objects.filter(user=request.user)
-    trades = Trade.objects.filter(user=request.user)
+    user = request.user
+
+    # 🔥 Run expiration checker
+    check_expired_trades(user)
+
+    copied_trader = CopiedTrader.objects.filter(user=user)
+    trades = Trade.objects.filter(user=user)
 
     open_trades = trades.filter(status='open')
     closed_trades = trades.filter(status='closed')
 
     notifications = AdminNotification.objects.filter(is_active=True).order_by('-created_at')
-
-    user = request.user
 
     context = {
         'class_value': 'page-dashboard',
@@ -56,42 +64,43 @@ def home(request):
 
 @login_required
 def transfer_wallet(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        from_wallet = data.get("from_wallet")
-        to_wallet = data.get("to_wallet")
-        amount = float(data.get("amount", 0))
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            from_wallet = data.get('from_wallet')
+            to_wallet = data.get('to_wallet')
+            amount = float(data.get('amount', 0))
+            
+            user = request.user
 
-        user = request.user
+            if amount <= 0:
+                return JsonResponse({'status': 'error', 'message': 'Invalid amount.'})
 
-        # Check wallets and balances
-        if from_wallet == "trading":
-            from_balance = user.deposit
-        else:
-            from_balance = user.holding_balance  # Replace with your field
+            # Simple logic assuming deposit is trading wallet, profit is holding wallet
+            if from_wallet == 'trading' and user.deposit < amount:
+                return JsonResponse({'status': 'error', 'message': 'Insufficient balance in Trading Wallet.'})
+            if from_wallet == 'holding' and user.profit < amount:
+                return JsonResponse({'status': 'error', 'message': 'Insufficient balance in Holding Wallet.'})
 
-        if amount > from_balance:
-            return JsonResponse({"status": "error", "message": "Insufficient balance"})
+            # Perform transfer
+            if from_wallet == 'trading':
+                user.deposit -= amount
+            else:
+                user.profit -= amount
 
-        # Deduct and add
-        if from_wallet == "trading":
-            user.deposit -= amount
-        else:
-            user.holding_balance -= amount
+            if to_wallet == 'trading':
+                user.deposit += amount
+            else:
+                user.profit += amount
 
-        if to_wallet == "trading":
-            user.deposit += amount
-        else:
-            user.holding_balance += amount
+            user.save()
 
-        user.save()
+            return JsonResponse({'status': 'success'})
 
-        return JsonResponse({
-            "status": "success",
-            "new_from_balance": from_balance - amount
-        })
-
-    return JsonResponse({"status": "error", "message": "Invalid request"})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
@@ -469,8 +478,9 @@ def become_trader(request):
 @allowed_users(allowed_roles=['admin','trader'])
 def deposit(request):
     # Fetch available currencies and payment gateways
-    currency_list = Currency.objects.filter(status=True)
-    payment_gateway_list = PaymentGateway.objects.filter(status=True)
+    user = request.user
+    currency_list = UserPaymentMethod.objects.filter(method_type='currency', user=user, active=True)
+    payment_gateway_list = UserPaymentMethod.objects.filter(method_type='gateway', user=user, active=True)
 
     if request.method == 'POST':
         # --- Common form fields ---
@@ -757,7 +767,7 @@ def withdrawal_history(request):
 @allowed_users(allowed_roles=['admin','trader'])
 def planning(request):
     categories = PlanCategory.objects.all()
-    currency_list = Currency.objects.filter(status=True)
+    currency_list = UserPaymentMethod.objects.filter(method_type='currency', user=request.user, active=True)
 
     if request.method == 'POST':
         print('1')
@@ -986,41 +996,93 @@ def address_verification(request):
 def account_settings(request):
     user = request.user
     if 'email' in request.POST:
-        email1 = request.POST.get('email')
+        email1 = request.POST.get('newEmail')
         email2 = request.POST.get('emailConfirm')
         password = request.POST.get('password')
 
-        # 1️⃣ Check that all fields are provided
+        # 1️⃣ Check fields
         if not email1 or not email2 or not password:
             messages.error(request, "Please fill in all fields.")
-            return redirect('settings')  # change to your settings page URL name
+            return redirect('settings')
 
-        # 2️⃣ Check if the email confirmation matches
+        # 2️⃣ Match emails
         if email1 != email2:
             messages.error(request, "Emails do not match.")
             return redirect('settings')
 
-        # 3️⃣ Authenticate password
+        # 3️⃣ Authenticate
         user_auth = authenticate(username=user.username, password=password)
         if not user_auth:
             messages.error(request, "Incorrect password. Please try again.")
             return redirect('settings')
 
-        # 4️⃣ Check if the email is different
+        # 4️⃣ If same email
         if email1 == user.email:
-            messages.info(request, "This is already your current email.")
+            messages.info(request, "Sorry you can not use this email address.")
+            return redirect('settings')
+        
+        if User.objects.filter(email=email1).exclude(id=user.id).exists():
+            messages.error(request, "This email is already in use by another account.")
             return redirect('settings')
 
         # 5️⃣ Update email
-        user.email = email1
-        user.verified_email = False  # Optionally mark unverified again
+        user.verified_email = False
         user.email_verification_status = "pending"
+
+        # 6️⃣ Generate verification code
+        code1 = str(random.randint(100000, 999999))
+        code2 = str(random.randint(100000, 999999))
+        user.current_email_code = code1
+        user.new_email_code = code2
+        user.new_email = email1
         user.save()
 
-        # 6️⃣ Keep session active (important if using Django auth)
+        # 7️⃣ Send Email
+        send_mail(
+            subject="Your Current Email Verification Code",
+            message=f"Your verification code is: {code1}\n\nEnter this code to verify your email.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+
+        send_mail(
+            subject="Your New Email Verification Code",
+            message=f"Your verification code is: {code2}\n\nEnter this code to verify your email.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email1],
+            fail_silently=False,
+        )
+
+        messages.success(request, "Email updated. A verification code has been sent to your new email.")
+        return redirect('settings')
+    
+    elif 'emailCode' in request.POST:
+        current_email_code = request.POST.get('currentEmailCode')
+        new_email_code = request.POST.get('newEmailCode')
+        password = request.POST.get('password')
+
+        # Check if the entered password is correct
+        if not request.user.check_password(password):
+            messages.error(request, "Incorrect password. Please try again.")
+            return redirect('profile_settings')  # change to your actual URL name
+
+        # Validate code
+        if current_email_code != user.current_email_code and new_email_code != user.new_email_code:
+            messages.error(request, "Invalid verification code. Please try again.")
+            return redirect('settings')
+
+        user.verified_email = True
+        user.email_verification_status = "verified"
+        user.current_email_code = None
+        user.new_email_code = None
+        user.email = user.new_email
+        user.new_email = None
+        user.save()
+
         update_session_auth_hash(request, user)
 
-        messages.success(request, "Email updated successfully. Please verify your new email address.")
+        messages.success(request, "Your email has been successfully verified.")
         return redirect('settings')
     
     elif 'questions' in request.POST:
@@ -1086,8 +1148,88 @@ def account_settings(request):
 @login_required(login_url='sign_in')
 @allowed_users(allowed_roles=['admin','trader'])
 def two_factor(request):
-    context = {}
+    user = request.user
+
+    if not user.two_factor_authentication_enabled:
+        # Generate secret if user doesn't have one
+        if not user.mfa_secret:
+            user.mfa_secret = pyotp.random_base32()
+            user.save()
+
+        # Always generate a QR code (old or new secret)
+        otp_uri = pyotp.totp.TOTP(user.mfa_secret).provisioning_uri(
+            name=user.email,
+            issuer_name="NORVIA"
+        )
+
+        qr = qrcode.make(otp_uri)
+        buffer = io.BytesIO()
+        qr.save(buffer, format="PNG")
+        buffer.seek(0)
+
+        qr_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        qr_code_data_uri = f"data:image/png;base64,{qr_base64}"
+
+    else:
+        return redirect('two_factor_verify')
+
+    context = {
+        'qrcode': qr_code_data_uri
+    }
+
     return render(request, 'account/2fa_setup.html', context)
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def verify_mfa(request):
+    user = request.user
+    if request.method == 'POST':
+        token = request.POST.get('token')
+        totp = pyotp.TOTP(user.mfa_secret)
+        if totp.verify(token):
+            user.two_factor_authentication_enabled = True
+            user.save()
+            messages.success(request, "Two-Factor Authentication enabled successfully.")
+            return redirect('settings')
+        else:
+            messages.error(request, "Invalid token. Please try again.")
+            return redirect('two_factor')
+    return render(request, 'account/verify_2fa.html')
+
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['admin','trader'])
+def disable_mfa(request):
+    user = request.user
+
+    if request.method == 'POST':
+        token = request.POST.get('token', '').strip()
+        password = request.POST.get('password', '').strip()
+
+        # Check correct password
+        if not user.check_password(password):
+            messages.error(request, "Incorrect password. Please try again.")
+            return redirect('disable_mfa')
+
+        # User must have MFA enabled
+        if not user.mfa_secret:
+            messages.error(request, "Two-Factor Authentication is not enabled.")
+            return redirect('settings')
+
+        # Verify token
+        totp = pyotp.TOTP(user.mfa_secret)
+        if not totp.verify(token):
+            messages.error(request, "Invalid authentication code.")
+            return redirect('disable_mfa')
+
+        # Disable MFA
+        user.two_factor_authentication_enabled = False
+        user.mfa_secret = ''
+        user.save()
+
+        messages.success(request, "Two-Factor Authentication has been disabled successfully.")
+        return redirect('settings')
+
+    return render(request, 'account/disable_2fa.html')
 
 @login_required
 def change_password(request):
@@ -1130,6 +1272,24 @@ def change_password(request):
 
     return render(request, 'account/change_password.html', {'history': history})
 
+def verify_2fa_login(request, ref):
+    user = get_object_or_404(User, ref=ref)
+
+    if request.method == 'POST':
+        token = request.POST.get('token')
+        totp = pyotp.TOTP(user.mfa_secret)
+        if totp.verify(token):
+            login(request, user)
+
+            user.last_login = timezone.now()
+            user.save()
+            return redirect('home')
+        else:
+            messages.error(request, "Invalid token. Please try again.")
+            return redirect('two_factor_login_verify', ref=ref)
+
+    return render(request, 'account/2fa_login_verify.html', {'ref': ref, 'class_value':'page-signin'})
+
 def sign_in(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -1139,6 +1299,8 @@ def sign_in(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            if user.two_factor_authentication_enabled:
+                return redirect('two_factor_login_verify', ref=user.ref)
             login(request, user)
 
             user.last_login = timezone.now()
@@ -1292,6 +1454,24 @@ def sign_up_step_3(request):
         # Add default group
         group, _ = Group.objects.get_or_create(name='trader')
         user.groups.add(group)
+
+        # Assign payment methods to new user
+        all_methods_currency = Currency.objects.filter(status=True)
+        all_methods_gateway = PaymentGateway.objects.filter(status=True)
+
+        for m in all_methods_currency:
+            UserPaymentMethod.objects.create(
+                user=user,
+                payment=m,
+                active=True
+            )
+
+        for n in all_methods_gateway:
+            UserPaymentMethod.objects.create(
+                user=user,
+                payment=n,
+                active=True
+            )
 
         # Generate UID and token
         uid = urlsafe_base64_encode(force_bytes(user.pk))

@@ -607,7 +607,7 @@
 			  </div>
 			</div>
   
-			<!-- Swap -->
+			<!-- Swap Button -->
 			<div class="text-center mb-3">
 			  <button type="button" class="swap-button" onclick="swapWallets()">
 				<i class="material-icons">swap_vert</i>
@@ -636,7 +636,7 @@
 			<div class="available-balance">
 			  <span class="available-label">Available(Trading)</span>
 			  <span class="available-amount">
-				<span id="availableBalance">{{request.user.deposit|floatformat:2}}</span> USD
+				<span id="availableBalance">{{ request.user.deposit|floatformat:2 }}</span> USD
 			  </span>
 			</div>
 		  </form>
@@ -655,6 +655,12 @@
   let currentFromWallet = 'trading';
   let currentToWallet = 'holding';
   
+  // Initialize walletData from Django
+  const walletData = {
+	  trading: { deposit: { usd: parseFloat('{{ request.user.deposit|floatformat:2 }}') || 0 } },
+	  holding: { deposit: { usd: 0 } } // Replace if holding wallet has a balance
+  };
+  
   // Swap wallets
   function swapWallets() {
 	  [currentFromWallet, currentToWallet] = [currentToWallet, currentFromWallet];
@@ -668,15 +674,15 @@
 	  updateAvailableBalance();
   }
   
-  // Update available balance
+  // Update available balance dynamically
   function updateAvailableBalance() {
-	  const balance = parseFloat(document.getElementById('availableBalance').textContent) || 0;
+	  const balance = walletData[currentFromWallet]?.deposit?.usd || 0;
 	  document.getElementById('availableBalance').textContent = balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   
   // Set max amount
   function setMaxAmount() {
-	  const balance = parseFloat(document.getElementById('availableBalance').textContent) || 0;
+	  const balance = walletData[currentFromWallet]?.deposit?.usd || 0;
 	  document.getElementById('transferAmount').value = balance.toFixed(2);
   }
   
@@ -704,6 +710,12 @@
 		  return;
 	  }
   
+	  const fromBalance = walletData[currentFromWallet]?.deposit?.usd || 0;
+	  if (amount > fromBalance) {
+		  alert('Insufficient balance');
+		  return;
+	  }
+  
 	  const csrftoken = getCookie('csrftoken');
   
 	  fetch("{% url 'transfer_wallet' %}", {
@@ -721,7 +733,12 @@
 	  .then(response => response.json())
 	  .then(data => {
 		  if (data.status === 'success') {
-			  document.getElementById('availableBalance').textContent = parseFloat(data.new_from_balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+			  // Update local walletData
+			  walletData[currentFromWallet].deposit.usd -= amount;
+			  walletData[currentToWallet].deposit.usd += amount;
+  
+			  // Update UI
+			  updateWalletDisplay();
 			  document.getElementById('transferAmount').value = '';
   
 			  // Close modal
@@ -730,6 +747,9 @@
 			  modal.hide();
   
 			  alert('Transfer successful!');
+
+			  // Reload page to refresh balances
+			  location.reload();
 		  } else {
 			  alert(data.message);
 		  }
@@ -747,6 +767,7 @@
 	  document.getElementById('transferAmount').value = '';
 	  updateWalletDisplay();
   });
-  </script>  
+  </script>
+  
 
 {% endblock %}

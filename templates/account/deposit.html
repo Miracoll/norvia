@@ -179,7 +179,7 @@
 													<label class="form-label fw-bold">Select Currency</label>
 													<select id="currencySelect" class="deposit-select" onchange="updateCurrencyLabel()" name="currency">
 														{% for cl in currency_list %}
-														<option value="{{cl.abbr|lower}}">{{cl.currency}} ({{cl.abbr|upper}})</option>
+														<option value="{{cl.payment.abbr|lower}}">{{cl.payment.currency}} ({{cl.payment.abbr|upper}})</option>
 														{% endfor %}
 													</select>
 												</div>
@@ -203,7 +203,7 @@
 													<select id="gatewaySelect" class="deposit-select" name="payment_gateway">
 														<option value="" disabled selected>Choose a payment method</option>
 														{% for pl in payment_gateway_list %}
-														<option value="{{pl.ref}}">{{pl.name}}</option>
+														<option value="{{pl.payment.ref}}">{{pl.payment.name}}</option>
 														{% endfor %}
 													</select>
 												</div>

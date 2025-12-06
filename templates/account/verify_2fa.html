@@ -1,0 +1,84 @@
+{% extends "account/base.html" %}
+{% load static %}
+
+{% block title %}2FA Verified{% endblock %}
+
+{% block body_class %}page-twofa{% endblock %}
+
+{% block content %}
+<div class="content-body default-height">
+    <div class="container-fluid">
+
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="page-titles">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'settings' %}">Settings</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">2FA Verified</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Row -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="twofa-container">
+
+                    <div class="twofa-header">
+                        <div class="twofa-header-content">
+                            <i class="material-icons" style="font-size: 70px; margin-bottom: 15px; color: #10b981;">verified</i>
+                            <h1>2FA Successfully Enabled</h1>
+                            <p>Your two-factor authentication is now active.</p>
+                        </div>
+                    </div>
+
+                    <!-- SUCCESS CARD -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number" style="background-color: #10b981;">✓</div>
+                            <h2 class="step-title">Verification Complete</h2>
+                        </div>
+
+                        <p class="step-description">
+                            The verification token you entered has been successfully validated.  
+                            Your account is now protected with Two-Factor Authentication (2FA).
+                        </p>
+
+                        <div class="info-box-2fa" style="border-left-color: #10b981;">
+                            <i class="material-icons" style="color: #10b981;">security</i>
+                            <div class="info-box-2fa-content">
+                                <h4>Account Secured</h4>
+                                <p>
+                                    Each time you log in, you will be required to enter a 6-digit code from your
+                                    authenticator app in addition to your password.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="recovery-box" style="margin-top: 20px; background: #f1fdf6; padding: 20px; border-radius: 10px; border: 1px solid #c4f3d2;">
+                            <i class="material-icons" style="color: #10b981; font-size: 28px; vertical-align: middle;">info</i>
+                            <span style="font-size: 16px; margin-left: 10px;">
+                                Remember to always keep your recovery codes in a safe place.
+                            </span>
+                        </div>
+
+                        <div style="margin-top: 30px; text-align: center;">
+                            <a href="{% url 'settings' %}" class="btn-2fa" style="padding-left: 40px; padding-right: 40px;">
+                                <i class="material-icons">arrow_back</i>
+                                Back to Settings
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
