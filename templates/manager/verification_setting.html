@@ -10,7 +10,7 @@
                 <div class="page-titles">
                     <nav style="--bs-breadcrumb-divider: '>';">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Verification Settings</li>
                         </ol>
                     </nav>
@@ -34,7 +34,7 @@
                     <i class="material-icons">verified</i>
                 </div>
                 <div class="stat-details">
-                    <h4>847</h4>
+                    <h4>{{kyc_verified}}</h4>
                     <p>KYC Verified Users</p>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <i class="material-icons">pending</i>
                 </div>
                 <div class="stat-details">
-                    <h4>123</h4>
+                    <h4>{{kyc_pending}}</h4>
                     <p>Pending Verifications</p>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     <i class="material-icons">home</i>
                 </div>
                 <div class="stat-details">
-                    <h4>654</h4>
+                    <h4>{{address_verified}}</h4>
                     <p>Address Verified</p>
                 </div>
             </div>
@@ -61,287 +61,142 @@
                     <i class="material-icons">cancel</i>
                 </div>
                 <div class="stat-details">
-                    <h4>45</h4>
+                    <h4>{{address_pending}}</h4>
                     <p>Rejected</p>
                 </div>
             </div>
         </div>
 
         <form method="POST" action="">
-            <input type="hidden" name="action" value="update_verification_settings">
-
-        <!-- KYC Verification Settings -->
-        <div class="settings-section">
-            <div class="section-header">
-                <div class="section-icon-header">
-                    <i class="material-icons">badge</i>
-                </div>
-                <div class="section-title">
-                    <h3>KYC Verification</h3>
-                    <p>Configure identity verification settings</p>
-                </div>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Enable KYC Verification</h4>
-                    <p>Require users to verify their identity</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" name="kyc_enabled" id="kycEnabled" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Requirement Level</h4>
-                    <p>When users must complete KYC verification</p>
-                </div>
-                <select name="kyc_requirement_level" class="setting-select" style="max-width: 300px;">
-                    <option value="optional">Optional</option>
-                    <option value="before_deposit" selected>Before First Deposit</option>
-                    <option value="before_withdrawal">Before First Withdrawal</option>
-                    <option value="mandatory">Mandatory (Upon Registration)</option>
-                </select>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Transaction Limits (Unverified Users)</h4>
-                    <p>Maximum transaction amounts for unverified users</p>
-                </div>
-                <div class="setting-input-group">
-                    <div>
-                        <label class="form-label">Max Deposit</label>
-                        <input type="number" name="kyc_max_deposit" class="setting-input" value="1000" placeholder="USD">
+            {% csrf_token %}
+        
+            <!-- KYC Verification Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-icon-header">
+                        <i class="material-icons">badge</i>
                     </div>
-                    <div>
-                        <label class="form-label">Max Withdrawal</label>
-                        <input type="number" name="kyc_max_withdrawal" class="setting-input" value="500" placeholder="USD">
+                    <div class="section-title">
+                        <h3>KYC Verification</h3>
+                        <p>Configure identity verification settings</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Required Documents</h4>
-                    <p>Select which documents users must upload</p>
+        
+                <!-- Enable KYC Verification -->
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Enable KYC Verification</h4>
+                        <p>Require users to verify their identity</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input
+                            type="checkbox"
+                            name="kyc_verification"
+                            {% if config.kyc_verification %}checked{% endif %}
+                        >
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-                <div class="documents-grid">
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="doc_government_id" id="doc1" checked>
-                        <label for="doc1">Government ID</label>
+        
+                <!-- Requirement Level -->
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Requirement Level</h4>
+                        <p>When users must complete KYC verification</p>
                     </div>
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="doc_passport" id="doc2" checked>
-                        <label for="doc2">Passport</label>
+                    <select name="required_level_for_kyc" class="setting-select" style="max-width: 300px;">
+                        <option value="optional"          {% if config.required_level_for_kyc == "optional" %}selected{% endif %}>Optional</option>
+                        <option value="before_deposit"    {% if config.required_level_for_kyc == "before_deposit" %}selected{% endif %}>Before First Deposit</option>
+                        <option value="before_withdrawal" {% if config.required_level_for_kyc == "before_withdrawal" %}selected{% endif %}>Before First Withdrawal</option>
+                        <option value="mandatory"         {% if config.required_level_for_kyc == "mandatory" %}selected{% endif %}>Mandatory (Upon Registration)</option>
+                    </select>
+                </div>
+        
+                <!-- Transaction Limits -->
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Transaction Limits (Unverified Users)</h4>
+                        <p>Maximum deposit and withdrawal for users without KYC</p>
                     </div>
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="doc_drivers_license" id="doc3">
-                        <label for="doc3">Driver's License</label>
-                    </div>
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="doc_selfie_id" id="doc4" checked>
-                        <label for="doc4">Selfie with ID</label>
+        
+                    <div class="setting-input-group">
+                        <div>
+                            <label class="form-label">Min Transaction Amount</label>
+                            <input
+                                type="number"
+                                name="transaction_limit_for_unverified_user_minimum"
+                                class="setting-input"
+                                value="{{ config.transaction_limit_for_unverified_user_minimum }}"
+                            >
+                        </div>
+        
+                        <div>
+                            <label class="form-label">Max Transaction Amount</label>
+                            <input
+                                type="number"
+                                name="transaction_limit_for_unverified_user_maximum"
+                                class="setting-input"
+                                value="{{ config.transaction_limit_for_unverified_user_maximum }}"
+                            >
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Retry Limit</h4>
-                    <p>Maximum failed verification attempts before review</p>
-                </div>
-                <input type="number" name="kyc_auto_reject_days" class="setting-input" value="3" style="max-width: 150px;">
-            </div>
-        </div>
-
-        <!-- Address Verification Settings -->
-        <div class="settings-section">
-            <div class="section-header">
-                <div class="section-icon-header">
-                    <i class="material-icons">home</i>
-                </div>
-                <div class="section-title">
-                    <h3>Address Verification</h3>
-                    <p>Configure proof of address requirements</p>
-                </div>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Enable Address Verification</h4>
-                    <p>Require users to verify their residential address</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" name="address_enabled" id="addressEnabled" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Requirement Level</h4>
-                    <p>When users must complete address verification</p>
-                </div>
-                <select name="address_requirement_level" class="setting-select" style="max-width: 300px;">
-                    <option value="optional">Optional</option>
-                    <option value="after_kyc" selected>After KYC Verification</option>
-                    <option value="before_withdrawal">Before Withdrawals Over $5,000</option>
-                    <option value="mandatory">Mandatory</option>
-                </select>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Accepted Documents</h4>
-                    <p>Select which documents are accepted as proof of address</p>
-                </div>
-                <div class="documents-grid">
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="addr_proof_residence" id="addr1" checked>
-                        <label for="addr1">Utility Bill</label>
+        
+            <!-- Email Verification Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-icon-header">
+                        <i class="material-icons">email</i>
                     </div>
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="addr_utility_bill" id="addr2" checked>
-                        <label for="addr2">Bank Statement</label>
-                    </div>
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="addr_bank_statement" id="addr3" checked>
-                        <label for="addr3">Tax Document</label>
-                    </div>
-                    <div class="document-checkbox">
-                        <input type="checkbox" name="addr_lease_agreement" id="addr4">
-                        <label for="addr4">Lease Agreement</label>
+                    <div class="section-title">
+                        <h3>Email Verification</h3>
+                        <p>Configure email verification requirements</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Document Age Limit</h4>
-                    <p>Maximum age of documents accepted (in months)</p>
+        
+                <!-- Enable Email Verification -->
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Enable Email Verification</h4>
+                        <p>Require users to verify their email address</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input
+                            type="checkbox"
+                            name="email_verification_enable"
+                            {% if config.email_verification_enable %}checked{% endif %}
+                        >
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-                <input type="number" name="kyc_auto_reject_days" class="setting-input" value="3" style="max-width: 150px;">
-            </div>
-        </div>
-
-        <!-- Phone Verification Settings -->
-        <div class="settings-section">
-            <div class="section-header">
-                <div class="section-icon-header">
-                    <i class="material-icons">phone</i>
-                </div>
-                <div class="section-title">
-                    <h3>Phone Verification</h3>
-                    <p>Configure phone number verification via OTP</p>
-                </div>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Enable Phone Verification</h4>
-                    <p>Require users to verify their phone number</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" name="phone_enabled" id="phoneEnabled" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>OTP Expiry Time</h4>
-                    <p>Time before OTP code expires</p>
-                </div>
-                <select name="phone_otp_expiry" class="setting-select" style="max-width: 200px;">
-                    <option value="2">2 minutes</option>
-                    <option value="5" selected>5 minutes</option>
-                    <option value="10">10 minutes</option>
-                    <option value="15">15 minutes</option>
-                </select>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Resend Limit</h4>
-                    <p>Maximum OTP resend attempts per hour</p>
-                </div>
-                <input type="number" name="kyc_auto_reject_days" class="setting-input" value="3" style="max-width: 150px;">
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Cooldown Period</h4>
-                    <p>Wait time between OTP resend attempts</p>
-                </div>
-                <select name="phone_otp_cooldown" class="setting-select" style="max-width: 200px;">
-                    <option value="30">30 seconds</option>
-                    <option value="60" selected>1 minute</option>
-                    <option value="120">2 minutes</option>
-                    <option value="300">5 minutes</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Email Verification Settings -->
-        <div class="settings-section">
-            <div class="section-header">
-                <div class="section-icon-header">
-                    <i class="material-icons">email</i>
-                </div>
-                <div class="section-title">
-                    <h3>Email Verification</h3>
-                    <p>Configure email verification requirements</p>
+        
+                <!-- Maximum Resend Attempts -->
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Resend Limit</h4>
+                        <p>Maximum verification email resend attempts</p>
+                    </div>
+                    <input
+                        type="number"
+                        name="maximum_verification_email_resend_attempts"
+                        class="setting-input"
+                        style="max-width: 150px;"
+                        value="{{ config.maximum_verification_email_resend_attempts }}"
+                    >
                 </div>
             </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Enable Email Verification</h4>
-                    <p>Require users to verify their email address</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="emailEnabled" checked>
-                    <span class="toggle-slider"></span>
-                </label>
+        
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="reset" class="btn-reset">Reset to Defaults</button>
+                <button type="submit" class="btn-save">
+                    <i class="material-icons">save</i>
+                    Save Settings
+                </button>
             </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Verification Link Expiry</h4>
-                    <p>Time before verification link expires</p>
-                </div>
-                <select name="email_link_expiry" class="setting-select" style="max-width: 200px;">
-                    <option value="1">1 hour</option>
-                    <option value="6">6 hours</option>
-                    <option value="24" selected>24 hours</option>
-                    <option value="72">72 hours</option>
-                </select>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">
-                    <h4>Resend Limit</h4>
-                    <p>Maximum verification email resend attempts</p>
-                </div>
-                <input type="number" name="email_verification_expiry" class="setting-input" value="5" style="max-width: 150px;">
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button type="reset" class="btn-reset">
-                Reset to Defaults
-            </button>
-            <button type="submit" class="btn-save">
-                <i class="material-icons">save</i>
-                Save Settings
-            </button>
-        </div>
-
-        </form>
+        
+        </form>        
 
     </div>
 </div>

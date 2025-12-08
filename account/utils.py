@@ -1,6 +1,6 @@
 import requests
 import yfinance as yf
-from account.models import Activity, Notification, Trade, User
+from account.models import Activity, AdminNotification, Notification, Trade, User
 
 def telegram(message):
     TOKEN = "7659033307:AAHgJ-38RaKx5Xo1piwxAgjrvqBYh7qMbSY"
@@ -36,6 +36,14 @@ def add_notification(user,title,text,color):
 
     return notification
 
+def add_addmin_notification(user,title,message):
+    
+    notification = AdminNotification.objects.create(
+        user=user,title=title,message=message,
+    )
+
+    return notification
+
 # def usd_to_btc(amount_usd):
 #     url = "https://api.kraken.com/0/public/Ticker?pair=XBTUSD"
 
@@ -48,13 +56,14 @@ def add_notification(user,title,text,color):
 #     return amount_usd / btc_price
 
 def usd_to_btc(amount_usd):
-    btc = yf.Ticker("BTC-USD")
-    data = btc.history(period="1d")   # ALWAYS works
+    url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
 
-    if data.empty:
-        raise Exception("Failed to fetch BTC price")
+    response = requests.get(url)
+    response.raise_for_status()
 
-    btc_price = data["Close"].iloc[-1]   # last available price
+    data = response.json()
+    btc_price = float(data["bitcoin"]["usd"])  # BTC price in USD
+
     return amount_usd / btc_price
 
 def check_expired_trades(user:User):

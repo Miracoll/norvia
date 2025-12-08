@@ -13,8 +13,9 @@ from django.conf import settings
 from django.db.models import Sum
 from django.utils import timezone
 import requests
+from datetime import timedelta
 
-from account.models import Activity, AddressVerification, BannedIp, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, Notification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, UserPlan, Withdraw
+from account.models import Activity, AddressVerification, AdminNotification, BannedIp, Config, CopiedTrader, CopyRequest, Currency, Deposit, EmailTemplate, KYCVerification, Notification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, UserPlan, Withdraw
 from manager.forms import TraderForm
 from utils.decorators import allowed_users
 
@@ -215,8 +216,8 @@ def user_detail(request, username):
         title = request.POST.get('notificationTitle')
         message = request.POST.get('notificationMessage')
 
-        Notification.objects.create(
-            user=user,title=title,media_type='text',text=title.slice(2),color='info'
+        AdminNotification.objects.create(
+            user=user,message=message,title=title
         )
 
         messages.success(request, 'Notification sent')
@@ -368,9 +369,13 @@ def user_detail(request, username):
     
     elif 'set_circle' in request.POST:
 
-        trading_circle = request.POST.get('circle')
+        trading_circle = int(request.POST.get('circle'))
 
-        user.trading_circle = int(trading_circle)
+        # Set the trading circle value
+        user.trading_circle = trading_circle
+
+        user.trading_circle_date = timezone.now() + timedelta(days=trading_circle)
+
         user.save()
 
         messages.success(request, "Successful")
@@ -1410,20 +1415,137 @@ def become_trader(request):
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def send_notification(request):
+    users = User.objects.filter(groups__name='trader').count()
+    kyc_pending = KYCVerification.objects.filter(status='pending').count()
+    kyc_completed = KYCVerification.objects.filter(status='approved').count()
+
+    if request.method == 'POST':
+        title = request.POST.get('notification_title')
+        message = request.POST.get('notification_message')
+        target_group = request.POST.get('recipient_type')
+        specific_user = request.POST.get('specific_user_identifier')
+        icon = request.POST.get('notification_icon')
+        color = request.POST.get('notification_color')
+
+        sent_count = 0  # Track number of notifications sent
+
+        # ------------------------------
+        # SEND TO ALL TRADERS
+        # ------------------------------
+        if target_group == 'all':
+            traders = User.objects.filter(groups__name='trader')
+            for user in traders:
+                AdminNotification.objects.create(
+                    user=user,
+                    title=title,
+                    message=message,
+                    icon=icon,
+                    notif_type=color,
+                )
+                sent_count += 1
+
+        # ------------------------------
+        # SEND TO USERS WITH PENDING KYC
+        # ------------------------------
+        elif target_group == 'kyc_pending':
+            pending_kyc_users = KYCVerification.objects.filter(
+                status='pending'
+            )
+            for user in pending_kyc_users:
+                AdminNotification.objects.create(
+                    user=user.user,
+                    title=title,
+                    message=message,
+                    icon=icon,
+                    notif_type=color,
+                )
+                sent_count += 1
+
+        # ------------------------------
+        # SEND TO USERS WITH APPROVED KYC
+        # ------------------------------
+        elif target_group == 'kyc_completed':
+            approved_kyc_users = KYCVerification.objects.filter(
+                status='approved'
+            )
+            for user in approved_kyc_users:
+                AdminNotification.objects.create(
+                    user=user.user,
+                    title=title,
+                    message=message,
+                    icon=icon,
+                    notif_type=color,
+                )
+                sent_count += 1
+
+        # ------------------------------
+        # SEND TO A SPECIFIC USER
+        # ------------------------------
+        elif target_group == 'specific_user' and specific_user:
+            user_obj = User.objects.filter(email=specific_user).first()
+            if user_obj:
+                AdminNotification.objects.create(
+                    user=user_obj,
+                    title=title,
+                    message=message,
+                    icon=icon,
+                    notif_type=color,
+                )
+                sent_count = 1
+            else:
+                sent_count = 0
+
+        messages.success(request, f"Notification sent to {sent_count} users.")
+        return redirect('admin_notifications')
+
     context = {
         'header_title': 'Send Notification',
-        'body_class': 'page-admin-notifications'
+        'body_class': 'page-admin-notifications',
+        'users_count': users,
+        'kyc_pending': kyc_pending,
+        'kyc_completed': kyc_completed,
     }
     return render(request, 'manager/notifications.html', context)
 
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def email_template(request):
+    templates = EmailTemplate.objects.all().order_by('title')
     context = {
         'header_title': 'Email Templates',
-        'body_class': 'page-email-templates'
+        'body_class': 'page-email-templates',
+        'templates':templates
     }
     return render(request, 'manager/email_template.html', context)
+
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
+def preview_email_template(request, slug):
+    t = get_object_or_404(EmailTemplate, slug=slug)
+    return render(request, t.html_file)
+
+def save_email_template(request):
+    template_id = request.POST.get("template_id")
+
+    if not template_id:
+        messages.error(request, "Invalid template ID.")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+    # Fetch template
+    template = get_object_or_404(EmailTemplate, id=template_id)
+
+    # Update fields
+    template.title = request.POST.get("name", template.title)
+    template.subject = request.POST.get("subject", template.subject)
+    template.description = request.POST.get("description", template.description)
+    template.body_content = request.POST.get("body", template.body_content)
+    template.status = request.POST.get("status", template.status)
+
+    template.save()
+
+    messages.success(request, f"{template.title} has been updated successfully!")
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
@@ -1436,19 +1558,221 @@ def frontpage_manager(request):
 
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
+def frontpage_pages(request):
+    context = {
+        'header_title': 'Page Manager',
+        'body_class': 'page-admin-frontendpages'
+    }
+    return render(request, 'manager/frontend_pages.html', context)
+
+@login_required(login_url='admin_login')
+@allowed_users(allowed_roles=['admin'])
 def platform_setting(request):
+
+    config = Config.objects.first()
+
+    if request.method == "POST" and "general_setting" in request.POST:
+        platform_name = request.POST.get("platform_name")
+        min_deposit = request.POST.get("min_deposit")
+        min_withdrawal = request.POST.get("min_withdrawal")
+
+        # Checkbox - if not checked, value will be None
+        allow_registration = request.POST.get("allow_registration") == "1"
+
+        # Update config fields
+        config.platform_name = platform_name
+        config.maximum_withdrawal = float(min_deposit) if min_deposit else 0
+        config.minimum_withdrawal = float(min_withdrawal) if min_withdrawal else 0
+        config.registration_status = allow_registration
+
+        config.save()
+
+        messages.success(request, "Settings updated successfully!")
+        return redirect("admin_platform_settings")
+    
+    elif request.method == "POST" and "save_user_defaults" in request.POST:
+        
+        # Get form values
+        default_language = request.POST.get("default_language")
+        default_currency = request.POST.get("default_currency")
+        default_email_notif = request.POST.get("default_email_notif") == "1"
+
+        # Update config
+        config.default_language = default_language
+        config.default_currency = default_currency
+        config.email_notification_enabled = default_email_notif
+
+        config.save()
+
+        messages.success(request, "New user default settings updated successfully!")
+        return redirect("admin_platform_settings")
+    
+    elif request.method == "POST" and "save_2fa_security" in request.POST:
+
+        # Checkbox values — True if checked, False if not
+        require_2fa = request.POST.get("require_2fa") == "1"
+        require_security_questions = request.POST.get("require_security_questions") == "1"
+
+        # Save updates
+        config.mandatory_2fa = require_2fa
+        config.require_security_question = require_security_questions
+        config.save()
+
+        messages.success(request, "Security requirements updated successfully!")
+        return redirect("admin_platform_settings")
+    
+    elif request.method == "POST" and "save_password_policies" in request.POST:
+
+        # Numeric values
+        min_password_length = request.POST.get("min_password_length")
+        max_failed_logins = request.POST.get("max_failed_logins")
+
+        # Checkbox booleans
+        require_uppercase = request.POST.get("require_uppercase") == "1"
+        require_lowercase = request.POST.get("require_lowercase") == "1"
+        require_number = request.POST.get("require_number") == "1"
+        require_special_char = request.POST.get("require_special_char") == "1"
+
+        # Save updates
+        config.minimum_password_length = int(min_password_length)
+        config.failed_loging_attempts_before_lockout = int(max_failed_logins)
+
+        config.require_uppercase_password = require_uppercase
+        config.require_lowercase_password = require_lowercase
+        config.require_number_password = require_number
+        config.require_special_character_password = require_special_char
+
+        config.save()
+
+        messages.success(request, "Password policies updated successfully!")
+        return redirect("admin_platform_settings")
+    
+    elif request.method == "POST" and "save_session_settings" in request.POST:
+
+        # Checkbox → boolean
+        login_notifications = request.POST.get("login_notifications") == "1"
+
+        # Save update
+        config.require_login_notification = login_notifications
+        config.save()
+
+        messages.success(request, "Session settings updated successfully!")
+        return redirect("admin_platform_settings")
+    
+    elif request.method == "POST" and "save_trader_requirements" in request.POST:
+
+        enable_trader_applications = request.POST.get("enable_trader_applications") == "1"
+
+        min_trader_balance = request.POST.get("min_trader_balance")
+        min_account_age = request.POST.get("min_account_age")
+        min_trading_volume = request.POST.get("min_trading_volume")
+        min_win_rate = request.POST.get("min_win_rate")
+        review_period = request.POST.get("review_period")
+
+        # Save values
+        config.enable_trader_application = enable_trader_applications
+        config.minimum_trading_balance_trader_application = int(min_trader_balance)
+        config.minimum_account_age_trader_application = int(min_account_age)
+        config.minimum_trading_volume_last_30_days_usd = int(min_trading_volume)
+        config.min_win_rate = int(min_win_rate)
+        config.application_review_period_days = int(review_period)
+
+        config.save()
+
+        messages.success(request, "Trader application requirements updated successfully!")
+        return redirect("admin_platform_settings")
+    
+    elif request.method == "POST" and "save_security_settings" in request.POST:
+        
+        # Checkbox returns value only if checked, so we check via `in request.POST`
+        require_2fa_withdrawal = "require_2fa_withdrawal" in request.POST
+        require_email_verification = "require_email_verification" in request.POST
+
+        # Session timeout (ensure integer)
+        session_timeout = request.POST.get("session_timeout", 30)
+
+        try:
+            session_timeout = int(session_timeout)
+        except ValueError:
+            messages.error(request, "Session timeout must be a number.")
+            return redirect("admin_platform_settings")
+
+        # Save to DB
+        config.require_2fa_for_withdrawal = require_2fa_withdrawal
+        config.require_email_verification = require_email_verification
+        config.session_timeout_minutes = session_timeout
+        config.save()
+
+        messages.success(request, "Security settings updated successfully.")
+        return redirect("admin_platform_settings")
     context = {
         'header_title': 'Platform Settings',
-        'body_class': 'page-admin-platformsettings'
+        'body_class': 'page-admin-platformsettings',
+        "config": config,
     }
     return render(request, 'manager/platform_setting.html', context)
 
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def verification_setting(request):
+    kyc_verified = KYCVerification.objects.filter(status='approved').count()
+    kyc_pending = KYCVerification.objects.filter(status='pending').count()
+
+    address_verified = AddressVerification.objects.filter(status='approved').count()
+    address_pending = AddressVerification.objects.filter(status='pending').count()
+
+    if request.method == "POST":
+
+        config = Config.objects.first()
+
+        # --------------------------
+        # CHECKBOX FIELDS
+        # --------------------------
+        # Checkbox only appears in POST if checked
+        config.kyc_verification = "kyc_verification" in request.POST
+        config.email_verification_enable = "email_verification_enable" in request.POST
+
+        # --------------------------
+        # SELECT FIELDS
+        # --------------------------
+        config.required_level_for_kyc = request.POST.get("required_level_for_kyc", "")
+
+        # --------------------------
+        # NUMBER FIELDS
+        # --------------------------
+        try:
+            config.transaction_limit_for_unverified_user_minimum = int(
+                request.POST.get("transaction_limit_for_unverified_user_minimum", 0)
+            )
+        except:
+            config.transaction_limit_for_unverified_user_minimum = 0
+
+        try:
+            config.transaction_limit_for_unverified_user_maximum = int(
+                request.POST.get("transaction_limit_for_unverified_user_maximum", 0)
+            )
+        except:
+            config.transaction_limit_for_unverified_user_maximum = 0
+
+        try:
+            config.maximum_verification_email_resend_attempts = int(
+                request.POST.get("maximum_verification_email_resend_attempts", 5)
+            )
+        except:
+            config.maximum_verification_email_resend_attempts = 5
+
+        # SAVE SETTINGS
+        config.save()
+        messages.success(request, "Verification settings saved successfully.")
+
+        return redirect("admin_verification_settings")
     context = {
         'header_title': 'Verification Settings',
-        'body_class': 'page-admin-verifysettings'
+        'body_class': 'page-admin-verifysettings',
+        'kyc_verified': kyc_verified,
+        'kyc_pending': kyc_pending,
+        'address_verified': address_verified,
+        'address_pending': address_pending,
     }
     return render(request, 'manager/verification_setting.html', context)
 
@@ -1464,6 +1788,29 @@ def page_content(request):
 @login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def admin_profile(request):
+    user = request.user
+
+    if request.method == "POST":
+        # Get all fields
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        email = request.POST.get("email")
+        mobile = request.POST.get("mobile")
+
+        # Validate (optional)
+        if not first_name or not last_name:
+            messages.error(request, "First and last name are required.")
+            return redirect("admin_profile")
+
+        # Update fields
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.mobile = mobile
+        user.save()
+
+        messages.success(request, "Profile updated successfully!")
+        return redirect("admin_profile")
     context = {
         'header_title': 'Admin Profile',
         'body_class': 'page-admin-profile'

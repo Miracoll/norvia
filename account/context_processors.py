@@ -1,4 +1,4 @@
-from .models import Notification
+from .models import Config, Notification
 
 def notifications_processor(request):
     if request.user.is_authenticated:
@@ -7,4 +7,10 @@ def notifications_processor(request):
         notifications = []
     return {
         'notifications': notifications
+    }
+
+def global_config(request):
+    config = Config.objects.first()
+    return {
+        'config': config
     }

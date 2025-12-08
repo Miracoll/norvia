@@ -25,307 +25,162 @@
         <!-- Email Templates Grid -->
         <div class="row">
             <!-- Template 1: Welcome Email -->
+            {% for t in templates %}
             <div class="col-xl-6 col-lg-6 col-md-12">
-                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
+                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 24px;">
                     <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
-                        <iframe src="{% static 'email-templates/welcome-email.html' %}" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
+                        <iframe src="{% url 'preview-email' t.slug %}" frameborder="0"
+                            style="transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
                     </div>
-                    <div style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                            <div>
-                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Welcome Email</h4>
-                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when a new user registers on the platform</p>
-                            </div>
-                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
-                                <span>Last Updated: Oct 20, 2025</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
-                                <span>Sent: 1,234 times</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <a href="email-templates/welcome-email.html" target="_blank" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b; text-decoration: none;">
-                                <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                Preview
-                            </a>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#templateEditorModal" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;">
-                                <i class="material-icons" style="font-size: 16px;">edit</i>
-                                Edit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Template 2: Password Reset -->
-            <div class="col-xl-6 col-lg-6 col-md-12">
-                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
-                    <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
-                        <iframe src="{% static 'email-templates/password-reset.html' %}" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
-                    </div>
                     <div style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
                             <div>
-                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Password Reset</h4>
-                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when user requests password reset</p>
+                                <h4 style="font-size:18px; font-weight:700; margin:0;">{{ t.title }}</h4>
+                                <p style="font-size:13px; color:#64748b; margin:0;">{{ t.description }}</p>
                             </div>
-                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
-                                <span>Last Updated: Oct 18, 2025</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
-                                <span>Sent: 456 times</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <a href="email-templates/password-reset.html" target="_blank" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b; text-decoration: none;">
-                                <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                Preview
-                            </a>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#templateEditorModal" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;">
-                                <i class="material-icons" style="font-size: 16px;">edit</i>
-                                Edit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Template 3: Deposit Confirmation -->
-            <div class="col-xl-6 col-lg-6 col-md-12">
-                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
-                    <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
-                        <iframe src="{% static 'email-templates/deposit-confirmation.html' %}" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
-                    </div>
-                    <div style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                            <div>
-                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Deposit Confirmation</h4>
-                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when deposit is successful</p>
-                            </div>
-                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
+                            <span style="padding:6px 12px; border-radius:6px; font-size:12px; background:#d1fae5; color:#065f46;">
+                                {{ t.status|title }}
+                            </span>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
-                                <span>Last Updated: Oct 22, 2025</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
-                                <span>Sent: 2,847 times</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <a href="email-templates/deposit-confirmation.html" target="_blank" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b; text-decoration: none;">
-                                <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                Preview
-                            </a>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#templateEditorModal" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;">
-                                <i class="material-icons" style="font-size: 16px;">edit</i>
-                                Edit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Template 4: Withdrawal Request -->
-            <div class="col-xl-6 col-lg-6 col-md-12">
-                <div class="card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 24px;">
-                    <div style="width: 100%; height: 300px; background: #f3f4f6; border-bottom: 2px solid #e5e7eb; position: relative; overflow: hidden;">
-                        <iframe src="{% static 'email-templates/withdrawal-request.html' %}" frameborder="0" style="width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%;"></iframe>
-                    </div>
-                    <div style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                            <div>
-                                <h4 style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px 0;">Withdrawal Request</h4>
-                                <p style="font-size: 13px; color: #64748b; margin: 0;">Sent when withdrawal is processed</p>
+                        <!-- Stats -->
+                        <div style="background:#f9fafb; padding:12px; border-radius:8px; margin-bottom:16px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i class="material-icons" style="font-size:18px;">schedule</i>
+                                <span>Last Updated: {{ t.updated_at|date:"M d, Y" }}</span>
                             </div>
-                            <span style="padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d1fae5; color: #065f46;">Active</span>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">schedule</i>
-                                <span>Last Updated: Oct 19, 2025</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
-                                <i class="material-icons" style="font-size: 18px; color: #94a3b8;">send</i>
-                                <span>Sent: 1,573 times</span>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+                                <i class="material-icons" style="font-size:18px;">send</i>
+                                <span>Sent: {{ t.sent_count }} times</span>
                             </div>
                         </div>
-                        <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <a href="email-templates/withdrawal-request.html" target="_blank" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: #f8fafc; border: 1px solid #e5e7eb; color: #64748b; text-decoration: none;">
-                                <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                Preview
+
+                        <!-- Buttons -->
+                        <div style="display:flex; gap:8px; padding-top:16px; border-top:1px solid #e5e7eb;">
+                            <a href="{% url 'preview-email' t.slug %}" target="_blank"
+                                style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:6px;">
+                                <i class="material-icons">visibility</i> Preview
                             </a>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#templateEditorModal" style="flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white;">
-                                <i class="material-icons" style="font-size: 16px;">edit</i>
-                                Edit
+                            <button 
+                                type="button" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#templateEditorModal" 
+                                onclick="loadTemplate('{{ t.id }}')"
+                                style="flex:1; background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; border:none; border-radius:6px;">
+                                <i class="material-icons">edit</i> Edit
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
+
         </div>
 
     </div>
 </div>
 
-<div class="modal fade" id="templateEditorModal" tabindex="-1" aria-labelledby="templateEditorLabel" aria-hidden="true">
+<!-- SINGLE MODAL (placed AFTER the for loop) -->
+<div class="modal fade" id="templateEditorModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header" style="padding: 24px 30px; border-bottom: 2px solid #e5e7eb;">
-                <h3 class="modal-title" id="templateEditorLabel" style="font-size: 20px; font-weight: 700; color: #1a1a1a;">Edit Email Template</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Edit Email Template</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <form method="POST" action="">
-                <!-- Hidden input for template identifier -->
-                <input type="hidden" name="template_key" id="templateKey" value="">
-                <input type="hidden" name="action" value="save_template">
+            <form method="POST" action="{% url 'save-email-template' %}">
+                {% csrf_token %}
+                <input type="hidden" name="template_id" id="templateId">
 
                 <div class="modal-body">
-                    <!-- Editor Tabs -->
-                    <div style="display: flex; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 2px solid #e5e7eb;">
-                        <button type="button" id="editTabBtn" style="background: transparent; border: none; padding: 10px 16px; font-size: 13px; font-weight: 600; color: #ef4444; cursor: pointer; display: flex; align-items: center; gap: 6px; border-bottom: 3px solid #ef4444; margin-bottom: -18px;" onclick="switchTab('edit')">
-                            <i class="material-icons" style="font-size: 18px;">edit</i>
+
+                    <!-- TABS -->
+                    <div style="display:flex; gap:8px; border-bottom:2px solid #e5e7eb;">
+                        <button type="button" id="editTabBtn" onclick="switchTab('edit')"
+                            style="border:none; padding:10px; border-bottom:3px solid #ef4444;">
                             Edit
                         </button>
-                        <button type="button" id="previewTabBtn" style="background: transparent; border: none; padding: 10px 16px; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 6px; border-bottom: 3px solid transparent; margin-bottom: -18px;" onclick="switchTab('preview')">
-                            <i class="material-icons" style="font-size: 18px;">visibility</i>
+                        <button type="button" id="previewTabBtn" onclick="switchTab('preview')"
+                            style="border:none; padding:10px; border-bottom:3px solid transparent;">
                             Preview
                         </button>
                     </div>
 
-                    <!-- Edit Tab -->
+                    <!-- EDIT TAB -->
                     <div id="editTab">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Template Name</label>
-                                    <input type="text" name="template_name" id="templateName" value="Welcome Email" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Subject Line</label>
-                                    <input type="text" name="subject" id="templateSubject" value="Welcome to Norvia.io!" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                                </div>
-                            </div>
-                        </div>
+                        <label>Template Name</label>
+                        <input type="text" name="name" id="templateName" class="form-control">
 
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Template Description</label>
-                            <input type="text" name="description" id="templateDescription" value="Sent when a new user registers on the platform" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                        </div>
+                        <label>Subject</label>
+                        <input type="text" name="subject" id="templateSubject" class="form-control">
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Email Header Title</label>
-                                    <input type="text" name="header_title" id="emailHeaderTitle" value="Welcome to Norvia.io!" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Email Header Subtitle</label>
-                                    <input type="text" name="header_subtitle" id="emailHeaderSubtitle" value="Your trading journey starts here" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                                </div>
-                            </div>
-                        </div>
+                        <label>Description</label>
+                        <input type="text" name="description" id="templateDescription" class="form-control">
 
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Email Body Content</label>
-                            <textarea name="body_content" id="emailBodyContent" style="width: 100%; height: 150px; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; line-height: 1.6; resize: vertical;">We're thrilled to have you join the Norvia.io community. Your account has been successfully created and you're now ready to start your trading adventure!
+                        <label>Email Body</label>
+                        <textarea name="body" id="templateBody" class="form-control" rows="6"></textarea>
 
-Here's what you can do next:
-• Complete your profile
-• Make your first deposit
-• Explore our traders
-• Start copy trading</textarea>
-                            <p style="font-size: 12px; color: #64748b; margin-top: 6px;">Use variables like [User Name], [Email], [Amount], [Date], [Transaction ID], [Balance], [Status]</p>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Button Text (Optional)</label>
-                                    <input type="text" name="button_text" id="emailButtonText" value="Get Started Now" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Button Link (Optional)</label>
-                                    <input type="text" name="button_link" id="emailButtonLink" value="https://norvia.io/dashboard" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Template Status</label>
-                            <select name="status" id="templateStatus" style="width: 100%; height: 44px; padding: 0 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-                                <option value="active" selected>Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="draft">Draft</option>
-                            </select>
-                        </div>
+                        <label>Status</label>
+                        <select name="status" id="templateStatus" class="form-control">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="draft">Draft</option>
+                        </select>
                     </div>
 
-                    <!-- Preview Tab -->
-                    <div id="previewTab" style="display: none;">
-                        <div style="width: 100%; height: 500px; border: 2px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #f9fafb;">
-                            <iframe id="modalPreviewFrame" frameborder="0" style="width: 100%; height: 100%; border: none;"></iframe>
-                        </div>
-                        <p style="font-size: 13px; color: #64748b; margin-top: 12px; text-align: center;">This is a preview of the current email template</p>
+                    <!-- PREVIEW TAB -->
+                    <div id="previewTab" style="display:none;">
+                        <iframe id="templatePreviewIframe" style="width:100%; height:500px; border:1px solid #ddd;"></iframe>
                     </div>
+
                 </div>
 
-                <div class="modal-footer" style="padding: 20px 30px; border-top: 2px solid #e5e7eb; background: #f9fafb;">
-                    <button type="button" style="background: white; border: 2px solid #e5e7eb; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer;" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
-                        <i class="material-icons" style="font-size: 18px;">save</i>
-                        Save Template
-                    </button>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Save</button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
+
 {% endblock %}
 {% block extra_script %}
 <script>
-    // Switch between Edit and Preview tabs - UI only
-    function switchTab(tab) {
-        const editTab = document.getElementById('editTab');
-        const previewTab = document.getElementById('previewTab');
-        const editTabBtn = document.getElementById('editTabBtn');
-        const previewTabBtn = document.getElementById('previewTabBtn');
-
-        if (tab === 'edit') {
-            editTab.style.display = 'block';
-            previewTab.style.display = 'none';
-            editTabBtn.style.color = '#ef4444';
-            editTabBtn.style.borderBottomColor = '#ef4444';
-            previewTabBtn.style.color = '#64748b';
-            previewTabBtn.style.borderBottomColor = 'transparent';
-        } else {
-            editTab.style.display = 'none';
-            previewTab.style.display = 'block';
-            editTabBtn.style.color = '#64748b';
-            editTabBtn.style.borderBottomColor = 'transparent';
-            previewTabBtn.style.color = '#ef4444';
-            previewTabBtn.style.borderBottomColor = '#ef4444';
-        }
+    function loadTemplate(id) {
+        fetch(`/email-template/${id}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                // Fill modal fields
+                document.getElementById('templateId').value = data.id;
+                document.getElementById('templateName').value = data.title;
+                document.getElementById('templateDescription').value = data.description;
+                document.getElementById('templateSubject').value = data.subject || "";
+                document.getElementById('templateBody').value = data.body_content || "";
+                document.getElementById('templateStatus').value = data.status;
+    
+                // Update preview iframe
+                document.getElementById('templatePreviewIframe').src = `/preview-email/${data.slug}/`;
+    
+                // Update modal title
+                document.getElementById('modalTitle').innerText = "Edit: " + data.title;
+            });
     }
-
-</script>
+    
+    function switchTab(tab) {
+        document.getElementById("editTab").style.display = tab === "edit" ? "block" : "none";
+        document.getElementById("previewTab").style.display = tab === "preview" ? "block" : "none";
+    
+        document.getElementById("editTabBtn").style.borderBottom =
+            tab === "edit" ? "3px solid #ef4444" : "3px solid transparent";
+    
+        document.getElementById("previewTabBtn").style.borderBottom =
+            tab === "preview" ? "3px solid #ef4444" : "3px solid transparent";
+    }
+    </script>
+    
 {% endblock %}

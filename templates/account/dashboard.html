@@ -768,6 +768,37 @@
 	  updateWalletDisplay();
   });
   </script>
-  
 
+<script>
+    // Get countdown date from Django
+    const countdownDate = new Date("{{ circle_end_date|date:'Y-m-d H:i:s' }}").getTime();
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        let distance = countdownDate - now;
+
+        if (isNaN(countdownDate) || distance <= 0) {
+            document.getElementById("circle-days").textContent = "0";
+            document.getElementById("circle-hours").textContent = "0";
+            document.getElementById("circle-minutes").textContent = "0";
+            document.getElementById("circle-seconds").textContent = "0";
+            return;
+        }
+
+        // Calculate breakdown
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Insert into UI
+        document.getElementById("circle-days").textContent = days;
+        document.getElementById("circle-hours").textContent = hours;
+        document.getElementById("circle-minutes").textContent = minutes;
+        document.getElementById("circle-seconds").textContent = seconds;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+</script>
 {% endblock %}

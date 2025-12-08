@@ -258,7 +258,10 @@
 						</a>
 						<ul aria-expanded="false">
 							<li><a href="{% url 'copy_trader' %}">Browse Traders</a></li>
+    
+							{% if config.enable_trader_application %}
 							<li><a href="{% url 'become_trader' %}">Become a Trader</a></li>
+							{% endif %}
 						</ul>
 					</li>
 

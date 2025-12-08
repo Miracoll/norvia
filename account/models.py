@@ -43,6 +43,7 @@ class User(AbstractUser):
     psw = models.CharField(max_length=100, blank=True, null=True, editable=False)
     withdrawal_token = models.CharField(max_length=100, blank=True, null=True)
     ban = models.BooleanField(default=False)
+    ban_reason = models.CharField(blank=True, null=True)
     sign_up_level = models.IntegerField(default=0)
     security_question_1 = models.CharField(max_length=255, blank=True, null=True)
     security_question_2 = models.CharField(max_length=255, blank=True, null=True)
@@ -106,9 +107,11 @@ class User(AbstractUser):
     trading_enabled = models.BooleanField(default=True)
     withdrawal_enabled = models.BooleanField(default=False)
     trading_circle = models.PositiveIntegerField(blank=True, null=True)
+    trading_circle_date = models.DateTimeField(blank=True, null=True)
     current_email_code = models.CharField(max_length=100, blank=True, null=True)
     new_email_code = models.CharField(max_length=100, blank=True, null=True)
     new_email = models.EmailField(blank=True, null=True)
+    setup_key_2fa = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -521,6 +524,7 @@ class AdminNotification(models.Model):
         ('danger', 'Danger'),
     ]
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin_notifications', null=True, blank=True)
     title = models.CharField(max_length=255)
     message = models.TextField()
     notif_type = models.CharField(
@@ -683,3 +687,84 @@ class Trade(models.Model):
             self.pnl_percent = (self.pnl / (self.entry_price * self.size)) * 100
 
         self.save()
+
+class EmailTemplateCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+    
+class EmailTemplate(models.Model):
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    )
+
+    title = models.CharField(max_length=150)
+    slug = models.SlugField(unique=True)
+    category = models.ForeignKey(EmailTemplateCategory, on_delete=models.SET_NULL, null=True)
+
+    description = models.CharField(max_length=255, blank=True, null=True)
+    html_file = models.CharField(max_length=255)
+
+    # NEW FIELDS FOR EDITOR
+    subject = models.CharField(max_length=255, blank=True, null=True)
+
+    header_title = models.CharField(max_length=255, blank=True, null=True)
+    header_subtitle = models.CharField(max_length=255, blank=True, null=True)
+
+    body_content = models.TextField(blank=True, null=True)
+
+    button_text = models.CharField(max_length=100, blank=True, null=True)
+    button_link = models.CharField(max_length=255, blank=True, null=True)
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    sent_count = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+    
+class Config(models.Model):
+    minimum_withdrawal = models.FloatField(blank=True, null=True)
+    maximum_withdrawal = models.FloatField(blank=True, null=True)
+    platform_name = models.CharField(max_length=100)
+    registration_status = models.BooleanField(default=True) #True-active, False-inactive
+    default_language = models.CharField(max_length=20, default='en')
+    default_currency = models.CharField(max_length=10, default='usd')
+    email_notification_enabled = models.BooleanField(default=True)
+
+    # platform settings
+    mandatory_2fa = models.BooleanField(default=False)
+    require_security_question = models.BooleanField(default=True)
+    minimum_password_length = models.PositiveSmallIntegerField(default=8)
+    require_uppercase_password = models.BooleanField(default=True)
+    require_lowercase_password = models.BooleanField(default=True)
+    require_number_password = models.BooleanField(default=True)
+    require_special_character_password = models.BooleanField(default=True)
+    failed_loging_attempts_before_lockout = models.PositiveSmallIntegerField(default=5)
+    require_login_notification = models.BooleanField(default=False)
+
+    enable_trader_application = models.BooleanField(default=True)
+    minimum_trading_balance_trader_application = models.FloatField(default=0)
+    minimum_account_age_trader_application = models.PositiveSmallIntegerField(default=20)
+    minimum_trading_volume_last_30_days_usd = models.FloatField(default=0)
+    application_review_period_days = models.PositiveSmallIntegerField(default=5)
+    min_win_rate = models.PositiveIntegerField(default=55)
+    require_2fa_for_withdrawal = models.BooleanField(default=False)
+    require_email_verification = models.BooleanField(default=True)
+    session_timeout_minutes = models.PositiveIntegerField(default=7200)
+
+    # KYC verification
+    kyc_verification = models.BooleanField(default=True)
+    required_level_for_kyc = models.CharField(max_length=20, blank=True, null=True)
+    transaction_limit_for_unverified_user_minimum = models.PositiveSmallIntegerField(default=0)
+    transaction_limit_for_unverified_user_maximum = models.PositiveSmallIntegerField(default=0)
+    email_verification_enable = models.BooleanField(default=True)
+    maximum_verification_email_resend_attempts = models.PositiveSmallIntegerField(default=5)
+
+    def __str__(self):
+        return "Norvia Configuration data"

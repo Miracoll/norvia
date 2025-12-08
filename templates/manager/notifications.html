@@ -1,5 +1,8 @@
 {% extends 'manager/base.html' %}
 {% load static %}
+{% load humanize %}
+
+{% block title %}Send Notifications - Manager Dashboard{% endblock %}
 {% block content %}
 <div class="content-body">
     <div class="container-fluid">
@@ -20,7 +23,7 @@
 
         <!-- Notification Form -->
         <form method="POST" action="">
-            <input type="hidden" name="action" value="send_notification">
+            {% csrf_token %}
 
             <div class="notification-container">
 
@@ -36,7 +39,7 @@
                         <label class="recipient-option">
                             <input type="radio" name="recipient_type" value="all" checked />
                             <div class="recipient-content">
-                                <span class="recipient-label">All Users <span class="recipient-count">1,234</span></span>
+                                <span class="recipient-label">All Users <span class="recipient-count">{{users_count|intcomma}}</span></span>
                                 <span class="recipient-description">Send to every user on the platform</span>
                             </div>
                         </label>
@@ -44,7 +47,7 @@
                         <label class="recipient-option">
                             <input type="radio" name="recipient_type" value="kyc_completed" />
                             <div class="recipient-content">
-                                <span class="recipient-label">KYC Completed <span class="recipient-count">856</span></span>
+                                <span class="recipient-label">KYC Completed <span class="recipient-count">{{kyc_completed|intcomma}}</span></span>
                                 <span class="recipient-description">Users with verified KYC</span>
                             </div>
                         </label>
@@ -52,16 +55,8 @@
                         <label class="recipient-option">
                             <input type="radio" name="recipient_type" value="kyc_pending" />
                             <div class="recipient-content">
-                                <span class="recipient-label">KYC Pending <span class="recipient-count">378</span></span>
+                                <span class="recipient-label">KYC Pending <span class="recipient-count">{{kyc_pending|intcomma}}</span></span>
                                 <span class="recipient-description">Users who haven't completed KYC</span>
-                            </div>
-                        </label>
-
-                        <label class="recipient-option">
-                            <input type="radio" name="recipient_type" value="active_traders" />
-                            <div class="recipient-content">
-                                <span class="recipient-label">Active Traders <span class="recipient-count">542</span></span>
-                                <span class="recipient-description">Users with open trades</span>
                             </div>
                         </label>
 
@@ -77,7 +72,7 @@
                     <!-- Specific User Input -->
                     <div class="form-group" style="margin-top: 20px;">
                         <label class="form-label">Specific User ID or Email (Optional)</label>
-                        <input type="text" class="form-input" name="specific_user_identifier" placeholder="e.g., USR-10245 or user@example.com" />
+                        <input type="text" class="form-input" name="specific_user_identifier" placeholder="e.g. user@example.com" />
                         <div class="form-help">Only used if "Specific User" is selected above</div>
                     </div>
                 </div>
@@ -125,45 +120,19 @@
                         <div class="form-group">
                             <label class="form-label">Notification Color <span class="required">*</span></label>
                             <select class="form-select" name="notification_color" required>
-                                <option value="red">Red (Urgent)</option>
-                                <option value="blue">Blue (Information)</option>
-                                <option value="green">Green (Success)</option>
-                                <option value="yellow">Yellow (Warning)</option>
-                                <option value="purple">Purple (Announcement)</option>
-                                <option value="orange">Orange (Alert)</option>
-                                <option value="gray">Gray (Neutral)</option>
+                                <option value="danger">Red (Urgent)</option>
+                                <option value="info">Blue (Information)</option>
+                                <option value="success">Green (Success)</option>
+                                <option value="warning">Yellow (Warning)</option>
                             </select>
                             <div class="form-help">Select a color that conveys the right tone</div>
-                        </div>
-                    </div>
-
-                    <!-- Static Preview Box -->
-                    <div class="preview-box">
-                        <div class="preview-title">
-                            <i class="material-icons">visibility</i>
-                            Preview (Sample)
-                        </div>
-                        <div class="preview-notification">
-                            <div class="preview-notification-header">
-                                <div class="preview-icon">
-                                    <i class="material-icons">campaign</i>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div class="preview-notification-title">Important Platform Update</div>
-                                </div>
-                            </div>
-                            <p class="preview-notification-message">Your notification message will appear here with the selected icon and color styling.</p>
-                        </div>
-                        <div style="margin-top: 12px; padding: 12px; background: #fffbeb; border: 1px solid #fbbf24; border-radius: 8px; font-size: 12px; color: #92400e;">
-                            <i class="material-icons" style="font-size: 14px; vertical-align: middle;">info</i>
-                            <strong>Note:</strong> This is a static preview. Your actual notification will use the values you enter above.
                         </div>
                     </div>
                 </div>
 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                    <a href="admin-dashboard.html" class="btn-cancel">
+                    <a href="{% url 'admin_home' %}" class="btn-cancel">
                         Cancel
                     </a>
                     <button type="submit" class="btn-send">

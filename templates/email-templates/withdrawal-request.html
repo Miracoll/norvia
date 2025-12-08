@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Withdrawal Update</title>
+</head>
+<body style="margin:0; padding:0; background:#f4f4f4; font-family:Arial, sans-serif;">
+    <table align="center" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px; background:#ffffff; padding:20px;">
+        <tr>
+            <td style="text-align:center;">
+                <h2 style="color:#1a1a1a;">Withdrawal Request Processed</h2>
+                <p style="color:#555; font-size:15px; line-height:22px;">
+                    Hi {{ user_name }},<br><br>
+                    Your withdrawal request of <strong>{{ amount }}</strong> in <strong>{{ currency }}</strong> is currently being processed.
+                </p>
+
+                <table align="center" style="margin-top:20px; width:80%;">
+                    <tr>
+                        <td style="background:#f3f4f6; padding:12px; border-radius:6px;">
+                            <p style="margin:0; color:#111; font-size:14px;">
+                                <strong>Transaction ID:</strong> {{ transaction_id }}<br>
+                                <strong>Status:</strong> {{ status }}<br>
+                                <strong>Date:</strong> {{ date }}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <p style="margin-top:25px; color:#777; font-size:12px;">
+                    You will receive another email once the withdrawal is completed.
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

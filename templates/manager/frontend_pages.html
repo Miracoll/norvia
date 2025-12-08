@@ -1,0 +1,635 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="content-body">
+	<div class="container-fluid">
+
+		<!-- Page Header -->
+		<div class="page-header">
+			<h2>Page Manager</h2>
+			<p>Manage all frontend and legal pages from one place</p>
+		</div>
+
+		<!-- Frontend Pages Section -->
+		<div class="content-card">
+			<div class="section-header">
+				<div class="section-title">
+					<i class="material-icons">public</i>
+					Frontend Pages
+					<span class="section-badge">17</span>
+				</div>
+			</div>
+
+			<table class="content-table">
+				<thead>
+					<tr>
+						<th style="width: 60px;">Icon</th>
+						<th>Page</th>
+						<th style="width: 120px;">Status</th>
+						<th style="width: 180px;">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- TODO: Django will render pages from database -->
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">home</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Home Page</div>
+							<div class="page-description">Main landing page</div>
+							<div class="page-filename">index.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=index" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/index.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">info</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">About Us</div>
+							<div class="page-description">Company information</div>
+							<div class="page-filename">aboutus.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=aboutus" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/aboutus.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">email</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Contact Us</div>
+							<div class="page-description">Contact form</div>
+							<div class="page-filename">contactus.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=contactus" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/contactus.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">content_copy</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Copy Trading</div>
+							<div class="page-description">Copy trading service page</div>
+							<div class="page-filename">copytrading.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=copytrading" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/copytrading.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">stars</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Copy Expert Traders</div>
+							<div class="page-description">Expert traders showcase</div>
+							<div class="page-filename">copyexperttrading.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=copyexperttrading" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/copyexperttrading.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">bar_chart</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Options Trading</div>
+							<div class="page-description">Options trading information</div>
+							<div class="page-filename">optionstrading.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=optionstrading" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/optionstrading.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">show_chart</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Stocks Trading</div>
+							<div class="page-description">Stock trading page</div>
+							<div class="page-filename">stockstrading.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=stockstrading" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/stockstrading.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">currency_exchange</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Forex Trading</div>
+							<div class="page-description">Forex trading page</div>
+							<div class="page-filename">forextrading.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=forextrading" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/forextrading.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">trending_up</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">What is Leverage</div>
+							<div class="page-description">Leverage explained</div>
+							<div class="page-filename">whatisleverage.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=whatisleverage" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/whatisleverage.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">verified_user</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Responsible Trading</div>
+							<div class="page-description">Trading guidelines</div>
+							<div class="page-filename">responsibletrading.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=responsibletrading" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/responsibletrading.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">help</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">FAQ</div>
+							<div class="page-description">Frequently asked questions</div>
+							<div class="page-filename">faq.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=faq" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/faq.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">description</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Terms of Service</div>
+							<div class="page-description">Service terms</div>
+							<div class="page-filename">termsofservice.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=termsofservice" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/termsofservice.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">shield</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Privacy Policy</div>
+							<div class="page-description">Privacy policy</div>
+							<div class="page-filename">Privacypolicy.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=Privacypolicy" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/Privacypolicy.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">cookie</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Cookie Policy</div>
+							<div class="page-description">Cookie usage policy</div>
+							<div class="page-filename">cookiepolicy.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=cookiepolicy" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/cookiepolicy.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">group_add</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Referral Program</div>
+							<div class="page-description">Referral system</div>
+							<div class="page-filename">referral.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=referral" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/referral.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">person_add</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Become a Trader</div>
+							<div class="page-description">Trader application</div>
+							<div class="page-filename">become-trader.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=become-trader" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/become-trader.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">article</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Blog</div>
+							<div class="page-description">Blog posts</div>
+							<div class="page-filename">blog.html</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="frontend-page-editor.html?page=blog" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+							<a href="../user/blog.html" target="_blank" class="btn-view" title="View Page">
+								<i class="material-icons">visibility</i>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- Legal/Policy Pages Section -->
+		<div class="content-card">
+			<div class="section-header">
+				<div class="section-title">
+					<i class="material-icons">gavel</i>
+					Legal & Policy Pages
+					<span class="section-badge">4</span>
+				</div>
+			</div>
+
+			<table class="content-table">
+				<thead>
+					<tr>
+						<th style="width: 60px;">Icon</th>
+						<th>Page</th>
+						<th style="width: 120px;">Status</th>
+						<th style="width: 180px;">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- TODO: Django will render legal pages from database -->
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">gavel</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Copy Trading Agreement</div>
+							<div class="page-description">Terms and conditions for copy trading service</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="edit-copy-trading-agreement.html" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">article</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Terms & Conditions</div>
+							<div class="page-description">Platform terms and conditions</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="edit-terms-conditions.html" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">privacy_tip</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Privacy Policy</div>
+							<div class="page-description">Data privacy and protection policy</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="edit-privacy-policy.html" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-label="Icon">
+							<span class="page-icon">
+								<i class="material-icons">warning</i>
+							</span>
+						</td>
+						<td data-label="Page">
+							<div class="page-title">Risk Disclosure</div>
+							<div class="page-description">Trading risks and disclaimers</div>
+						</td>
+						<td data-label="Status">
+							<span class="status-badge status-published">
+								<i class="material-icons">check_circle</i>
+								<span>Published</span>
+							</span>
+						</td>
+						<td data-label="Action">
+							<a href="edit-risk-disclosure.html" class="btn-edit">
+								<i class="material-icons">edit</i>
+								<span>Edit</span>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+</div>
+{% endblock %}

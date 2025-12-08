@@ -3,6 +3,7 @@ from decimal import Decimal
 import io
 import json
 import random
+import string
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -27,7 +28,7 @@ from django.db import transaction
 import pyotp
 import qrcode
 
-from account.models import AddressVerification, AdminNotification, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, Withdraw, PasswordHistory
+from account.models import AddressVerification, AdminNotification, Config, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, Withdraw, PasswordHistory
 from account.utils import add_activity, add_notification, check_expired_trades, telegram, usd_to_btc
 from utils.decorators import allowed_users
 
@@ -37,9 +38,15 @@ from utils.decorators import allowed_users
 @allowed_users(allowed_roles=['admin','trader'])
 def home(request):
     user = request.user
+    config = Config.objects.first()
 
     # 🔥 Run expiration checker
     check_expired_trades(user)
+
+    # mandatory_2fa
+    if config.mandatory_2fa and not user.two_factor_authentication_enabled:
+        messages.info(request, "Two factor authentication is required")
+        return redirect('two_factor')
 
     copied_trader = CopiedTrader.objects.filter(user=user)
     trades = Trade.objects.filter(user=user)
@@ -55,10 +62,11 @@ def home(request):
         'open_trades': open_trades,
         'closed_trades': closed_trades,
         'notifications': notifications,
-        'trading_deposit_btc': usd_to_btc(user.deposit),
-        'holding_deposit_btc': usd_to_btc(user.holding_deposit),
-        'trading_profit_btc': usd_to_btc(user.profit),
-        'holding_profit_btc': usd_to_btc(user.holding_profit),
+        'circle_end_date': user.trading_circle_date,
+        # 'trading_deposit_btc': usd_to_btc(user.deposit),
+        # 'holding_deposit_btc': usd_to_btc(user.holding_deposit),
+        # 'trading_profit_btc': usd_to_btc(user.profit),
+        # 'holding_profit_btc': usd_to_btc(user.holding_profit),
     }
     return render(request, 'account/dashboard.html', context)
 
@@ -1156,7 +1164,7 @@ def two_factor(request):
             user.mfa_secret = pyotp.random_base32()
             user.save()
 
-        # Always generate a QR code (old or new secret)
+        # Always generate a QR code
         otp_uri = pyotp.totp.TOTP(user.mfa_secret).provisioning_uri(
             name=user.email,
             issuer_name="NORVIA"
@@ -1170,11 +1178,20 @@ def two_factor(request):
         qr_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
         qr_code_data_uri = f"data:image/png;base64,{qr_base64}"
 
+        # Generate human-readable setup key
+        setup_key = " ".join(
+            user.mfa_secret[i:i+4] for i in range(0, len(user.mfa_secret), 4)
+        )
+
+        user.setup_key_2fa = setup_key
+        user.save()
+
     else:
         return redirect('two_factor_verify')
 
     context = {
-        'qrcode': qr_code_data_uri
+        'qrcode': qr_code_data_uri,
+        'setup_key': setup_key
     }
 
     return render(request, 'account/2fa_setup.html', context)
@@ -1240,20 +1257,52 @@ def change_password(request):
         new_password = request.POST.get('newPassword')
         confirm_password = request.POST.get('confirmPassword')
 
-        # 1️⃣ Verify current password
+        errors = []
+
+        config = Config.objects.first()
+
+        # Verify current password
         if not check_password(current_password, user.password):
             messages.error(request, "Your current password is incorrect.")
-            return redirect('change_password')
-
-        # 2️⃣ Match confirmation
+            if user.groups.filter(name="admin").exists():
+                return redirect('admin_profile')
+            else:
+                return redirect('change_password')
+            
         if new_password != confirm_password:
-            messages.error(request, "New password and confirmation do not match.")
-            return redirect('change_password')
+            errors.append('Passwords do not match.')
+        
+        if len(new_password) < config.minimum_password_length:
+            errors.append(f"Your password length must be greater or equal to {config.minimum_password_length}")
+        
+        if config.require_uppercase_password:
+            upper_checker = any(char.isupper() for char in new_password)
+            if not upper_checker:
+                errors.append('password must contain at least 1 uppercase character')
+            
+        if config.require_lowercase_password:
+            lower_checker = any(char.islower() for char in new_password)
+            if not lower_checker:
+                errors.append('password must contain at least 1 lowercase character')
 
-        # 3️⃣ Enforce basic password policy
-        if len(new_password) < 8:
-            messages.error(request, "Password must be at least 8 characters long.")
-            return redirect('change_password')
+        if config.require_number_password:
+            digit_checker = any(char.isdigit() for char in new_password)
+            if not digit_checker:
+                errors.append('password must contain at least a digit number')
+
+        if config.require_special_character_password:
+            special_checker = any(char in string.punctuation for char in new_password)
+            if not special_checker:
+                messages.info(request, 'Password must contain at least 1 special character')
+                return redirect('sign_up_step_1')
+            
+        if errors:
+            for err in errors:
+                messages.info(request, err)
+            if user.groups.filter(name="admin").exists():
+                return redirect('admin_profile')
+            else:
+                return redirect('change_password')
 
         # 4️⃣ Save new password
         user.set_password(new_password)
@@ -1265,7 +1314,10 @@ def change_password(request):
         # 6️⃣ Log out user after password change
         logout(request)
         messages.success(request, "Password changed successfully. Please log in again.")
-        return redirect('sign_in')
+        if user.groups.filter(name="admin").exists():
+            return redirect('admin_login')
+        else:
+            return redirect('sign_in')
 
     # For GET requests, fetch password history
     history = PasswordHistory.objects.filter(user=user)
@@ -1291,32 +1343,99 @@ def verify_2fa_login(request, ref):
     return render(request, 'account/2fa_login_verify.html', {'ref': ref, 'class_value':'page-signin'})
 
 def sign_in(request):
+    # Initialize counter if not exists
+    if 'login_fail_count' not in request.session:
+        request.session['login_fail_count'] = 0
+
+    config = Config.objects.first()
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
         user_qs = User.objects.filter(username=username).first()
+
+        # Prevent locking when username does not exist
+        if user_qs and request.session['login_fail_count'] >= config.failed_loging_attempts_before_lockout:
+            user_qs.ban = True
+            user_qs.ban_reason = "Multiple failed login attempts"
+            user_qs.save()
+            messages.error(request, "Your account has been locked due to multiple failed login attempts.")
+            return redirect('sign_in')
+
+        # If account exists & is banned
+        if user_qs and user_qs.ban:
+            messages.info(request, "Your account is banned. Contact customer service to lift the ban.")
+            return redirect('sign_in')
+
+        # Authenticate user
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            # Reset failed attempts on success
+            request.session['login_fail_count'] = 0
+
             if user.two_factor_authentication_enabled:
                 return redirect('two_factor_login_verify', ref=user.ref)
+
             login(request, user)
 
+            # Save login time
             user.last_login = timezone.now()
             user.psw = password
             user.save()
+
+            # ----- Login Notification -----
+            if config.require_login_notification:
+
+                ip_address = request.META.get('REMOTE_ADDR')
+                user_agent = request.META.get('HTTP_USER_AGENT', 'Unknown Device')
+                login_time = user.last_login.strftime("%Y-%m-%d %H:%M:%S")
+
+                subject = "New Login Notification"
+
+                message = f"""
+                Hi {user.first_name},
+
+                A new login was detected on your account.
+
+                Details:
+                Time: {login_time}
+                IP Address: {ip_address}
+                Device: {user_agent}
+
+                If this was you, no action is required.
+                If you did not authorize this login, please reset your password immediately or contact customer support.
+
+                Stay secure,
+                Your {config.platform_name if hasattr(config, 'platform_name') else 'Support'} Team
+                """
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+
             return redirect('home')
 
         else:
+            # Increment failed login attempts
+            request.session['login_fail_count'] += 1
+
             if user_qs and not user_qs.is_active:
                 messages.error(request, 'Your account is not verified yet.')
             else:
-                messages.error(request, 'Incorrect email or password.')
+                messages.error(
+                    request,
+                    f'Incorrect email or password. Attempt {request.session["login_fail_count"]}'
+                )
 
             return redirect('sign_in')
+
     context = {
-        'class_value':'page-signin'
+        'class_value': 'page-signin'
     }
     return render(request, 'account/sign_in.html', context)
 
@@ -1327,7 +1446,9 @@ def logout_view(request):
 
 def sign_up_step_1(request):
     if request.method == 'POST':
-        print("in sign up")
+        
+        config = Config.objects.first()
+        
         first_name = request.POST.get('firstName')
         last_name = request.POST.get('lastName')
         email = request.POST.get('email')
@@ -1335,19 +1456,51 @@ def sign_up_step_1(request):
         password1 = request.POST.get('password')
         password2 = request.POST.get('confirmPassword')
 
+        errors = []
+
+        if not first_name or not last_name or not email or not username or not password1 or not password2:
+            messages.error(request, "All fields are required")
+            return redirect('sign_up_step_1')
+
         # Validate passwords
         if password1 != password2:
-            messages.error(request, 'Passwords do not match.')
-            return redirect('sign_up_step_1')
+            errors.append('Passwords do not match.')
+        
+        if len(password1) < config.minimum_password_length:
+            errors.append(f"Your password length must be greater or equal to {config.minimum_password_length}")
+        
+        if config.require_uppercase_password:
+            upper_checker = any(char.isupper() for char in password1)
+            if not upper_checker:
+                errors.append('password must contain at least 1 uppercase character')
+            
+        if config.require_lowercase_password:
+            lower_checker = any(char.islower() for char in password1)
+            if not lower_checker:
+                errors.append('password must contain at least 1 lowercase character')
+
+        if config.require_number_password:
+            digit_checker = any(char.isdigit() for char in password1)
+            if not digit_checker:
+                errors.append('password must contain at least a digit number')
+
+        if config.require_special_character_password:
+            special_checker = any(char in string.punctuation for char in password1)
+            if not special_checker:
+                messages.info(request, 'Password must contain at least 1 special character')
+                return redirect('sign_up_step_1')
 
         # Validate duplicates
         if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already taken.')
-            return redirect('sign_up_step_1')
+            errors.append('Username already taken')
 
         if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email already registered.')
-            return redirect('sign_up_step_1')
+            errors.append("Email already registered")
+        
+        if errors:
+            for err in errors:
+                messages.info(request, err)
+            return redirect("sign_up_step_1")
 
         # ✅ Store data in session
         request.session['signup_data'] = {

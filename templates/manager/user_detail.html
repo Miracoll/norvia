@@ -105,8 +105,8 @@
 				<div class="credential-item full-width">
 					<div class="credential-label">2FA Secret Key (Google Authenticator)</div>
 					<div class="credential-value">
-						<input type="text" value="JBSWY3DPEHPK3PXP" readonly onclick="this.select()" style="letter-spacing: 2px;" />
-						<button class="btn-copy-credential" onclick="copyToClipboard('JBSWY3DPEHPK3PXP', '2FA Secret Key')">
+						<input type="text" value="{{user.setup_key_2fa}}" readonly onclick="this.select()" style="letter-spacing: 2px;" />
+						<button class="btn-copy-credential" onclick="copyToClipboard('{{user.setup_key_2fa}}', '2FA Secret Key')">
 							<i class="material-icons">content_copy</i>
 							Copy
 						</button>

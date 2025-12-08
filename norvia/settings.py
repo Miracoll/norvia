@@ -52,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'account.middleware.dynamic_timeout.DynamicSessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'norvia.urls'
@@ -68,6 +70,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'account.context_processors.notifications_processor',
+                'account.context_processors.global_config',
             ],
         },
     },

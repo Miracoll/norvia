@@ -32,4 +32,7 @@ urlpatterns = [
     path('enable-email-notification/<int:user_id>/', views.enable_email_notification, name='enable_email_notification'),
     path('enable-trading/<int:user_id>/', views.enable_trading, name='enable_trading'),
     path('enable-withdrawal/<int:user_id>/', views.enable_withdrawal, name='enable_withdrawal'),
+    path("preview-email/<slug:slug>/", views.preview_email_template, name="preview-email"),
+    path("save-email-template/", views.save_email_template, name="save-email-template"),
+    path('frontend-pages/', views.frontpage_pages, name='frontend_pages'),
 ]
