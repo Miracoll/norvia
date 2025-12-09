@@ -1,6 +1,10 @@
 import requests
-import yfinance as yf
 from account.models import Activity, AdminNotification, Notification, Trade, User
+from django.utils import timezone
+from datetime import timedelta
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
 
 def telegram(message):
     TOKEN = "7659033307:AAHgJ-38RaKx5Xo1piwxAgjrvqBYh7qMbSY"
@@ -72,3 +76,53 @@ def check_expired_trades(user:User):
     for trade in trades:
         if trade.is_expired():
             trade.close_trade()
+
+def get_24hr_pnl_and_percentage(user):
+    now = timezone.now()
+    last_24hrs = now - timedelta(hours=24)
+    previous_24hrs = last_24hrs - timedelta(hours=24)
+
+    # Current 24 hrs trades
+    trades_today = Trade.objects.filter(
+        user=user,
+        closed_at__gte=last_24hrs,
+        closed_at__lte=now,
+        status='closed'
+    )
+
+    # Previous 24 hrs trades
+    trades_yesterday = Trade.objects.filter(
+        user=user,
+        closed_at__gte=previous_24hrs,
+        closed_at__lt=last_24hrs,
+        status='closed'
+    )
+
+    today_pnl = sum(t.pnl for t in trades_today)
+    yesterday_pnl = sum(t.pnl for t in trades_yesterday)
+
+    # Percentage change calculation
+    if yesterday_pnl == 0:
+        percentage_change = 100 if today_pnl > 0 else -100 if today_pnl < 0 else 0
+    else:
+        percentage_change = ((today_pnl - yesterday_pnl) / abs(yesterday_pnl)) * 100
+
+    return today_pnl, percentage_change
+
+def send_verification_email(user, verification_url):
+    subject = "Verify Your Email Address"
+
+    html_content = render_to_string("email-templates/verify_email.html", {
+        "first_name": user.first_name,
+        "verification_url": verification_url,
+    })
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body="Please verify your email.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[user.email],
+    )
+
+    email.attach_alternative(html_content, "text/html")
+    email.send()

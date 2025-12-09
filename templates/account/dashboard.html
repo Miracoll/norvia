@@ -203,37 +203,47 @@
 						<!-- Performance Overview -->
 						<div class="row">
 							<!-- P&L Card - Profit Example -->
-							<div class="col-xl-6">
+							<div class="col-xl-12">
 								<div class="card wow fadeInUp" data-wow-delay="0.6s">
 									<div class="card-body" style="padding: 20px;">
+							
 										<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-											<div style="background: #dcfce7; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-												<i class="material-icons" style="color: #16a34a; font-size: 24px;">trending_up</i>
+							
+											<!-- Icon box -->
+											<div style="background: {% if pnl_24h > 0 %}#dcfce7{% else %}#fee2e2{% endif %};
+														width: 44px; height: 44px; border-radius: 10px;
+														display: flex; align-items: center; justify-content: center;">
+												<i class="material-icons"
+												   style="font-size: 24px;
+														  color: {% if pnl_24h > 0 %}#16a34a{% else %}#dc2626{% endif %};">
+													{% if pnl_24h > 0 %}trending_up{% else %}trending_down{% endif %}
+												</i>
 											</div>
+							
+											<!-- Text -->
 											<div>
-												<div style="color: #6c757d; font-size: 13px; margin-bottom: 2px;">24h P&L (Profit)</div>
-												<div style="color: #16a34a; font-size: 22px; font-weight: 800; line-height: 1;">+$248.75</div>
+												<div style="color: #6c757d; font-size: 13px;">24h P&L</div>
+												<div style="font-size: 22px; font-weight: 800; line-height: 1;
+															color: {% if pnl_24h > 0 %}#16a34a{% else %}#dc2626{% endif %};">
+													{% if pnl_24h > 0 %}
+														+${{ pnl_24h|floatformat:2 }}
+													{% else %}
+														-${{ pnl_24h|floatformat:2|slice:'1:' }}
+													{% endif %}
+												</div>
 											</div>
 										</div>
-										<div style="color: #6c757d; font-size: 12px;">+4.58% from yesterday</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- P&L Card - Loss Example -->
-							<div class="col-xl-6">
-								<div class="card wow fadeInUp" data-wow-delay="0.7s">
-									<div class="card-body" style="padding: 20px;">
-										<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-											<div style="background: #fee2e2; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-												<i class="material-icons" style="color: #dc2626; font-size: 24px;">trending_down</i>
-											</div>
-											<div>
-												<div style="color: #6c757d; font-size: 13px; margin-bottom: 2px;">24h P&L (Loss)</div>
-												<div style="color: #dc2626; font-size: 22px; font-weight: 800; line-height: 1;">-$182.40</div>
-											</div>
+							
+										<!-- Percentage -->
+										<div style="color: #6c757d; font-size: 12px;
+													color: {% if percentage_24h > 0 %}#16a34a{% else %}#dc2626{% endif %};">
+											{% if percentage_24h > 0 %}
+												+{{ percentage_24h|floatformat:2 }}% from yesterday
+											{% else %}
+												{{ percentage_24h|floatformat:2 }}% from yesterday
+											{% endif %}
 										</div>
-										<div style="color: #6c757d; font-size: 12px;">-3.27% from yesterday</div>
+							
 									</div>
 								</div>
 							</div>
@@ -250,7 +260,7 @@
 						<div class="row">
 							<div class="col-xl-6">
 								<!-- Inactive State (No Plan) -->
-								{% if not request.user.current_plan %}
+								{% if not request.user.signal_plan_active %}
 								<div class="signal-strength-compact signal-inactive">
 									<div class="signal-icon-compact">
 										<i class="material-icons">signal_cellular_off</i>
@@ -298,6 +308,7 @@
 						</div>
 
 						<!-- Copy Trading Circle Countdown -->
+						{% if show_trading_circle %}
 						<div class="row" id="copyTradingCircleRow">
 							<div class="col-xl-12 wow fadeInUp" data-wow-delay="0.8s">
 								<div class="card" style="background: linear-gradient(135deg, #01A3FF 0%, #0284c7 100%); border: none; overflow: hidden; position: relative;">
@@ -343,6 +354,7 @@
 								</div>
 							</div>
 						</div>
+						{% endif %}
 
 						<!-- Market Overview Chart -->
 						<div class="row">

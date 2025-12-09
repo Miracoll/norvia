@@ -670,6 +670,12 @@ def deposit_list(request):
         try:
             wallet = User.objects.get(id=deposit.user.id)
             wallet.deposit += float(credit_amount)
+
+            if deposit.from_plan:
+                wallet.current_plan = deposit.plan
+                if deposit.plan.category.name == 'Signals':
+                    wallet.signal_plan_active = True
+                    
             wallet.save()
 
             # --- Update deposit record ---

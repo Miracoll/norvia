@@ -5,14 +5,6 @@
 
 {% block body_class %}page-planning{% endblock %}
 
-{% block page_css %}
-<link href="{% static 'vendor/bootstrap-select/dist/css/bootstrap-select.min.css' %}" rel="stylesheet">
-{% endblock %}
-
-{% block page_scripts %}
-<script src="{% static 'vendor/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
-{% endblock %}
-
 {% block content %}
 <div class="content-body">
 	<div class="container-fluid">
@@ -46,26 +38,34 @@
 						</ul>
 						<form action="" method="post">
 							{% csrf_token %}
+						
 							{% if plan.has_currency_select %}
-							<div>
-								<select class="form-control my-2" name="plan">
-									{% for i in currency_list %}
-									<option value="{{i.payment.ref}}_{{plan.id}}">{{i.payment.currency}} ({{i.payment.abbr}})</option>
-									{% endfor %}
-								</select>
-							</div>
-							<div>
-								<select class="form-control my-2" name="network" required>
-									<option value="" selected disabled>--Select network--</option>
-									<option value="erc20">ERC20 (Ethereum)</option>
-									<option value="trc20">TRC20 (Tron)</option>
-									<option value="bep20">BEP20 (BSC)</option>
-								</select>
-							</div>
-							
+								<div>
+									<select class="form-control my-2" name="plan" required>
+										{% for i in currency_list %}
+										<option value="{{ i.payment.ref }}_{{ plan.id }}">
+											{{ i.payment.currency }} ({{ i.payment.abbr }})
+										</option>
+										{% endfor %}
+									</select>
+								</div>
+						
+								<div>
+									<select class="form-control my-2" name="network" required>
+										<option value="" disabled selected>--Select network--</option>
+										<option value="erc20">ERC20 (Ethereum)</option>
+										<option value="trc20">TRC20 (Tron)</option>
+										<option value="bep20">BEP20 (BSC)</option>
+									</select>
+								</div>
+						
+							{% else %}
+								<!-- NON-MINING PLANS -->
+								<input type="hidden" name="plan" value="none_{{ plan.id }}">
 							{% endif %}
+						
 							<button type="submit" class="plan-button">{{ plan.button_text }}</button>
-						</form>
+						</form>						
 					</div>
 					{% endfor %}
 				</div>

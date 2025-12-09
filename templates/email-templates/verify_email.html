@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Verify Your Email - Norvia.io</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6;">
+	<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+		<tr>
+			<td align="center">
+				<!-- Main Container -->
+				<table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+
+					<!-- Header with Gradient -->
+					<tr>
+						<td style="background: linear-gradient(135deg, #01A3FF 0%, #0083cd 100%); padding: 40px 30px; text-align: center;">
+							<!-- Norvia.io Logo -->
+							<div style="margin-bottom: 20px;">
+								<svg width="60" height="60" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
+									<path d="M5 25V5L15 15L25 5V25L15 15L5 25Z" fill="white"/>
+								</svg>
+								<h2 style="margin: 10px 0 0 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: 0.5px;">Norvia.io</h2>
+							</div>
+							<h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700;">Verify Your Email</h1>
+							<p style="margin: 10px 0 0 0; color: #e0f2ff; font-size: 16px;">Just one more step to get started</p>
+						</td>
+					</tr>
+
+					<!-- Body Content -->
+					<tr>
+						<td style="padding: 40px 30px;">
+							<h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 24px; font-weight: 600;">Hi, {{ first_name }}!</h2>
+
+							<p style="margin: 0 0 20px 0; color: #4b5563; font-size: 16px; line-height: 1.6;">
+								Thanks for signing up for Norvia.io! Please click the button below to verify your email address and activate your account.
+							</p>
+
+							<!-- CTA Button -->
+							<table width="100%" cellpadding="0" cellspacing="0">
+								<tr>
+									<td align="center" style="padding: 30px 0;">
+										<a href="{{ verification_url }}" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #01A3FF 0%, #0083cd 100%); color: #ffffff; text-decoration: none; border-radius: 10px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(1, 163, 255, 0.4);">
+											Verify Email Address
+										</a>
+									</td>
+								</tr>
+							</table>
+
+							<p style="margin: 20px 0 0 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+								Or copy and paste this link into your browser:
+							</p>
+							<p style="margin: 10px 0 0 0; color: #01A3FF; font-size: 14px; line-height: 1.6; word-break: break-all;">
+								{{ verification_url }}
+							</p>
+
+							<hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+
+							<p style="margin: 0; color: #9ca3af; font-size: 14px; line-height: 1.6;">
+								If you didn't create this account, just ignore this email.
+							</p>
+						</td>
+					</tr>
+
+					<!-- Footer -->
+					<tr>
+						<td style="background: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
+							<p style="margin: 0 0 10px 0; color: #9ca3af; font-size: 13px;">
+								© 2025 Norvia.io. All rights reserved.
+							</p>
+							<p style="margin: 0; color: #9ca3af; font-size: 13px;">
+								<a href="#" style="color: #01A3FF; text-decoration: none; margin: 0 10px;">Unsubscribe</a> |
+								<a href="#" style="color: #01A3FF; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
+							</p>
+						</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

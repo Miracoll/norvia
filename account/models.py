@@ -112,6 +112,7 @@ class User(AbstractUser):
     new_email_code = models.CharField(max_length=100, blank=True, null=True)
     new_email = models.EmailField(blank=True, null=True)
     setup_key_2fa = models.CharField(max_length=100, blank=True, null=True)
+    signal_plan_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
@@ -255,6 +256,7 @@ class Deposit(models.Model):
     transaction_no = models.CharField(max_length=20, blank=True, null=True)
     equivalent = models.FloatField(default=0.0)
     from_plan = models.BooleanField(default=False)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.user.username

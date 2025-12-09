@@ -1,5 +1,5 @@
 import base64
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 import io
 import json
 import random
@@ -29,7 +29,7 @@ import pyotp
 import qrcode
 
 from account.models import AddressVerification, AdminNotification, Config, CopiedTrader, CopyRequest, Currency, Deposit, KYCVerification, PaymentGateway, Plan, PlanCategory, Trade, Trader, TraderApplication, TraderBenefit, User, UserPaymentMethod, Withdraw, PasswordHistory
-from account.utils import add_activity, add_notification, check_expired_trades, telegram, usd_to_btc
+from account.utils import add_activity, add_notification, check_expired_trades, get_24hr_pnl_and_percentage, send_verification_email, telegram, usd_to_btc
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -39,6 +39,16 @@ from utils.decorators import allowed_users
 def home(request):
     user = request.user
     config = Config.objects.first()
+
+    now = timezone.now()
+
+    show_trading_circle = False
+
+    if user.trading_circle_date:
+        if user.trading_circle_date > now:
+            show_trading_circle = True
+
+    pnl_24h, percentage_24h = get_24hr_pnl_and_percentage(user)
 
     # 🔥 Run expiration checker
     check_expired_trades(user)
@@ -63,6 +73,9 @@ def home(request):
         'closed_trades': closed_trades,
         'notifications': notifications,
         'circle_end_date': user.trading_circle_date,
+        "show_trading_circle": show_trading_circle,
+        "pnl_24h": pnl_24h,
+        "percentage_24h": percentage_24h,
         # 'trading_deposit_btc': usd_to_btc(user.deposit),
         # 'holding_deposit_btc': usd_to_btc(user.holding_deposit),
         # 'trading_profit_btc': usd_to_btc(user.profit),
@@ -772,65 +785,94 @@ def withdrawal_history(request):
     return render(request, 'account/withdrawal_history.html', context)
 
 @login_required(login_url='sign_in')
-@allowed_users(allowed_roles=['admin','trader'])
+@allowed_users(allowed_roles=['admin', 'trader'])
 def planning(request):
     categories = PlanCategory.objects.all()
-    currency_list = UserPaymentMethod.objects.filter(method_type='currency', user=request.user, active=True)
+    currency_list = UserPaymentMethod.objects.filter(
+        method_type='currency',
+        user=request.user,
+        active=True
+    )
 
     if request.method == 'POST':
-        print('1')
+        # Get raw plan value: format is "ref_planID" or "none_planID"
+        plan_raw = request.POST.get('plan')
+
+        if not plan_raw or "_" not in plan_raw:
+            messages.error(request, "Invalid plan selection.")
+            return redirect('planning')
+
+        currency_abbr, plan_id = plan_raw.split('_', 1)
+        network = request.POST.get('network')  # required only for mining
+
+        # Fetch the plan
+        plan = Plan.objects.filter(id=plan_id).first()
+        if not plan:
+            messages.error(request, "Plan not found.")
+            return redirect('planning')
+
+        # Handle currency: only required for mining plans
+        if currency_abbr == "none":
+            currency = None
+        else:
+            currency = Currency.objects.filter(ref=currency_abbr).first()
+            if not currency:
+                messages.error(request, "Invalid currency selected.")
+                return redirect('planning')
+
+        # Mining plans require network selection
+        if plan.has_currency_select and not network:
+            messages.error(request, "Please select a network.")
+            return redirect('planning')
+
+        # Convert balance safely
         try:
-            plan_raw = request.POST.get('plan')
-            print('2')
-            print(plan_raw)
-            if plan_raw and "_" in plan_raw:
-                print('3')
-                # messages.error(request, "Invalid plan selection.")
-                # return redirect('planning')
+            user_balance = Decimal(request.user.deposit or 0)
+        except:
+            user_balance = Decimal(0)
 
-                # Split value into currency_abbr and plan_id
-                currency_abbr, plan_id = plan_raw.split('_', 1)
-                print(currency_abbr, plan_id)
+        # Convert plan price
+        try:
+            plan_price = Decimal(plan.price)
+        except:
+            messages.error(request, "Invalid plan price.")
+            return redirect('planning')
 
-                network = request.POST.get('network', None)
+        # Transaction fee (only if currency exists)
+        try:
+            tx_fee = Decimal(currency.transaction_fee or 0) if currency else Decimal(0)
+        except:
+            tx_fee = Decimal(0)
 
-                # Fetch objects
-                currency = Currency.objects.filter(ref=currency_abbr).first()
-                plan = Plan.objects.filter(id=plan_id).first()
+        # Verify balance
+        if plan_price > user_balance:
+            messages.error(request, 'Low balance. Please deposit more funds.')
+            return redirect('deposit')
 
-                if not currency or not plan:
-                    print('4')
-                    messages.error(request, "Invalid plan or currency selected.")
-                    return redirect('planning')
+        # Save deposit
+        try:
+            with transaction.atomic():
+                deposit = Deposit.objects.create(
+                    user=request.user,
+                    amount=plan_price,
+                    deposit_to='trading',
+                    currency=currency,
+                    network=network,
+                    grand_total=plan_price + tx_fee,
+                    from_plan=True,
+                    plan=plan,
+                )
 
-            user_balance = float(request.user.deposit or 0)
-
-            if plan.price > user_balance:
-                print('5')
-                messages.error(request, 'Low balance. Please deposit more funds.')
-                return redirect('deposit')
-
-            # Create deposit record
-            deposit = Deposit.objects.create(
-                user=request.user,
-                amount=plan.price,
-                deposit_to='trading',
-                currency=currency,
-                network=network,
-                grand_total=float(plan.price) + float(currency.transaction_fee),
-                from_plan=False
-            )
-
-            telegram(
-                f"Dear admin, {deposit.user.username} initiated a deposit request. "
-                f"Please check the admin panel."
-            )
+                # Notify admin
+                telegram(
+                    f"Dear admin, {deposit.user.username} initiated a deposit request. Please check the admin panel."
+                )
 
             messages.success(request, "Deposit initiated successfully.")
             return redirect('deposit_details', ref=deposit.ref)
 
         except Exception as e:
-            messages.error(request, f"Unexpected error: {str(e)}")
+            messages.error(request, f"Unexpected error occurred: {str(e)}")
             return redirect('planning')
 
     context = {
@@ -1636,24 +1678,7 @@ def sign_up_step_3(request):
         )
 
         # Email content
-        subject = "Verify Your Email Address"
-        message = f"""
-        Hi {user.first_name},
-
-        Please click the link below to verify your email:
-
-        {verification_url}
-
-        If you didn’t create this account, just ignore this email.
-        """
-
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-            fail_silently=False,
-        )
+        send_verification_email(user, verification_url)
 
         # ✅ Clear session data now that registration is done
         del request.session['signup_data']
