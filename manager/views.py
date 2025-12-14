@@ -82,8 +82,8 @@ def user_detail(request, username):
     user = User.objects.get(username=username)
     traders = CopiedTrader.objects.filter(user=user)
     trades = Trade.objects.filter(user=user)
-    kyc = KYCVerification.objects.get(user=user)
-    address = AddressVerification.objects.get(user=user)
+    kyc = KYCVerification.objects.get_or_create(user=user)
+    address = AddressVerification.objects.get_or_create(user=user)
 
     deposits = Deposit.objects.filter(user=user)
     withdraws = Withdraw.objects.filter(user=user)
